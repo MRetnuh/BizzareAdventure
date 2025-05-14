@@ -1,6 +1,7 @@
 **Enlace a la Wiki del Proyecto (Propuesta Detallada):**
 [Ver la Propuesta Completa del Proyecto
 aquí](https://github.com/MRetnuh/ProyectoFinalVideojuego6thYear/wiki)
+
 Nombre del Proyecto: Videojuego inspirado en Bro Force (todavia no tenemos un nombre para el videojuego).
 
 Integrantes: Kevin de Groote, Eynar Mejia, y Eduardo Orsi.
