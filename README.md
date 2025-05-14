@@ -7,3 +7,5 @@ Descripcion del videojuego: Crear un juego inspirado en el videojuego “Bro For
 Tecnologías Utilizadas: LibGDX y para la plataforma Escritorio.
 
 Pasos para la compilacion/ejecucion: En caso de querer ejecutar este proyecto, tenes que
+
+Estado Actual del Proyecto: Configuración inicial y estructura del proyecto
