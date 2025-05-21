@@ -13,3 +13,26 @@ aquí](https://github.com/MRetnuh/ProyectoFinalVideojuego6thYear/wiki)
 - Pasos para la compilacion/ejecucion: En caso de querer ejecutar este proyecto, tenes que
 
 - Estado Actual del Proyecto: Configuración inicial y estructura del proyecto
+
+# Pasos de Instalación e importación del Proyecto:
+- Paso 1: Descargar del GitHub el zip del proyecto entero
+  
+- Paso 2: Descomprimir el archivo en el escritorio
+
+- Paso 3: Abrir Eclipse
+
+- Paso 4: Importar el proyecto como Proyecto de Grandle Existente
+
+- Paso 5: Abrir libgdx
+
+- Paso 6: Ir a Projecto Options en las cuales se deberán instalar diferentes extensiones (Box2D, AI, Box2D Lights, Ashley, Controllers, FreeType y Tools) además se seleccionara una template llamada "Game" y daremos a "Next"
+
+- Paso 7: En el apartado de "Third-Party" se deberán seleccionar otras extenciones externas a libgdx (Anim8-GDX, Commons Collections, KTX Tiled, TypingLabel), una vez seleccionadas daremos click a Next.
+
+- Paso 8: En las Settings colocaremos el Proyect Path en la carpeta Proyecto y daremos a Generate.
+
+- Paso 9: Una vez terminado daremos a "Exit"
+
+- Paso 10 :Ahora iremos a Eclipse y daremos click derecho a nuestro proyecto importado y seleccionaremos la opción de Gradle/Refresh Gradle Proyect.
+
+- Paso 11: Para ejecutarlo se deberá seleccionar el archivo YourProjectName-lwjgl3 y darle a Run AS/Java Aplication.
