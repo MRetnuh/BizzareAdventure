@@ -22,11 +22,19 @@ public class IniciarPartida implements Screen {
 
     @Override
     public void show() {
-        map = new TmxMapLoader().load("sample.tmx");
+        map = new TmxMapLoader().load("mapacorregido.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
+        int mapWidthInTiles = map.getProperties().get("width", Integer.class);
+        int mapHeightInTiles = map.getProperties().get("height", Integer.class);
+        int tilePixelWidth = map.getProperties().get("tilewidth", Integer.class);
+        int tilePixelHeight = map.getProperties().get("tileheight", Integer.class);
+        float mapPixelWidth = mapWidthInTiles * tilePixelWidth;
+        float mapPixelHeight = mapHeightInTiles * tilePixelHeight;
+        camera.position.set(mapPixelWidth / 2.8f, mapPixelHeight / 2.2f, 0);
+        camera.zoom = 4f;
+        }
 
     @Override
     public void render(float delta) {
