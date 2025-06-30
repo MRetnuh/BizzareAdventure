@@ -1,0 +1,6 @@
+.gitkeep
+256_base.png
+akame_de_frente_(detenida).png
+libgdx.png
+primeraisla.mp3
+sample.tmx
