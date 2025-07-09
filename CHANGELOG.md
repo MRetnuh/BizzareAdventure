@@ -1,3 +1,8 @@
+## [1.1.2] - 2025-06-30
+### Modificado
+- Se movieron los archivos de modo que ya no esta la carpeta Proyecto
+
+  
 ## [1.1.1] - 2025-05-25
 ### Modificado
 - Se actualizó `IniciarPartida.java`.
