@@ -11,14 +11,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-
 import io.github.some.Principal;
-import juego.Partida;
+import com.badlogic.gdx.audio.Music;
+
+
 
 public class Menu implements Screen {
     private final Principal game;
     private Stage stage;
     private Skin skin;
+    private Music musicaFondo;
+    private float volumen = 0.5f; // Volumen inicial (entre 0 y 1)
 
     public Menu(Principal game) {
         this.game = game;
@@ -28,6 +31,11 @@ public class Menu implements Screen {
     public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+     // Cargar y reproducir música de fondo
+        musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/primeraisla.mp3"));
+        musicaFondo.setLooping(true);
+        musicaFondo.setVolume(volumen);
+        musicaFondo.play();
 
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Usa una skin básica de LibGDX
 
@@ -41,7 +49,8 @@ public class Menu implements Screen {
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new Partida(game)); // Va a la pantalla del mapa
+                musicaFondo.stop(); // O no, si querés que siga
+                game.setScreen(new Partida(game, musicaFondo, volumen));
             }
         });
 
@@ -64,6 +73,21 @@ public class Menu implements Screen {
 
     @Override
     public void render(float delta) {
+    	// Controles de volumen con flechas ↑ ↓
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
+        	volumen = Math.min(1f, volumen + 0.1f);
+        	musicaFondo.setVolume(volumen);
+        	System.out.println("subir");
+        }
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
+        	volumen = Math.max(0f, volumen - 0.1f);
+        	musicaFondo.setVolume(volumen);
+        	System.out.println("bajar");
+        }
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
+            musicaFondo.setVolume(0f); // Silenciar directamente
+            System.out.println("Volumen en 0 (mute)");
+        }
         Gdx.gl.glClearColor(0, 0, 0, 1); // Fondo negro
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
@@ -78,5 +102,7 @@ public class Menu implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        musicaFondo.dispose();
+
     }
 }
