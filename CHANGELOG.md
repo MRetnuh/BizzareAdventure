@@ -2,6 +2,7 @@
 ### Añadido
 - Implementación del personaje en el mapa y ahora puede moverse por el mapa. Además, la camara lo sigue.
 - Implementación de la musica con sus respectivas teclas para poder modificar el volumen y silenciarlo, ademas se colocan 2 musicas una para el menu y otra para la partida.
+- Portada del juego añadida
 ### Modificado
 - Eliminación de archivos innecesarios como el logotipo de libGDX, iniciarPartida, etc
 - Modificacion y ordenamiento de archivos.
