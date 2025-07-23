@@ -1,4 +1,4 @@
-package juego;
+package Juego;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

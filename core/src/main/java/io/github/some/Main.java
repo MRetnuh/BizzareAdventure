@@ -2,7 +2,7 @@ package io.github.some;
 
 import com.badlogic.gdx.Game;
 
-import juego.Menu;
+import Juego.Menu;
 
 public class Main extends Game {
     @Override
