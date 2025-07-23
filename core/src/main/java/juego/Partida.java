@@ -1,4 +1,4 @@
-package Juego;
+package juego;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -10,11 +10,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-import io.github.some.Main;
+import io.github.some.Principal;
 import personajes.Personaje;
 
 public class Partida implements Screen {
-    private final Main game;
+    private final Principal game;
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camera;
@@ -25,7 +25,7 @@ public class Partida implements Screen {
     // 🧪 Imagen de prueba
     private Texture prueba;
 
-    public Partida(Main game) {
+    public Partida(Principal game) {
         this.game = game;
     }
 

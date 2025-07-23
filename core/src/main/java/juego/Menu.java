@@ -1,4 +1,4 @@
-package Juego;
+package juego;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,15 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
-import io.github.some.Main;
-import Juego.Partida;
+import io.github.some.Principal;
+import juego.Partida;
 
 public class Menu implements Screen {
-    private final Main game;
+    private final Principal game;
     private Stage stage;
     private Skin skin;
 
-    public Menu(Main game) {
+    public Menu(Principal game) {
         this.game = game;
     }
 

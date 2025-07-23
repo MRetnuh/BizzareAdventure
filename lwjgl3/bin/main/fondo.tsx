@@ -1,18 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="fondo" tilewidth="32" tileheight="32" tilecount="8" columns="8">
+<tileset version="1.10" tiledversion="1.11.0" name="fondo" tilewidth="32" tileheight="32" tilecount="8" columns="8">
  <image source="12.png" width="256" height="32"/>
- <tile id="0">
-  <objectgroup draworder="index" id="2">
-   <object id="1" x="17.059" y="31.9494">
-    <polygon points="0,0 0,-2.02394 -1.22882,-2.31308 -0.939688,-5.92726 -0.0722837,-6.2164 0,-7.37294 1.08426,-7.37294 1.15654,-8.45719 2.96363,-8.16806 2.96363,-9.97515 3.68647,-10.1197 4.04789,-10.0474 4.04789,-10.8426 4.98758,-10.9871 4.91529,-11.7822 4.12017,-11.9991 4.12017,-14.023 6.93924,-14.023 7.0838,-15.1073 11.9991,-15.035 11.9268,-14.0953 14.023,-13.9508 14.0953,-10.9148 12.5051,-11.0594 12.1437,-9.25232 13.7339,-9.10775 13.9508,-0.216851"/>
-   </object>
-  </objectgroup>
- </tile>
- <tile id="1">
-  <objectgroup draworder="index" id="2">
-   <object id="1" x="0.0722837" y="16.047">
-    <polygon points="0,0 14.7459,0.0722837 14.8182,-16.1193 31.8771,-16.1916 31.8771,15.7578 0,15.8301"/>
-   </object>
-  </objectgroup>
- </tile>
 </tileset>
