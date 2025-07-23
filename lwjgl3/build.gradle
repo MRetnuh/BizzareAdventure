@@ -11,9 +11,12 @@ buildscript {
   }
 }
 plugins {
+  id 'java'
   id "application"
 }
 apply plugin: 'io.github.fourlastor.construo'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 import io.github.fourlastor.construo.Target
@@ -29,6 +32,8 @@ if (JavaVersion.current().isJava9Compatible()) {
 }
 
 dependencies {
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
   implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
@@ -186,4 +191,19 @@ startScripts.classpath = project.tasks.jar.outputs.files
 
 if(enableGraalNative == 'true') {
   apply from: file("nativeimage.gradle")
+}
+
+application {
+    mainClass = 'io.github.some.DesktopLauncher' // poné el paquete y clase correctos
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
+    }
+}
+ext {
+    gdxVersion = '1.11.0'
 }
