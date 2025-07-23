@@ -24,20 +24,20 @@ public class Personaje {
         // Cargar animaciones para derecha
         Array<TextureRegion> framesDerecha = new Array<>();
         for (int i = 1; i <= 4; i++) {
-            framesDerecha.add(new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_derecha_moviendose_" + i + ".png"))));
+            framesDerecha.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/akame_derecha_moviendose_" + i + ".png"))));
         }
         animDerecha = new Animation<>(0.1f, framesDerecha, Animation.PlayMode.LOOP);
 
         // Cargar animaciones para izquierda
         Array<TextureRegion> framesIzquierda = new Array<>();
         for (int i = 1; i <= 4; i++) {
-            framesIzquierda.add(new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_izquierda_moviendose_" + i + ".png"))));
+            framesIzquierda.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/akame_izquierda_moviendose_" + i + ".png"))));
         }
         animIzquierda = new Animation<>(0.1f, framesIzquierda, Animation.PlayMode.LOOP);
 
         // Cargar imagen quieta
-        quietaDerecha = new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_derecha_(detenida).png")));
-        quietaIzquierda = new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_izquierda_(detenida).png")));
+        quietaDerecha = new TextureRegion(new Texture(Gdx.files.internal("imagenes/akame_derecha_(detenida).png")));
+        quietaIzquierda = new TextureRegion(new Texture(Gdx.files.internal("imagenes/akame_izquierda_(detenida).png")));
 
         // Posición inicial
         x = 1050;
