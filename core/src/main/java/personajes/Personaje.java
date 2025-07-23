@@ -19,22 +19,21 @@ public class Personaje {
     private Animation<TextureRegion> animIzquierda;
     private TextureRegion quietaDerecha;
     private TextureRegion quietaIzquierda;
+    private Texture spriteSheet;
 
     public Personaje() {
-        // Cargar animaciones para derecha
-        Array<TextureRegion> framesDerecha = new Array<>();
-        for (int i = 1; i <= 4; i++) {
-            framesDerecha.add(new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_derecha_moviendose_" + i + ".png"))));
-        }
-        animDerecha = new Animation<>(0.1f, framesDerecha, Animation.PlayMode.LOOP);
+        
+    	spriteSheet = new Texture(Gdx.files.internal("cacas/2-sheet.png"));
+    	int frameWidth = 63;
+        int frameHeight = 64;
+        TextureRegion[][] frames = TextureRegion.split(spriteSheet, frameWidth, frameHeight);
+        // Cargar animaciones para izquierda y derecha
+        TextureRegion[] framesDerecha = frames[0];
+        TextureRegion[] framesIzquierda = frames[1];
 
-        // Cargar animaciones para izquierda
-        Array<TextureRegion> framesIzquierda = new Array<>();
-        for (int i = 1; i <= 4; i++) {
-            framesIzquierda.add(new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_izquierda_moviendose_" + i + ".png"))));
-        }
-        animIzquierda = new Animation<>(0.1f, framesIzquierda, Animation.PlayMode.LOOP);
-
+        //Crear animaciones
+        animDerecha = new Animation<>(0.1f, framesDerecha);
+        animIzquierda = new Animation<>(0.1f, framesIzquierda);
         // Cargar imagen quieta
         quietaDerecha = new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_derecha_(detenida).png")));
         quietaIzquierda = new TextureRegion(new Texture(Gdx.files.internal("cacas/akame_izquierda_(detenida).png")));
@@ -71,7 +70,7 @@ public class Personaje {
         TextureRegion frameActual;
 
         if (estaMoviendose) {
-            frameActual = mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo) : animIzquierda.getKeyFrame(estadoTiempo);
+        	frameActual = mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo, true) : animIzquierda.getKeyFrame(estadoTiempo, true);
         } else {
             frameActual = mirandoDerecha ? quietaDerecha : quietaIzquierda;
         }
@@ -80,7 +79,7 @@ public class Personaje {
     }
 
     public void actualizarCamara(OrthographicCamera camara) {
-        camara.position.set(x + 16, y + 16, 0); // centramos la cámara en el personaje
+        camara.position.set(x + 32, y + 32, 0); // centramos la cámara en el personaje
         camara.update();
     }
 }
