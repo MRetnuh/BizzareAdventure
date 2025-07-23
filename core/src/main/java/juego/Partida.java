@@ -4,17 +4,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 import io.github.some.Main;
+import personajes.Personaje;
 
 public class Partida implements Screen {
     private final Main game;
     private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camera;
+    private SpriteBatch batch;
+
+    private Personaje akame;
+
+    // 🧪 Imagen de prueba
+    private Texture prueba;
 
     public Partida(Main game) {
         this.game = game;
@@ -22,37 +31,50 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
+        // Cargar mapa
         map = new TmxMapLoader().load("mapacorregido.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
+
+        // Configurar cámara
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        int mapWidthInTiles = map.getProperties().get("width", Integer.class);
-        int mapHeightInTiles = map.getProperties().get("height", Integer.class);
-        int tilePixelWidth = map.getProperties().get("tilewidth", Integer.class);
-        int tilePixelHeight = map.getProperties().get("tileheight", Integer.class);
-        float mapPixelWidth = mapWidthInTiles * tilePixelWidth;
-        float mapPixelHeight = mapHeightInTiles * tilePixelHeight;
-        camera.position.set(mapPixelWidth / 2.8f, mapPixelHeight / 2.2f, 0);
-        camera.zoom = 4f;
-        }
+
+        // Inicializar batch y personaje
+        batch = new SpriteBatch();
+        akame = new Personaje(); // usa los sprites de akame
+    }
 
     @Override
     public void render(float delta) {
+        // Limpiar pantalla
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        renderer.setView(camera);
-        renderer.render();
+        // Actualizar movimiento
+        akame.mover(delta);
+        akame.actualizarCamara(camera);
+
+        // Dibujar mapa
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+
+        // Dibujar personaje + imagen de prueba
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        akame.dibujar(batch);     // Dibuja el personaje normalmente
+        batch.end();
     }
 
-    public void resize(int width, int height) {}
-    public void pause() {}
-    public void resume() {}
-    public void hide() {}
+    @Override public void resize(int width, int height) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+
+    @Override
     public void dispose() {
         map.dispose();
-        renderer.dispose();
+        mapRenderer.dispose();
+        batch.dispose();
+        prueba.dispose(); // Libera la imagen de prueba
     }
 }
-
