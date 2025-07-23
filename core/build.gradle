@@ -17,7 +17,6 @@ dependencies {
   api "de.golfgl.gdxcontrollerutils:gdx-controllerutils-mapping:$controllerMappingVersion"
   api "space.earlygrey:shapedrawer:$shapeDrawerVersion"
  implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-tiledmaps:$gdxVersion"
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
