@@ -3,9 +3,10 @@ package personajes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 
 public abstract class Personaje {
     private float velocidad;
@@ -13,6 +14,7 @@ public abstract class Personaje {
     private int vida = 1;
     
     protected float x, y;
+    protected float prevX, prevY;
     protected float estadoTiempo = 0f;
     protected boolean mirandoDerecha = true;
     protected boolean estaMoviendose = false;
@@ -72,4 +74,44 @@ public abstract class Personaje {
     public int getVida() {
     	return this.vida;
     }
+    public Rectangle getHitbox() {
+        return new Rectangle(x, y, 16, 16); // O ajustalo según el tamaño de sprite real
+    }
+    public void guardarPosicionAnterior() {
+        prevX = x;
+        prevY = y;
+    }
+
+    public void retroceder() {
+        x = prevX;
+        y = prevY;
+    }
+    public float getNuevaX(float delta) {
+        float tempX = x;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) tempX += velocidad * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) tempX -= velocidad * delta;
+        return tempX;
+    }
+
+    public float getNuevaY(float delta) {
+        float tempY = y;
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) tempY += velocidad * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) tempY -= velocidad * delta;
+        return tempY;
+    }
+    public void aplicarMovimiento(float nuevoX, float nuevoY, float delta) {
+        estadoTiempo += delta;
+        estaMoviendose = nuevoX != x || nuevoY != y;
+        mirandoDerecha = nuevoX > x || (nuevoX == x && mirandoDerecha);
+        x = nuevoX;
+        y = nuevoY;
+    }
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
 }

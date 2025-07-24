@@ -15,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
@@ -56,7 +59,7 @@ public class Partida implements Screen {
         // Cargar mapa
         map = new TmxMapLoader().load("mapacorregido.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
-
+       
         // Configurar cámara
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -122,6 +125,31 @@ public class Partida implements Screen {
         // Actualizar movimiento
         personajeElegido.mover(delta);
         personajeElegido.actualizarCamara(camera);
+     // Movimiento con detección de colisiones
+        float nuevaX = personajeElegido.getNuevaX(delta);
+        float nuevaY = personajeElegido.getNuevaY(delta);
+        Rectangle hitboxTentativa = new Rectangle(nuevaX, nuevaY, 63, 64); // Ajustá tamaño si hace falta
+
+        boolean colision = false;
+        for (MapObject object : map.getLayers().get("colisiones").getObjects()) {
+            if (object instanceof RectangleMapObject) {
+                Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
+                if (hitboxTentativa.overlaps(rectMapa)) {
+                    colision = true;
+                    break;
+                }
+            }
+        }
+
+        // Aplicar movimiento
+        if (!colision) {
+            personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta);
+        } else {
+            personajeElegido.aplicarMovimiento(personajeElegido.getX(), personajeElegido.getY(), delta);
+        }
+
+        personajeElegido.actualizarCamara(camera);
+
 
         // Dibujar mapa
         mapRenderer.setView(camera);

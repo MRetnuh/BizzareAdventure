@@ -15,6 +15,16 @@ imagenes/personajes/akame/akame_izquierda_moviendose_1.png
 imagenes/personajes/akame/akame_izquierda_moviendose_2.png
 imagenes/personajes/akame/akame_izquierda_moviendose_3.png
 imagenes/personajes/akame/akame_izquierda_moviendose_4.png
+imagenes/personajes/leone/leone_derecha_(detenida).png
+imagenes/personajes/leone/leone_derecha_moviendose_1.png
+imagenes/personajes/leone/leone_derecha_moviendose_2.png
+imagenes/personajes/leone/leone_derecha_moviendose_3.png
+imagenes/personajes/leone/leone_derecha_moviendose_4.png
+imagenes/personajes/leone/leone_izquierda_(detenida).png
+imagenes/personajes/leone/leone_izquierda_moviendose_1.png
+imagenes/personajes/leone/leone_izquierda_moviendose_2.png
+imagenes/personajes/leone/leone_izquierda_moviendose_3.png
+imagenes/personajes/leone/leone_izquierda_moviendose_4.png
 libgdx.png
 mapacorregido.tmx
 musica/Balatro.mp3
