@@ -90,16 +90,13 @@ public class Menu implements Screen {
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
             volumen = Math.min(1f, volumen + 0.1f);
             musicaFondo.setVolume(volumen);
-            System.out.println("subir");
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
             volumen = Math.max(0f, volumen - 0.1f);
             musicaFondo.setVolume(volumen);
-            System.out.println("bajar");
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
             musicaFondo.setVolume(0f);
-            System.out.println("Volumen en 0 (mute)");
         }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);

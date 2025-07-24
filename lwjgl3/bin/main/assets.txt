@@ -4,10 +4,7 @@ Terreno1.tsx
 Tiles_32x32.png
 fondo.tsx
 fondo1.tsx
-<<<<<<< HEAD
-=======
-imagenes/fondos/fondo.png
->>>>>>> 182b71e (Funcion de nuevo Launcher (FullScreen))
+imagenes/fondos/portada.png
 imagenes/personajes/akame/akame_derecha_(detenida).png
 imagenes/personajes/akame/akame_derecha_moviendose_1.png
 imagenes/personajes/akame/akame_derecha_moviendose_2.png

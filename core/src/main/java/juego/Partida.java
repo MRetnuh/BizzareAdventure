@@ -10,22 +10,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 
 import io.github.some.Principal;
+import jugadores.Jugador;
+import personajes.Akame;
 import personajes.Personaje;
 
 
 public class Partida implements Screen {
+	private Stage stage;
+	private final Jugador jugador = new Jugador();
     private final Principal game;
     private TiledMap map;
+    private Skin skin;
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camera;
     private SpriteBatch batch;
 
-    private Personaje akame;
-    
-    // 🧪 Imagen de prueba
-    private Texture prueba;
+    private Personaje personajeElegido;
     
     private Music musicaFondo;
     private float volumen;
@@ -41,6 +50,9 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
         // Cargar mapa
         map = new TmxMapLoader().load("mapacorregido.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -51,30 +63,56 @@ public class Partida implements Screen {
 
         // Inicializar batch y personaje
         batch = new SpriteBatch();
-        akame = new Personaje(); // usa los sprites de akame
-        
+        jugador.generarPersonajeAleatorio();
+        personajeElegido = jugador.getPersonajeElegido();
+
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+        // Crear labels
+        Label nombrePersonaje = new Label("Nombre: " + personajeElegido.getNombre(), skin);
+        nombrePersonaje.setFontScale(2);
+        nombrePersonaje.setAlignment(Align.left);
+
+        Label vidaPersonaje = new Label("Vida: " + personajeElegido.getVida(), skin);
+        vidaPersonaje.setFontScale(2);
+        vidaPersonaje.setAlignment(Align.left);
+
+        // Crear tabla con labels
+        Table table = new Table();
+        table.left().top();
+        table.add(nombrePersonaje).size(350, 50).padBottom(10).row();
+        table.add(vidaPersonaje).size(350, 50);
+
+        // Contenedor que envuelve la tabla
+        Container<Table> contenedor = new Container<>(table);
+        contenedor.setSize(400, 130); // Ajustá el tamaño como prefieras
+        contenedor.setBackground(skin.getDrawable("default-round"));
+        contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight()); // esquina superior izquierda
+
+        // Agregar contenedor al escenario
+        stage.addActor(contenedor);
+
+        // Música de fondo
         musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/Balatro.mp3"));
         musicaFondo.setLooping(true);
         musicaFondo.setVolume(volumen);
         musicaFondo.play();
-
     }
+
+
 
     @Override
     public void render(float delta) {
     	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
         	volumen = Math.min(1f, volumen + 0.1f);
         	musicaFondo.setVolume(volumen);
-        	System.out.println("subir");
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
         	volumen = Math.max(0f, volumen - 0.1f);
         	musicaFondo.setVolume(volumen);
-        	System.out.println("bajar");
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
-            musicaFondo.setVolume(0f); // Silenciar directamente
-            System.out.println("Volumen en 0 (mute)");
+            musicaFondo.setVolume(0f);
         }
 
         // Limpiar pantalla
@@ -82,8 +120,8 @@ public class Partida implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Actualizar movimiento
-        akame.mover(delta);
-        akame.actualizarCamara(camera);
+        personajeElegido.mover(delta);
+        personajeElegido.actualizarCamara(camera);
 
         // Dibujar mapa
         mapRenderer.setView(camera);
@@ -92,8 +130,10 @@ public class Partida implements Screen {
         // Dibujar personaje + imagen de prueba
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        akame.dibujar(batch);     // Dibuja el personaje normalmente
+        personajeElegido.dibujar(batch);     // Dibuja el personaje normalmente
         batch.end();
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override public void resize(int width, int height) {}
@@ -106,6 +146,5 @@ public class Partida implements Screen {
         map.dispose();
         mapRenderer.dispose();
         batch.dispose();
-        prueba.dispose(); // Libera la imagen de prueba
     }
 }
