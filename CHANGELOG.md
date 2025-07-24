@@ -1,3 +1,8 @@
+## [2.2.3] - 2025-07-24
+### Añadido
+- Implementacion de colisiones basicas en el archivo .tmx
+- Implementacion de deteccion de colisiones en Personaje y Partida 
+
 ## [2.2.2] - 2025-07-24
 ### Añadido
 - Implementación de eleccion de personaje al azar al inicio de la partida mediante el uso de un sprite de prueba junto al sprite de Akame.
