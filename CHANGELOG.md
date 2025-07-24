@@ -1,3 +1,8 @@
+## [2.2.2] - 2025-07-24
+### Añadido
+- Implementación de eleccion de personaje al azar al inicio de la partida mediante el uso de un sprite de prueba junto al sprite de Akame.
+- Implementación de clase Jugador y uso de herencia para administrar las funciones basicas compartidas y las propias de cada hija como sus sprites
+
 ## [2.1.2] - 2025-07-23
 ### Añadido
 - Implementación del personaje en el mapa y ahora puede moverse por el mapa. Además, la camara lo sigue.
