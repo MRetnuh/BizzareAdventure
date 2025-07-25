@@ -12,7 +12,7 @@ private Stage stage;
 private float volumen = 0.5f;
 
 public Musica(String nombreMusica) {
-	this.nombreMusica = nombreMusica;
+    this.nombreMusica = nombreMusica;
 }
 
 @Override
@@ -28,59 +28,59 @@ public void show() {
 }
 
 public void detenerMusica() {
-	musicaFondo.stop();
+    musicaFondo.stop();
 }
 
 public void subirVolumen() {
-	volumen = Math.min(1f, volumen + 0.1f);
+    volumen = Math.min(1f, volumen + 0.1f);
     musicaFondo.setVolume(volumen);
 }
 
 public void bajarVolumen() {
-	volumen = Math.max(0f, volumen - 0.1f);
+    volumen = Math.max(0f, volumen - 0.1f);
     musicaFondo.setVolume(volumen);
 }
 
 public void silenciar() {
-	  musicaFondo.setVolume(0f);
+      musicaFondo.setVolume(0f);
 }
 
 @Override
 public void render(float delta) {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+
 }
 
 @Override
 public void resize(int width, int height) {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+
 }
 
 @Override
 public void pause() {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+
 }
 
 @Override
 public void resume() {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+
 }
 
 @Override
 public void hide() {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+
 }
 
 @Override
 public void dispose() {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 }
 
 public float getVolumen() {
-	return this.volumen;
+    return this.volumen;
 }
 }
