@@ -1,3 +1,7 @@
+## [2.2.4] - 2025-07-25
+### Añadido
+- Modificacion del mapa base
+
 ## [2.2.3] - 2025-07-24
 ### Añadido
 - Implementacion de colisiones basicas en el archivo .tmx
