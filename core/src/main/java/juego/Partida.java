@@ -29,6 +29,7 @@ import personajes.Personaje;
 
 public class Partida implements Screen {
 	final int puto = 1;
+	final int dasdsd = 34;
 	private Stage stage;
 	private final Jugador jugador = new Jugador();
     private final Principal game;
