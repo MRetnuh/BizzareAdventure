@@ -13,35 +13,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+
+import audios.Musica;
+
 import com.badlogic.gdx.audio.Music;
 
 import io.github.some.Principal;
 
 public class Menu implements Screen {
-    private final Principal game;
+    private Musica musicaMenu = new Musica("primeraisla");
+    private final Principal GAME;
     private Stage stage;
     private Skin skin;
-    private Music musicaFondo;
-    private float volumen = 0.5f;
-
+    
     // Fondo
     private Texture fondoTexture;
     private Image fondoImage;
 
     public Menu(Principal game) {
-        this.game = game;
+        this.GAME = game;
     }
 
     @Override
     public void show() {
+    	musicaMenu.show();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-
-        // Música de fondo
-        musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/primeraisla.mp3"));
-        musicaFondo.setLooping(true);
-        musicaFondo.setVolume(volumen);
-        musicaFondo.play();
 
         // Cargar fondo
         fondoTexture = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
@@ -62,8 +59,8 @@ public class Menu implements Screen {
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                musicaFondo.stop(); // Detener música al entrar al juego
-                game.setScreen(new Partida(game, musicaFondo, volumen));
+            	musicaMenu.detenerMusica();
+                GAME.setScreen(new Partida(GAME));
             }
         });
 
@@ -86,18 +83,15 @@ public class Menu implements Screen {
 
     @Override
     public void render(float delta) {
-        // Controles de volumen
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
-            volumen = Math.min(1f, volumen + 0.1f);
-            musicaFondo.setVolume(volumen);
+       if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
+             musicaMenu.subirVolumen();
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
-            volumen = Math.max(0f, volumen - 0.1f);
-            musicaFondo.setVolume(volumen);
+            musicaMenu.bajarVolumen();
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
-            musicaFondo.setVolume(0f);
-        }
+            musicaMenu.silenciar();
+        } 
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -115,7 +109,7 @@ public class Menu implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        musicaFondo.dispose();
+       // musicaFondo.dispose();
         fondoTexture.dispose();
     }
 }

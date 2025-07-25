@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
+import audios.Musica;
 import io.github.some.Principal;
 import jugadores.Jugador;
 import personajes.Akame;
@@ -28,8 +29,7 @@ import personajes.Personaje;
 
 
 public class Partida implements Screen {
-	final int puto = 1;
-	final int dasdsd = 34;
+	private Musica musicaPartida = new Musica("Balatro");
 	private Stage stage;
 	private final Jugador jugador = new Jugador();
     private final Principal game;
@@ -40,21 +40,16 @@ public class Partida implements Screen {
     private SpriteBatch batch;
 
     private Personaje personajeElegido;
-    
-    private Music musicaFondo;
-    private float volumen;
 
 
-    public Partida(Principal game, Music musicaFondo, float volumen) {
-        this.game = game;
-        this.musicaFondo = musicaFondo;
-        this.volumen = volumen;
-        musicaFondo.setVolume(volumen); // asegurar que esté en el volumen actual
+    public Partida(Principal game) {
+        this.game = game; // asegurar que esté en el volumen actual
 
     }
 
     @Override
     public void show() {
+    	musicaPartida.show();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
@@ -97,29 +92,21 @@ public class Partida implements Screen {
         // Agregar contenedor al escenario
         stage.addActor(contenedor);
 
-        // Música de fondo
-        musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/Balatro.mp3"));
-        musicaFondo.setLooping(true);
-        musicaFondo.setVolume(volumen);
-        musicaFondo.play();
     }
 
 
 
     @Override
     public void render(float delta) {
-    	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
-        	volumen = Math.min(1f, volumen + 0.1f);
-        	musicaFondo.setVolume(volumen);
+    	 if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
+    		 musicaPartida.subirVolumen();
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
-        	volumen = Math.max(0f, volumen - 0.1f);
-        	musicaFondo.setVolume(volumen);
+        	musicaPartida.bajarVolumen();
         }
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
-            musicaFondo.setVolume(0f);
-        }
-
+        	musicaPartida.silenciar();
+        } 
         // Limpiar pantalla
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
