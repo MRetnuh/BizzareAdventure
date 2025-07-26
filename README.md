@@ -10,7 +10,7 @@ aquí](https://github.com/MRetnuh/ProyectoFinalVideojuego6thYear/wiki)
 
 - Tecnologías Utilizadas: LibGDX y para la plataforma Escritorio.
 
-- Estado Actual del Proyecto: Progresando en el mapa. Desarrollando colisiones y mejoras en el diseño del mapa. Ademas, diseñando mas personajes. 
+- Estado Actual del Proyecto: Progresando en el mapa mediante el desarrollo colisiones y mejoras en el diseño del mapa. Ademas, diseñando mas personajes. Interfaz de menu inicial casi terminada.
 
 # Pasos de Instalación e importación del Proyecto:
 - Paso 1: Descargar del GitHub el zip del proyecto entero
