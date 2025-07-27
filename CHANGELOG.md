@@ -1,3 +1,7 @@
+## [3.0] - 2025-07-27
+### Añadido
+- Implementacion de gravedad
+
 ## [2.2.4] - 2025-07-25
 ### Añadido
 - Modificacion del mapa base y de las colisiones del mapa
