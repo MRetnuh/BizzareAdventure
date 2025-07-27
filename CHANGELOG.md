@@ -1,6 +1,7 @@
 ## [3.0] - 2025-07-27
 ### Añadido
 - Implementacion de gravedad
+- Implementacion de limites en el mapa. El jugador y la camara chocan con los limites, de modo que no pueden seguir avanzando
 
 ## [2.2.4] - 2025-07-25
 ### Añadido
