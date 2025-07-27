@@ -2,6 +2,7 @@
 ### Añadido
 - Implementacion de gravedad
 - Implementacion de limites en el mapa. El jugador y la camara chocan con los limites, de modo que no pueden seguir avanzando
+- Implementacion de la posibilidad de que el jugador muera. En caso de caer al vacio, el personaje muere, aparece un cartel de derrota y tras unos segundos, el codigo termina
 
 ## [2.2.4] - 2025-07-25
 ### Añadido
