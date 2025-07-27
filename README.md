@@ -2,7 +2,7 @@
 [Ver la Propuesta Completa del Proyecto
 aquí](https://github.com/MRetnuh/ProyectoFinalVideojuego6thYear/wiki)
 
-### Nombre del Proyecto: Videojuego inspirado en Bro Force (todavia no tenemos un nombre para el videojuego).
+### Nombre del Proyecto: Bizzare Adventure (inspirado en Bro Force).
 
 - Integrantes: Kevin de Groote, Eynar Mejia, y Eduardo Orsi.
 
@@ -10,9 +10,7 @@ aquí](https://github.com/MRetnuh/ProyectoFinalVideojuego6thYear/wiki)
 
 - Tecnologías Utilizadas: LibGDX y para la plataforma Escritorio.
 
-- Pasos para la compilacion/ejecucion: En caso de querer ejecutar este proyecto, tenes que
-
-- Estado Actual del Proyecto: Configuración inicial y estructura del proyecto
+- Estado Actual del Proyecto: Progresando en el mapa mediante el desarrollo colisiones y mejoras en su diseño. Ademas, diseñando mas personajes. Interfaz de menu inicial casi terminada. Por ultimo, mejorando los movimientos de los personajes en el mapa.
 
 # Pasos de Instalación e importación del Proyecto:
 - Paso 1: Descargar del GitHub el zip del proyecto entero

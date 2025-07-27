@@ -1,7 +1,7 @@
 ## [2.2.4] - 2025-07-25
 ### Añadido
-- Modificacion del mapa base
-. Modificacion de colisiones del mapa
+- Modificacion del mapa base y de las colisiones del mapa
+- Reestructuramiento de la musica. Creacion de clase Musica
 
 ## [2.2.3] - 2025-07-24
 ### Añadido
