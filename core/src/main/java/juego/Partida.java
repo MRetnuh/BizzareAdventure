@@ -41,7 +41,9 @@ public class Partida implements Screen {
 
     private Personaje personajeElegido;
 
-
+    int mapWidthInPixels; 
+    int mapHeightInPixels;
+    
     public Partida(Principal game) {
         this.game = game; // asegurar que esté en el volumen actual
 
@@ -49,6 +51,7 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
+    	
     	musicaPartida.show();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -56,7 +59,9 @@ public class Partida implements Screen {
         // Cargar mapa
         map = new TmxMapLoader().load("mapacorregido.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
-       
+        mapWidthInPixels = map.getProperties().get("width", Integer.class) * map.getProperties().get("tilewidth", Integer.class);
+        mapHeightInPixels = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
+        
         // Configurar cámara
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -113,7 +118,8 @@ public class Partida implements Screen {
 
         // Actualizar movimiento
         personajeElegido.mover(delta);
-        personajeElegido.actualizarCamara(camera);
+        personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
+
         //Gravedad
         boolean estaSobreElSuelo = false;
         Rectangle hitboxPersonaje = personajeElegido.getHitbox();
@@ -148,12 +154,15 @@ public class Partida implements Screen {
 
         // Aplicar movimiento
         if (!colision) {
-            personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta);
+        	personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta, mapWidthInPixels, mapHeightInPixels);
+
         } else {
-            personajeElegido.aplicarMovimiento(personajeElegido.getX(), personajeElegido.getY(), delta);
+        	personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta, mapWidthInPixels, mapHeightInPixels);
+
         }
 
-        personajeElegido.actualizarCamara(camera);
+        personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
+
 
 
         // Dibujar mapa

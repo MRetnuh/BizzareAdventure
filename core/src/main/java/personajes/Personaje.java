@@ -56,6 +56,12 @@ public abstract class Personaje {
         }
     }
 
+
+    public void retroceder() {
+        x = prevX;
+        y = prevY;
+    }
+    
     public void dibujar(SpriteBatch batch) {
         TextureRegion frameActual = estaMoviendose
             ? (mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo) : animIzquierda.getKeyFrame(estadoTiempo))
@@ -63,10 +69,52 @@ public abstract class Personaje {
 
         batch.draw(frameActual, x, y);
     }
+ 
+    public void actualizarGravedad(float delta, boolean estaEnElSuelo) {
+        if (!estaEnElSuelo) {
+            velocidadCaida += GRAVEDAD * delta;
+            y += velocidadCaida * delta;
+        } else {
+            velocidadCaida = 0;
+        }
+    }
+    
+    public void actualizarCamara(OrthographicCamera camara, int mapWidth, int mapHeight) {
+        float camX = x + 16;
+        float camY = y + 16;
 
-    public void actualizarCamara(OrthographicCamera camara) {
-        camara.position.set(x + 16, y + 16, 0);
+        float halfWidth = camara.viewportWidth / 2f;
+        float halfHeight = camara.viewportHeight / 2f;
+
+        camX = Math.max(halfWidth, camX);
+        camX = Math.min(mapWidth - halfWidth, camX);
+
+        camY = Math.max(halfHeight, camY);
+        camY = Math.min(mapHeight - halfHeight, camY);
+
+        camara.position.set(camX, camY, 0);
         camara.update();
+    }
+
+    public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
+        estadoTiempo += delta;
+        estaMoviendose = nuevoX != x || nuevoY != y;
+        mirandoDerecha = nuevoX > x || (nuevoX == x && mirandoDerecha);
+
+        // Limitar al borde del mapa
+        float anchoSprite = 63;
+        float altoSprite = 64;
+
+        nuevoX = Math.max(0, Math.min(nuevoX, mapWidth - anchoSprite));
+        nuevoY = Math.max(0, Math.min(nuevoY, mapHeight - altoSprite));
+
+        x = nuevoX;
+        y = nuevoY;
+    }
+
+    public void guardarPosicionAnterior() {
+        prevX = x;
+        prevY = y;
     }
     
     public String getNombre() {
@@ -79,15 +127,7 @@ public abstract class Personaje {
     public Rectangle getHitbox() {
         return new Rectangle(x, y, 16, 16); // O ajustalo según el tamaño de sprite real
     }
-    public void guardarPosicionAnterior() {
-        prevX = x;
-        prevY = y;
-    }
-
-    public void retroceder() {
-        x = prevX;
-        y = prevY;
-    }
+    
     public float getNuevaX(float delta) {
         float tempX = x;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) tempX += velocidad * delta;
@@ -101,13 +141,7 @@ public abstract class Personaje {
         if (Gdx.input.isKeyPressed(Input.Keys.S)) tempY -= velocidad * delta;
         return tempY;
     }
-    public void aplicarMovimiento(float nuevoX, float nuevoY, float delta) {
-        estadoTiempo += delta;
-        estaMoviendose = nuevoX != x || nuevoY != y;
-        mirandoDerecha = nuevoX > x || (nuevoX == x && mirandoDerecha);
-        x = nuevoX;
-        y = nuevoY;
-    }
+
     public float getX() {
         return x;
     }
@@ -116,12 +150,4 @@ public abstract class Personaje {
         return y;
     }
 
-    public void actualizarGravedad(float delta, boolean estaEnElSuelo) {
-        if (!estaEnElSuelo) {
-            velocidadCaida += GRAVEDAD * delta;
-            y += velocidadCaida * delta;
-        } else {
-            velocidadCaida = 0;
-        }
-    }
 }
