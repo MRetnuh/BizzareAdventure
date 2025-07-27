@@ -16,6 +16,8 @@ public abstract class Personaje {
     protected float x, y;
     protected float prevX, prevY;
     protected float estadoTiempo = 0f;
+    protected float velocidadCaida = 0;
+    protected final float GRAVEDAD = -500;
     protected boolean mirandoDerecha = true;
     protected boolean estaMoviendose = false;
     protected Animation<TextureRegion> animDerecha;
@@ -26,12 +28,12 @@ public abstract class Personaje {
     public Personaje(String nombre, int velocidad) {
         this.nombre = nombre;
         this.velocidad = velocidad;
+        
         cargarTexturas(); // ← Cada subclase implementa esto
         x = 1050;
         y = 930;
     }
 
-    // 👇 Método abstracto que cada hijo implementa
     protected abstract void cargarTexturas();
 
     public void mover(float delta) {
@@ -114,4 +116,12 @@ public abstract class Personaje {
         return y;
     }
 
+    public void actualizarGravedad(float delta, boolean estaEnElSuelo) {
+        if (!estaEnElSuelo) {
+            velocidadCaida += GRAVEDAD * delta;
+            y += velocidadCaida * delta;
+        } else {
+            velocidadCaida = 0;
+        }
+    }
 }

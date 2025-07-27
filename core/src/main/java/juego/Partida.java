@@ -114,6 +114,22 @@ public class Partida implements Screen {
         // Actualizar movimiento
         personajeElegido.mover(delta);
         personajeElegido.actualizarCamara(camera);
+        //Gravedad
+        boolean estaSobreElSuelo = false;
+        Rectangle hitboxPersonaje = personajeElegido.getHitbox();
+        hitboxPersonaje.setY(hitboxPersonaje.getY() - 1); // bajamos la hitbox 1 pixel
+
+        for (MapObject object : map.getLayers().get("colisiones").getObjects()) {
+            if (object instanceof RectangleMapObject) {
+                Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
+                if (hitboxPersonaje.overlaps(rectMapa)) {
+                    estaSobreElSuelo = true;
+                    break;
+                }
+            }
+        }
+        
+        personajeElegido.actualizarGravedad(delta, estaSobreElSuelo);
      // Movimiento con detección de colisiones
         float nuevaX = personajeElegido.getNuevaX(delta);
         float nuevaY = personajeElegido.getNuevaY(delta);
