@@ -1,6 +1,7 @@
 ## [3.2.5] - 2025-07-28
 ### Modificado
 - Modificacion del cartel de GameOver, siendo ahora mas atractivo
+- Modificacion en los labels (textos). Ahora son mas atractivos, tienen mejor nitidez/calidad y son pixel art. 
 
 ## [3.2.4] - 2025-07-27
 ### Añadido
