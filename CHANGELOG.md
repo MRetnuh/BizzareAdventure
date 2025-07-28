@@ -1,3 +1,7 @@
+## [3.2.5] - 2025-07-28
+### Modificado
+- Modificacion del cartel de GameOver, siendo ahora mas atractivo
+
 ## [3.2.4] - 2025-07-27
 ### Añadido
 - Implementacion de gravedad
