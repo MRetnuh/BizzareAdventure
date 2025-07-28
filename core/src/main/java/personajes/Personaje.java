@@ -23,7 +23,6 @@ public abstract class Personaje {
 	    private Stage stage;
 	    private Musica musicaDerrota = new Musica("derrota");
 	    private boolean estaMuerto = false;
-
 	    
 	    protected float x, y;
 	    protected float prevX, prevY;
@@ -68,7 +67,7 @@ public abstract class Personaje {
         }
     }
 
-    public void morir() {
+    private void morir() {
         if (estaMuerto) return;
 
         this.vida = 0;
