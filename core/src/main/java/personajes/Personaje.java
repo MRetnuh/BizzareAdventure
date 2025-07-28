@@ -3,27 +3,39 @@ package personajes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Timer;
+
+import audios.Musica;
 
 public abstract class Personaje {
-    private float velocidad;
-    private String nombre;
-    private int vida = 1;
-    
-    protected float x, y;
-    protected float prevX, prevY;
-    protected float estadoTiempo = 0f;
-    protected float velocidadCaida = 0;
-    protected final float GRAVEDAD = -500;
-    protected boolean mirandoDerecha = true;
-    protected boolean estaMoviendose = false;
-    protected Animation<TextureRegion> animDerecha;
-    protected Animation<TextureRegion> animIzquierda;
-    protected TextureRegion quietaDerecha;
-    protected TextureRegion quietaIzquierda;
+	    private float velocidad;
+	    private String nombre;
+	    private int vida = 1;
+	    private Texture textureDerrota;
+	    private Image imageDerrota;
+	    private Stage stage;
+	    private Musica musicaDerrota = new Musica("derrota");
+	    private boolean estaMuerto = false;
+
+	    
+	    protected float x, y;
+	    protected float prevX, prevY;
+	    protected float estadoTiempo = 0f;
+	    protected float velocidadCaida = 0;
+	    protected final float GRAVEDAD = -500;
+	    protected boolean mirandoDerecha = true;
+	    protected boolean estaMoviendose = false;
+	    protected Animation<TextureRegion> animDerecha;
+	    protected Animation<TextureRegion> animIzquierda;
+	    protected TextureRegion quietaDerecha;
+	    protected TextureRegion quietaIzquierda;
 
     public Personaje(String nombre, int velocidad) {
         this.nombre = nombre;
@@ -56,7 +68,27 @@ public abstract class Personaje {
         }
     }
 
+    public void morir() {
+        if (estaMuerto) return;
 
+        this.vida = 0;
+        estaMuerto = true;
+
+        musicaDerrota.show();
+        textureDerrota = new Texture(Gdx.files.internal("imagenes/fondos/derrota.jpg"));
+        imageDerrota = new Image(textureDerrota);
+        imageDerrota.setFillParent(true);
+        stage.addActor(imageDerrota);
+
+        // Después de 10 segundos, salir
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                Gdx.app.exit();
+            }
+        }, 8); // segundos
+    }
+    
     public void retroceder() {
         x = prevX;
         y = prevY;
@@ -70,14 +102,20 @@ public abstract class Personaje {
         batch.draw(frameActual, x, y);
     }
  
-    public void actualizarGravedad(float delta, boolean estaEnElSuelo) {
+    public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
             velocidadCaida += GRAVEDAD * delta;
             y += velocidadCaida * delta;
         } else {
             velocidadCaida = 0;
         }
+
+        // Si cae debajo del mapa, muere
+        if (y < -190) {
+            morir();
+        }
     }
+
     
     public void actualizarCamara(OrthographicCamera camara, int mapWidth, int mapHeight) {
         float camX = x + 16;
@@ -101,12 +139,14 @@ public abstract class Personaje {
         estaMoviendose = nuevoX != x || nuevoY != y;
         mirandoDerecha = nuevoX > x || (nuevoX == x && mirandoDerecha);
 
-        // Limitar al borde del mapa
         float anchoSprite = 63;
         float altoSprite = 64;
 
+        // Limitar horizontalmente
         nuevoX = Math.max(0, Math.min(nuevoX, mapWidth - anchoSprite));
-        nuevoY = Math.max(0, Math.min(nuevoY, mapHeight - altoSprite));
+
+        // Limitar solo hacia arriba, pero permitir que caiga por debajo del mapa
+        nuevoY = Math.min(nuevoY, mapHeight - altoSprite);
 
         x = nuevoX;
         y = nuevoY;
@@ -150,4 +190,7 @@ public abstract class Personaje {
         return y;
     }
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 }

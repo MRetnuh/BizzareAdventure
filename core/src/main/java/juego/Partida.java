@@ -70,6 +70,7 @@ public class Partida implements Screen {
         batch = new SpriteBatch();
         jugador.generarPersonajeAleatorio();
         personajeElegido = jugador.getPersonajeElegido();
+        personajeElegido.setStage(stage);
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -117,9 +118,13 @@ public class Partida implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Actualizar movimiento
+        if(personajeElegido.getVida() != 0) {
         personajeElegido.mover(delta);
         personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
-
+        }
+        else {
+        	musicaPartida.detenerMusica();
+        }
         //Gravedad
         boolean estaSobreElSuelo = false;
         Rectangle hitboxPersonaje = personajeElegido.getHitbox();
@@ -135,7 +140,7 @@ public class Partida implements Screen {
             }
         }
         
-        personajeElegido.actualizarGravedad(delta, estaSobreElSuelo);
+        personajeElegido.actualizarGravedad(delta, estaSobreElSuelo, mapHeightInPixels);
      // Movimiento con detección de colisiones
         float nuevaX = personajeElegido.getNuevaX(delta);
         float nuevaY = personajeElegido.getNuevaY(delta);
