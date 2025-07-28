@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -36,30 +38,47 @@ public class Menu implements Screen {
 
     @Override
     public void show() {
-    	musicaMenu.show();
+        musicaMenu.show();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-        // Cargar fondo
+        // Fondo
         fondoTexture = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
         fondoImage = new Image(fondoTexture);
-        fondoImage.setFillParent(true); // Ocupa toda la pantalla
-        stage.addActor(fondoImage); // Agregado primero (fondo)
+        fondoImage.setFillParent(true);
+        stage.addActor(fondoImage);
 
-        // UI
         skin = new Skin(Gdx.files.internal("uiskin.json"));
+        // ===== Crear fuente desde archivo TTF =====
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuentes/fuentePixel.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48; // Cambiá el tamaño según tu necesidad
+        parameter.magFilter = Texture.TextureFilter.Linear;
+        parameter.minFilter = Texture.TextureFilter.Linear;
+        BitmapFont fuente = generator.generateFont(parameter);
+        generator.dispose(); // Liberar recursos
 
-        Label title = new Label("Mi Juego", skin);
-        title.setFontScale(2);
+        // Crear estilo de Label y Button
+        Label.LabelStyle estiloLabel = new Label.LabelStyle();
+        estiloLabel.font = fuente;
+
+        TextButton.TextButtonStyle estiloBoton = new TextButton.TextButtonStyle();
+        estiloBoton.up = skin.getDrawable("default-round"); // Usa el drawable del skin
+        estiloBoton.down = skin.getDrawable("default-round-down");
+        estiloBoton.font = fuente;
+
+        // ===== Crear UI con la fuente buena =====
+        Label title = new Label("Akame Bizzare Adventure", estiloLabel);
+        title.setFontScale(1); // Si usás una fuente TTF grande, no hace falta escalar
         title.setAlignment(Align.center);
 
-        TextButton jugarBtn = new TextButton("Jugar", skin);
-        TextButton salirBtn = new TextButton("Salir", skin);
+        TextButton jugarBtn = new TextButton("Jugar", estiloBoton);
+        TextButton salirBtn = new TextButton("Salir", estiloBoton);
 
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	musicaMenu.detenerMusica();
+                musicaMenu.detenerMusica();
                 GAME.setScreen(new Partida(GAME));
             }
         });
@@ -71,6 +90,7 @@ public class Menu implements Screen {
             }
         });
 
+        // Tabla
         Table table = new Table();
         table.setFillParent(true);
         table.center();
@@ -78,7 +98,7 @@ public class Menu implements Screen {
         table.add(jugarBtn).size(200, 50).padBottom(20).row();
         table.add(salirBtn).size(200, 50);
 
-        stage.addActor(table); // Agregado después (encima del fondo)
+        stage.addActor(table);
     }
 
     @Override
