@@ -2,13 +2,17 @@ package personajes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Timer;
 
@@ -74,20 +78,52 @@ public abstract class Personaje {
         estaMuerto = true;
 
         musicaDerrota.show();
-        textureDerrota = new Texture(Gdx.files.internal("imagenes/fondos/derrota.jpg"));
+
+        // FONDO NEGRO
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.BLACK);
+        pixmap.fill();
+        Texture blackTexture = new Texture(pixmap);
+        pixmap.dispose();
+
+        Image fondoNegro = new Image(blackTexture);
+        fondoNegro.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        fondoNegro.getColor().a = 0; // transparente al inicio
+        stage.addActor(fondoNegro);
+
+        fondoNegro.addAction(Actions.fadeIn(0.5f)); // oscurecer pantalla en 0.5s
+
+        // CARTEL DE DERROTA
+        textureDerrota = new Texture(Gdx.files.internal("imagenes/fondos/GameOver.png"));
         imageDerrota = new Image(textureDerrota);
-        imageDerrota.setFillParent(true);
+        imageDerrota.setSize(200, 50); // escala inicial pequeña
+        imageDerrota.setOrigin(imageDerrota.getWidth() / 2f, imageDerrota.getHeight() / 2f);
+        imageDerrota.setPosition(
+            (Gdx.graphics.getWidth() - imageDerrota.getWidth()) / 2f,
+            (Gdx.graphics.getHeight() - imageDerrota.getHeight()) / 2f
+        );
+        imageDerrota.setScale(0.1f); // muy chico al principio
+        imageDerrota.getColor().a = 0; // invisible al principio
+
         stage.addActor(imageDerrota);
 
-        // Después de 10 segundos, salir
+        imageDerrota.addAction(Actions.sequence(
+            Actions.delay(0.3f),
+            Actions.parallel(
+                Actions.fadeIn(0.5f),
+                Actions.scaleTo(2.5f, 2.5f, 2f, Interpolation.pow2Out)
+            )
+        ));
+
+        // Salir después de 8 segundos
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 Gdx.app.exit();
             }
-        }, 8); // segundos
+        }, 8);
     }
-    
+
     public void retroceder() {
         x = prevX;
         y = prevY;

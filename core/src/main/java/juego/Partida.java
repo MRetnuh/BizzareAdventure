@@ -121,10 +121,7 @@ public class Partida implements Screen {
         if(personajeElegido.getVida() != 0) {
         personajeElegido.mover(delta);
         personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
-        }
-        else {
-        	musicaPartida.detenerMusica();
-        }
+        
         //Gravedad
         boolean estaSobreElSuelo = false;
         Rectangle hitboxPersonaje = personajeElegido.getHitbox();
@@ -167,7 +164,10 @@ public class Partida implements Screen {
         }
 
         personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
-
+        }
+        else {
+        	musicaPartida.detenerMusica();
+        }
 
 
         // Dibujar mapa
