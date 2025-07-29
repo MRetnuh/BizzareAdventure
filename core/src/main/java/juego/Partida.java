@@ -3,6 +3,7 @@ package juego;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import audios.Musica;
+import estilos.EstiloTexto;
 import io.github.some.Principal;
 import jugadores.Jugador;
 import personajes.Akame;
@@ -75,12 +77,10 @@ public class Partida implements Screen {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         // Crear labels
-        Label nombrePersonaje = new Label("Nombre: " + personajeElegido.getNombre(), skin);
-        nombrePersonaje.setFontScale(2);
+        Label nombrePersonaje = new Label("Nombre: " + personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         nombrePersonaje.setAlignment(Align.left);
-
-        Label vidaPersonaje = new Label("Vida: " + personajeElegido.getVida(), skin);
-        vidaPersonaje.setFontScale(2);
+        
+        Label vidaPersonaje = new Label("Vida: " + personajeElegido.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         vidaPersonaje.setAlignment(Align.left);
 
         // Crear tabla con labels

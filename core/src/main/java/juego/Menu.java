@@ -2,6 +2,7 @@ package juego;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
 import audios.Musica;
+import estilos.EstiloTexto;
 
 import com.badlogic.gdx.audio.Music;
 
@@ -28,7 +30,6 @@ public class Menu implements Screen {
     private Stage stage;
     private Skin skin;
     
-    // Fondo
     private Texture fondoTexture;
     private Image fondoImage;
 
@@ -49,31 +50,14 @@ public class Menu implements Screen {
         stage.addActor(fondoImage);
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        // ===== Crear fuente desde archivo TTF =====
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuentes/fuentePixel.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48; // Cambiá el tamaño según tu necesidad
-        parameter.magFilter = Texture.TextureFilter.Linear;
-        parameter.minFilter = Texture.TextureFilter.Linear;
-        BitmapFont fuente = generator.generateFont(parameter);
-        generator.dispose(); // Liberar recursos
-
-        // Crear estilo de Label y Button
-        Label.LabelStyle estiloLabel = new Label.LabelStyle();
-        estiloLabel.font = fuente;
-
-        TextButton.TextButtonStyle estiloBoton = new TextButton.TextButtonStyle();
-        estiloBoton.up = skin.getDrawable("default-round"); // Usa el drawable del skin
-        estiloBoton.down = skin.getDrawable("default-round-down");
-        estiloBoton.font = fuente;
+  
 
         // ===== Crear UI con la fuente buena =====
-        Label title = new Label("Akame Bizzare Adventure", estiloLabel);
-        title.setFontScale(1); // Si usás una fuente TTF grande, no hace falta escalar
+        Label title = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(48, Color.PURPLE));
         title.setAlignment(Align.center);
 
-        TextButton jugarBtn = new TextButton("Jugar", estiloBoton);
-        TextButton salirBtn = new TextButton("Salir", estiloBoton);
+        TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
 
         jugarBtn.addListener(new ChangeListener() {
             @Override
