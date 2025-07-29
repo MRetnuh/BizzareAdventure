@@ -20,7 +20,6 @@ public void show() {
     stage = new Stage();
     Gdx.input.setInputProcessor(stage);
 
-    // Música de fondo
     musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/"+ nombreMusica + ".mp3"));
     musicaFondo.setLooping(true);
     musicaFondo.setVolume(volumen);
@@ -47,13 +46,11 @@ public void silenciar() {
 
 @Override
 public void render(float delta) {
-    // TODO Auto-generated method stub
 
 }
 
 @Override
 public void resize(int width, int height) {
-    // TODO Auto-generated method stub
 
 }
 
@@ -65,19 +62,16 @@ public void pause() {
 
 @Override
 public void resume() {
-    // TODO Auto-generated method stub
 
 }
 
 @Override
 public void hide() {
-    // TODO Auto-generated method stub
 
 }
 
 @Override
 public void dispose() {
-    // TODO Auto-generated method stub
 }
 
 public float getVolumen() {

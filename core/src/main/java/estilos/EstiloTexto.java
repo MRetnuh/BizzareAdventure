@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class EstiloTexto {
 
-    // Método para generar fuente en tiempo real
+
     private static BitmapFont generarFuente(int tamaño) {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuentes/fuentePixel.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -29,7 +29,7 @@ public class EstiloTexto {
         BitmapFont fuente = generarFuente(tamaño);
         TextButton.TextButtonStyle estilo = new TextButton.TextButtonStyle();
         estilo.fontColor = color;
-        estilo.up = skin.getDrawable("default-round"); // Cambialo si usás otro estilo
+        estilo.up = skin.getDrawable("default-round"); 
         estilo.down = skin.getDrawable("default-round-down");
         estilo.font = fuente;
         return estilo;

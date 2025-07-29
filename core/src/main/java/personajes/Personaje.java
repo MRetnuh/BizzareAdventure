@@ -22,8 +22,8 @@ public abstract class Personaje {
 	    private float velocidad;
 	    private String nombre;
 	    private int vida = 1;
-	    private Texture textureDerrota;
-	    private Image imageDerrota;
+	    private Texture texturaDerrota;
+	    private Image imagenDerrota;
 	    private Stage stage;
 	    private Musica musicaDerrota = new Musica("derrota");
 	    private boolean estaMuerto = false;
@@ -44,9 +44,9 @@ public abstract class Personaje {
         this.nombre = nombre;
         this.velocidad = velocidad;
         
-        cargarTexturas(); // ← Cada subclase implementa esto
-        x = 1050;
-        y = 930;
+        cargarTexturas(); 
+        x = 200;
+        y = 1100;
     }
 
     protected abstract void cargarTexturas();
@@ -79,7 +79,7 @@ public abstract class Personaje {
 
         musicaDerrota.show();
 
-        // FONDO NEGRO
+   
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
@@ -88,26 +88,26 @@ public abstract class Personaje {
 
         Image fondoNegro = new Image(blackTexture);
         fondoNegro.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        fondoNegro.getColor().a = 0; // transparente al inicio
+        fondoNegro.getColor().a = 0;
         stage.addActor(fondoNegro);
 
-        fondoNegro.addAction(Actions.fadeIn(0.5f)); // oscurecer pantalla en 0.5s
+        fondoNegro.addAction(Actions.fadeIn(0.5f)); 
 
-        // CARTEL DE DERROTA
-        textureDerrota = new Texture(Gdx.files.internal("imagenes/fondos/GameOver.png"));
-        imageDerrota = new Image(textureDerrota);
-        imageDerrota.setSize(200, 50); // escala inicial pequeña
-        imageDerrota.setOrigin(imageDerrota.getWidth() / 2f, imageDerrota.getHeight() / 2f);
-        imageDerrota.setPosition(
-            (Gdx.graphics.getWidth() - imageDerrota.getWidth()) / 2f,
-            (Gdx.graphics.getHeight() - imageDerrota.getHeight()) / 2f
+      
+        texturaDerrota = new Texture(Gdx.files.internal("imagenes/fondos/GameOver.png"));
+        imagenDerrota = new Image(texturaDerrota);
+        imagenDerrota.setSize(200, 50); 
+        imagenDerrota.setOrigin(imagenDerrota.getWidth() / 2f, imagenDerrota.getHeight() / 2f);
+        imagenDerrota.setPosition(
+            (Gdx.graphics.getWidth() - imagenDerrota.getWidth()) / 2f,
+            (Gdx.graphics.getHeight() - imagenDerrota.getHeight()) / 2f
         );
-        imageDerrota.setScale(0.1f); // muy chico al principio
-        imageDerrota.getColor().a = 0; // invisible al principio
+        imagenDerrota.setScale(0.1f); 
+        imagenDerrota.getColor().a = 0; 
 
-        stage.addActor(imageDerrota);
+        stage.addActor(imagenDerrota);
 
-        imageDerrota.addAction(Actions.sequence(
+        imagenDerrota.addAction(Actions.sequence(
             Actions.delay(0.3f),
             Actions.parallel(
                 Actions.fadeIn(0.5f),
@@ -115,7 +115,6 @@ public abstract class Personaje {
             )
         ));
 
-        // Salir después de 8 segundos
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -145,7 +144,6 @@ public abstract class Personaje {
             velocidadCaida = 0;
         }
 
-        // Si cae debajo del mapa, muere
         if (y < -190) {
             morir();
         }
@@ -177,10 +175,8 @@ public abstract class Personaje {
         float anchoSprite = 63;
         float altoSprite = 64;
 
-        // Limitar horizontalmente
         nuevoX = Math.max(0, Math.min(nuevoX, mapWidth - anchoSprite));
 
-        // Limitar solo hacia arriba, pero permitir que caiga por debajo del mapa
         nuevoY = Math.min(nuevoY, mapHeight - altoSprite);
 
         x = nuevoX;
@@ -200,7 +196,7 @@ public abstract class Personaje {
     	return this.vida;
     }
     public Rectangle getHitbox() {
-        return new Rectangle(x, y, 16, 16); // O ajustalo según el tamaño de sprite real
+        return new Rectangle(x, y, 16, 16); 
     }
     
     public float getNuevaX(float delta) {

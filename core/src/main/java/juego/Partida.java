@@ -34,20 +34,18 @@ public class Partida implements Screen {
 	private Musica musicaPartida = new Musica("Balatro");
 	private Stage stage;
 	private final Jugador jugador = new Jugador();
-    private final Principal game;
-    private TiledMap map;
+    private final Principal JUEGO;
+    private TiledMap mapa;
     private Skin skin;
     private OrthogonalTiledMapRenderer mapRenderer;
-    private OrthographicCamera camera;
+    private OrthographicCamera camara;
     private SpriteBatch batch;
-
     private Personaje personajeElegido;
-
-    int mapWidthInPixels; 
-    int mapHeightInPixels;
+    int anchoMapa; 
+    int alturaMapa;
     
-    public Partida(Principal game) {
-        this.game = game; // asegurar que esté en el volumen actual
+    public Partida(Principal juego) {
+        this.JUEGO = juego; 
 
     }
 
@@ -58,17 +56,17 @@ public class Partida implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-        // Cargar mapa
-        map = new TmxMapLoader().load("mapacorregido.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(map);
-        mapWidthInPixels = map.getProperties().get("width", Integer.class) * map.getProperties().get("tilewidth", Integer.class);
-        mapHeightInPixels = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
+      
+        mapa = new TmxMapLoader().load("mapacorregido.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(mapa);
+        anchoMapa = mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class);
+        alturaMapa = mapa.getProperties().get("height", Integer.class) * mapa.getProperties().get("tileheight", Integer.class);
         
-        // Configurar cámara
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        camara = new OrthographicCamera();
+        camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Inicializar batch y personaje
+       
         batch = new SpriteBatch();
         jugador.generarPersonajeAleatorio();
         personajeElegido = jugador.getPersonajeElegido();
@@ -76,26 +74,26 @@ public class Partida implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        // Crear labels
+        
         Label nombrePersonaje = new Label("Nombre: " + personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         nombrePersonaje.setAlignment(Align.left);
         
         Label vidaPersonaje = new Label("Vida: " + personajeElegido.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         vidaPersonaje.setAlignment(Align.left);
 
-        // Crear tabla con labels
+        
         Table table = new Table();
         table.left().top();
         table.add(nombrePersonaje).size(350, 50).padBottom(10).row();
         table.add(vidaPersonaje).size(350, 50);
 
-        // Contenedor que envuelve la tabla
+        
         Container<Table> contenedor = new Container<>(table);
-        contenedor.setSize(400, 130); // Ajustá el tamaño como prefieras
+        contenedor.setSize(400, 130);
         contenedor.setBackground(skin.getDrawable("default-round"));
-        contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight()); // esquina superior izquierda
+        contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight()); 
 
-        // Agregar contenedor al escenario
+        
         stage.addActor(contenedor);
 
     }
@@ -113,21 +111,21 @@ public class Partida implements Screen {
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
         	musicaPartida.silenciar();
         } 
-        // Limpiar pantalla
+      
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Actualizar movimiento
+       
         if(personajeElegido.getVida() != 0) {
         personajeElegido.mover(delta);
-        personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
+        personajeElegido.actualizarCamara(camara, anchoMapa, alturaMapa);
         
-        //Gravedad
+        
         boolean estaSobreElSuelo = false;
         Rectangle hitboxPersonaje = personajeElegido.getHitbox();
-        hitboxPersonaje.setY(hitboxPersonaje.getY() - 1); // bajamos la hitbox 1 pixel
+        hitboxPersonaje.setY(hitboxPersonaje.getY() - 1); 
 
-        for (MapObject object : map.getLayers().get("colisiones").getObjects()) {
+        for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
             if (object instanceof RectangleMapObject) {
                 Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
                 if (hitboxPersonaje.overlaps(rectMapa)) {
@@ -137,14 +135,13 @@ public class Partida implements Screen {
             }
         }
         
-        personajeElegido.actualizarGravedad(delta, estaSobreElSuelo, mapHeightInPixels);
-     // Movimiento con detección de colisiones
+        personajeElegido.actualizarGravedad(delta, estaSobreElSuelo, alturaMapa);
         float nuevaX = personajeElegido.getNuevaX(delta);
         float nuevaY = personajeElegido.getNuevaY(delta);
-        Rectangle hitboxTentativa = new Rectangle(nuevaX, nuevaY, 63, 64); // Ajustá tamaño si hace falta
+        Rectangle hitboxTentativa = new Rectangle(nuevaX, nuevaY, 63, 64); 
 
         boolean colision = false;
-        for (MapObject object : map.getLayers().get("colisiones").getObjects()) {
+        for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
             if (object instanceof RectangleMapObject) {
                 Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
                 if (hitboxTentativa.overlaps(rectMapa)) {
@@ -154,30 +151,30 @@ public class Partida implements Screen {
             }
         }
 
-        // Aplicar movimiento
+     
         if (!colision) {
-        	personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta, mapWidthInPixels, mapHeightInPixels);
+        	personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta, anchoMapa, alturaMapa);
 
         } else {
-        	personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta, mapWidthInPixels, mapHeightInPixels);
+        	personajeElegido.aplicarMovimiento(nuevaX, nuevaY, delta, anchoMapa, alturaMapa);
 
         }
 
-        personajeElegido.actualizarCamara(camera, mapWidthInPixels, mapHeightInPixels);
+        personajeElegido.actualizarCamara(camara, anchoMapa, alturaMapa);
         }
         else {
         	musicaPartida.detenerMusica();
         }
 
 
-        // Dibujar mapa
-        mapRenderer.setView(camera);
+        
+        mapRenderer.setView(camara);
         mapRenderer.render();
 
-        // Dibujar personaje + imagen de prueba
-        batch.setProjectionMatrix(camera.combined);
+        
+        batch.setProjectionMatrix(camara.combined);
         batch.begin();
-        personajeElegido.dibujar(batch);     // Dibuja el personaje normalmente
+        personajeElegido.dibujar(batch);     
         batch.end();
         stage.act(delta);
         stage.draw();
@@ -190,7 +187,7 @@ public class Partida implements Screen {
 
     @Override
     public void dispose() {
-        map.dispose();
+    	mapa.dispose();
         mapRenderer.dispose();
         batch.dispose();
     }

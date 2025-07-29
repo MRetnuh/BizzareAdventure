@@ -5,8 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,21 +18,19 @@ import com.badlogic.gdx.utils.Align;
 import audios.Musica;
 import estilos.EstiloTexto;
 
-import com.badlogic.gdx.audio.Music;
 
 import io.github.some.Principal;
 
 public class Menu implements Screen {
     private Musica musicaMenu = new Musica("primeraisla");
-    private final Principal GAME;
+    private final Principal JUEGO;
     private Stage stage;
     private Skin skin;
-    
-    private Texture fondoTexture;
-    private Image fondoImage;
+    private Texture fondoTextura;
+    private Image fondoImagen;
 
-    public Menu(Principal game) {
-        this.GAME = game;
+    public Menu(Principal juego) {
+        this.JUEGO = juego;
     }
 
     @Override
@@ -43,16 +39,16 @@ public class Menu implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-        // Fondo
-        fondoTexture = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
-        fondoImage = new Image(fondoTexture);
-        fondoImage.setFillParent(true);
-        stage.addActor(fondoImage);
+    
+        fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
+        fondoImagen = new Image(fondoTextura);
+        fondoImagen.setFillParent(true);
+        stage.addActor(fondoImagen);
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
   
 
-        // ===== Crear UI con la fuente buena =====
+        
         Label title = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(48, Color.PURPLE));
         title.setAlignment(Align.center);
 
@@ -63,7 +59,7 @@ public class Menu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 musicaMenu.detenerMusica();
-                GAME.setScreen(new Partida(GAME));
+                JUEGO.setScreen(new Partida(JUEGO));
             }
         });
 
@@ -74,7 +70,7 @@ public class Menu implements Screen {
             }
         });
 
-        // Tabla
+      
         Table table = new Table();
         table.setFillParent(true);
         table.center();
@@ -113,7 +109,6 @@ public class Menu implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-       // musicaFondo.dispose();
-        fondoTexture.dispose();
+        fondoTextura.dispose();
     }
 }
