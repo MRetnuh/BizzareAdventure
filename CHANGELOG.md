@@ -1,3 +1,7 @@
+## [3.2.6] - 2025-07-29
+### Añadido
+- Creacion de clase EstiloTexto para ajustar los textos de botones y labels (estilo, tamaño, color, etc) sin necesidad de repetir codigo y reutilizandolo. Reestructuramiento de codigo
+
 ## [3.2.5] - 2025-07-28
 ### Modificado
 - Modificacion del cartel de GameOver, siendo ahora mas atractivo
