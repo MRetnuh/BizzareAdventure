@@ -22,8 +22,8 @@ import estilos.EstiloTexto;
 import io.github.some.Principal;
 
 public class Menu implements Screen {
-    private Musica musicaMenu = new Musica("primeraisla");
-    private final Principal JUEGO;
+	private Musica musicaMenu;
+	private final Principal JUEGO;
     private Stage stage;
     private Skin skin;
     private Texture fondoTextura;
@@ -31,6 +31,7 @@ public class Menu implements Screen {
 
     public Menu(Principal juego) {
         this.JUEGO = juego;
+        this.musicaMenu = juego.getMusica();
     }
 
     @Override
@@ -53,15 +54,26 @@ public class Menu implements Screen {
         title.setAlignment(Align.center);
 
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        TextButton configuracionBtn = new TextButton("Configuracion", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
 
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                musicaMenu.detenerMusica();
+                
+            	musicaMenu.cambiarMusica("Balatro");
                 JUEGO.setScreen(new Partida(JUEGO));
             }
         });
+        
+
+        configuracionBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                JUEGO.setScreen(new Configuracion(JUEGO));
+            }
+        });
+
 
         salirBtn.addListener(new ChangeListener() {
             @Override
@@ -74,9 +86,11 @@ public class Menu implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
+        table.defaults().center();
         table.add(title).padBottom(30).row();
         table.add(jugarBtn).size(200, 50).padBottom(20).row();
         table.add(salirBtn).size(200, 50);
+        table.add(configuracionBtn).size(200, 50).padBottom(20).row();
 
         stage.addActor(table);
     }

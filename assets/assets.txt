@@ -4,7 +4,8 @@ Terreno1.tsx
 Tiles_32x32.png
 fondo.tsx
 fondo1.tsx
-imagenes/fondos/derrota.jpg
+fuentes/fuentePixel.ttf
+imagenes/fondos/GameOver.png
 imagenes/fondos/portada.png
 imagenes/personajes/akame/akame_derecha_(detenida).png
 imagenes/personajes/akame/akame_derecha_moviendose_1.png

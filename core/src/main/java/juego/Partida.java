@@ -2,11 +2,9 @@ package juego;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -20,21 +18,18 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 
 import audios.Musica;
 import estilos.EstiloTexto;
 import io.github.some.Principal;
 import jugadores.Jugador;
-import personajes.Akame;
 import personajes.Personaje;
 
 
 public class Partida implements Screen {
-	private Musica musicaPartida = new Musica("Balatro");
+	private Musica musicaPartida;
 	private Stage stage;
 	private final Jugador jugador = new Jugador();
-    private final Principal JUEGO;
     private TiledMap mapa;
     private Skin skin;
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -45,8 +40,7 @@ public class Partida implements Screen {
     int alturaMapa;
     
     public Partida(Principal juego) {
-        this.JUEGO = juego; 
-
+        this.musicaPartida = juego.getMusica();
     }
 
     @Override
@@ -93,7 +87,10 @@ public class Partida implements Screen {
         contenedor.setBackground(skin.getDrawable("default-round"));
         contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight()); 
 
-        
+        if (!musicaPartida.estaReproduciendo()) {
+            musicaPartida.show(); 
+        }
+
         stage.addActor(contenedor);
 
     }

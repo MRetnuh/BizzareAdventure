@@ -44,6 +44,23 @@ public void silenciar() {
       musicaFondo.setVolume(0f);
 }
 
+public void setVolumen(float nuevoVolumen) {
+	this.volumen = Math.max(0f, Math.min(1f, nuevoVolumen));
+	if (musicaFondo != null) {
+		musicaFondo.setVolume(volumen);
+	}
+}
+
+public boolean estaReproduciendo() {
+	return musicaFondo != null && musicaFondo.isPlaying();
+}
+
+public void cambiarMusica(String nombreArchivo) {
+	detenerMusica();
+	this.nombreMusica = nombreArchivo;
+	show();
+}
+
 @Override
 public void render(float delta) {
 
@@ -77,4 +94,6 @@ public void dispose() {
 public float getVolumen() {
     return this.volumen;
 }
+
+
 }
