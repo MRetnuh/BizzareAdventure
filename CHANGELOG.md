@@ -1,7 +1,7 @@
 ## [3.3.6] - 2025-07-30
 ### Añadido
 - Creacion de la clase "Configuracion" dentro del paquete juego.
-- Modificacion de como su manipula la musica dentro de partida, menu y principal.
+- Modificacion de como se manipula la musica dentro, menu y la clase "Principal".
 - Agregado de funciones para la clase Musica.
 ### Modificado
 - Modificacion en las clases para que mantengan la misma variable de musica y no hayan reproducciones de musica sobreponiendose. 

@@ -53,7 +53,7 @@ public class Menu implements Screen {
         titulo.setAlignment(Align.center);
 
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
-        TextButton configuracionBtn = new TextButton("Configuracion", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        TextButton configuracionBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
 
         jugarBtn.addListener(new ChangeListener() {

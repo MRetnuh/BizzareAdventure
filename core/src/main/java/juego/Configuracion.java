@@ -45,7 +45,7 @@ public class Configuracion implements Screen {
             return false;
         });
 
-        TextButton volverBtn = new TextButton("Volver", skin);
+        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 36, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
                 JUEGO.setScreen(new Menu(JUEGO));
