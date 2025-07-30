@@ -96,7 +96,8 @@ public class Menu implements Screen {
 
     @Override
     public void render(float delta) {          
-        
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override public void resize(int width, int height) {}
