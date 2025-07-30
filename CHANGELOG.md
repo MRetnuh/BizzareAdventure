@@ -1,3 +1,8 @@
+## [3.3.6] - 2025-07-30
+### Añadido
+- Creacion de la clase "Configuracion" dentro del paquete juego.
+- Modificacion de como su manipula la musica dentro de partida, menu y principal.
+- Agregado de funciones para la clase Musica.
 ## [3.2.6] - 2025-07-29
 ### Añadido
 - Creacion de clase EstiloTexto para ajustar los textos de botones y labels (estilo, tamaño, color, etc) sin necesidad de repetir codigo y reutilizandolo. Reestructuramiento de codigo
