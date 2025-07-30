@@ -95,22 +95,8 @@ public class Menu implements Screen {
     }
 
     @Override
-    public void render(float delta) {
-       if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
-             musicaMenu.subirVolumen();
-        }
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
-            musicaMenu.bajarVolumen();
-        }
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
-            musicaMenu.silenciar();
-        } 
-
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage.act(delta);
-        stage.draw();
+    public void render(float delta) {          
+        
     }
 
     @Override public void resize(int width, int height) {}
