@@ -46,7 +46,6 @@ public class Partida implements Screen {
     @Override
     public void show() {
     	
-    	musicaPartida.show();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 

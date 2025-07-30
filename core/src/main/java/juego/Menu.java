@@ -36,7 +36,6 @@ public class Menu implements Screen {
 
     @Override
     public void show() {
-        musicaMenu.show();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
@@ -50,8 +49,8 @@ public class Menu implements Screen {
   
 
         
-        Label title = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(48, Color.PURPLE));
-        title.setAlignment(Align.center);
+        Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(48, Color.PURPLE));
+        titulo.setAlignment(Align.center);
 
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton configuracionBtn = new TextButton("Configuracion", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
@@ -60,7 +59,7 @@ public class Menu implements Screen {
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                
+                musicaMenu.detenerMusica();
             	musicaMenu.cambiarMusica("Balatro");
                 JUEGO.setScreen(new Partida(JUEGO));
             }
@@ -87,10 +86,10 @@ public class Menu implements Screen {
         table.setFillParent(true);
         table.center();
         table.defaults().center();
-        table.add(title).padBottom(30).row();
+        table.add(titulo).padBottom(30).row();
         table.add(jugarBtn).size(200, 50).padBottom(20).row();
-        table.add(salirBtn).size(200, 50);
         table.add(configuracionBtn).size(200, 50).padBottom(20).row();
+        table.add(salirBtn).size(200, 50);
 
         stage.addActor(table);
     }

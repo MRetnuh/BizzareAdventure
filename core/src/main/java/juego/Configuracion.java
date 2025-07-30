@@ -34,7 +34,7 @@ public class Configuracion implements Screen {
         Label titulo = new Label("Configuracion", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
         titulo.setAlignment(Align.center);
 
-        Label volumenLabel = new Label("Volumen: " + (int)(musicaConfig.getVolumen() * 100) + "%", skin);
+        Label volumenLabel = new Label("Volumen: " + (int)(musicaConfig.getVolumen() * 100) + "%", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
 
         Slider volumenSlider = new Slider(0f, 1f, 0.01f, false, skin);
         volumenSlider.setValue(musicaConfig.getVolumen());
