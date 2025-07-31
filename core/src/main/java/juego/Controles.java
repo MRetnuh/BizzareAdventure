@@ -35,10 +35,23 @@ public class Controles implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        Label titulo = new Label("Controles", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
+        Label titulo = new Label("CONTROLES", EstiloTexto.ponerEstiloLabel(70, Color.WHITE));
         titulo.setAlignment(Align.center);
 
-        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 36, Color.RED));
+        Label movimientoTitulo = new Label("Movimiento:", EstiloTexto.ponerEstiloLabel(60, Color.ORANGE));
+        Label combateTitulo = new Label("Combate:", EstiloTexto.ponerEstiloLabel(60, Color.ORANGE));
+        Label opcionesTitulo = new Label("Opciones:", EstiloTexto.ponerEstiloLabel(60, Color.ORANGE));
+
+        Label w = new Label("W: Saltar", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
+        Label a = new Label("A: Moverse a la izquierda", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
+        Label d = new Label("D: Moverse a la derecha", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
+        Label s = new Label("S: Agacharse", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
+
+        Label m = new Label("M: Atacar", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
+
+        Label p = new Label("P: Pausar / Opciones", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
+
+        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
                 JUEGO.setScreen(new Opciones(JUEGO));
@@ -48,13 +61,27 @@ public class Controles implements Screen {
 
         Table tabla = new Table();
         tabla.setFillParent(true);
-        tabla.center();
+        tabla.top().padTop(30);
 
-        tabla.add(titulo).padBottom(30).row();
-        tabla.add(volverBtn).size(200, 50);
+        tabla.add(titulo).colspan(1).padBottom(40).row();
+
+        tabla.add(movimientoTitulo).left().padBottom(10).row();
+        tabla.add(w).left().padBottom(5).row();
+        tabla.add(a).left().padBottom(5).row();
+        tabla.add(d).left().padBottom(5).row();
+        tabla.add(s).left().padBottom(25).row();
+
+        tabla.add(combateTitulo).left().padBottom(10).row();
+        tabla.add(m).left().padBottom(25).row();
+
+        tabla.add(opcionesTitulo).left().padBottom(10).row();
+        tabla.add(p).left().padBottom(40).row();
+
+        tabla.add(volverBtn).center().size(200, 60);
 
         stage.addActor(tabla);
     }
+
 
     @Override
     public void render(float delta) {

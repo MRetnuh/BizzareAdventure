@@ -31,7 +31,7 @@ public class Configuracion implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        Label titulo = new Label("Configuracion", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
+        Label titulo = new Label("Sonido", EstiloTexto.ponerEstiloLabel(60, Color.WHITE));
         titulo.setAlignment(Align.center);
 
         Label volumenLabel = new Label("Volumen: " + (int)(musicaConfig.getVolumen() * 100) + "%", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
@@ -45,7 +45,7 @@ public class Configuracion implements Screen {
             return false;
         });
 
-        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 36, Color.RED));
+        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
                 JUEGO.setScreen(new Opciones(JUEGO));
