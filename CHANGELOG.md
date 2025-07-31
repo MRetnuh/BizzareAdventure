@@ -1,6 +1,9 @@
-## [3.3.7] - 2025-07-31
+## [4.3.6] - 2025-07-31
 ### Añadido
 - Creacion de la clase Opciones. Su funcion es llevarte a otra pantalla donde podes elegir entre ver los controles o subir/bajar la musica.
+### Modificado
+- Modificacion del sistema de gravedad
+- Modificacion del sistema de colisiones(Deteccion de Muros y techos)
 
 ## [3.3.6] - 2025-07-30
 ### Añadido

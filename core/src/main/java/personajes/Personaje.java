@@ -224,4 +224,14 @@ public abstract class Personaje {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+    public void frenarCaida() {
+        this.velocidadCaida = 0;
+    }
+   
+    public float getPrevY() {
+        return prevY;
+    }
+    public void setY(float prevY) {
+    	y = prevY;
+    }
 }
