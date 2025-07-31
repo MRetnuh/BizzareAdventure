@@ -41,10 +41,10 @@ public class Opciones implements Screen {
         titulo.setAlignment(Align.center);
 
         TextButton controlesBtn = new TextButton("Controles", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
-        TextButton configuracionBtn = new TextButton("Config", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        TextButton sonidoBtn = new TextButton("Sonido", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin,48, Color.PURPLE));
         
-        configuracionBtn.addListener(new ChangeListener() {
+        sonidoBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 JUEGO.setScreen(new Configuracion(JUEGO));
@@ -71,7 +71,7 @@ public class Opciones implements Screen {
         table.center();
         table.defaults().center();
         table.add(titulo).padBottom(30).row();
-        table.add(configuracionBtn).size(215, 50).padBottom(20).row();
+        table.add(sonidoBtn).size(215, 50).padBottom(20).row();
         table.add(controlesBtn).size(215, 50).padBottom(20).row();
         table.add(volverBtn).size(215, 50);
 
