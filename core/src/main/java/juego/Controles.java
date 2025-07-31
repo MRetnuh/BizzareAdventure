@@ -5,7 +5,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -13,15 +17,15 @@ import audios.Musica;
 import estilos.EstiloTexto;
 import io.github.some.Principal;
 
-public class Configuracion implements Screen {
+public class Controles implements Screen {
     private final Principal JUEGO;
     private Stage stage;
     private Skin skin;
-    private Musica musicaConfig;
+    private Musica musicaControles;
     
-    public Configuracion(Principal juego) {
+    public Controles(Principal juego) {
         this.JUEGO = juego;
-        this.musicaConfig = juego.getMusica(); 
+        this.musicaControles = juego.getMusica(); 
     }
 
     @Override
@@ -31,19 +35,8 @@ public class Configuracion implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        Label titulo = new Label("Configuracion", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
+        Label titulo = new Label("Controles", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
         titulo.setAlignment(Align.center);
-
-        Label volumenLabel = new Label("Volumen: " + (int)(musicaConfig.getVolumen() * 100) + "%", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
-
-        Slider volumenSlider = new Slider(0f, 1f, 0.01f, false, skin);
-        volumenSlider.setValue(musicaConfig.getVolumen());
-        volumenSlider.addListener(event -> {
-            float nuevoVolumen = volumenSlider.getValue();
-            musicaConfig.setVolumen(nuevoVolumen);
-            volumenLabel.setText("Volumen: " + (int)(nuevoVolumen * 100) + "%");
-            return false;
-        });
 
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 36, Color.RED));
         volverBtn.addListener(event -> {
@@ -58,8 +51,6 @@ public class Configuracion implements Screen {
         tabla.center();
 
         tabla.add(titulo).padBottom(30).row();
-        tabla.add(volumenLabel).padBottom(10).row();
-        tabla.add(volumenSlider).width(300).padBottom(30).row();
         tabla.add(volverBtn).size(200, 50);
 
         stage.addActor(tabla);

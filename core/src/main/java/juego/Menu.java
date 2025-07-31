@@ -49,11 +49,11 @@ public class Menu implements Screen {
   
 
         
-        Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(48, Color.PURPLE));
+        Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(60, Color.PURPLE));
         titulo.setAlignment(Align.center);
 
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
-        TextButton configuracionBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        TextButton opcionesBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
 
         jugarBtn.addListener(new ChangeListener() {
@@ -66,10 +66,10 @@ public class Menu implements Screen {
         });
         
 
-        configuracionBtn.addListener(new ChangeListener() {
+        opcionesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Configuracion(JUEGO));
+                JUEGO.setScreen(new Opciones(JUEGO));
             }
         });
 
@@ -88,7 +88,7 @@ public class Menu implements Screen {
         table.defaults().center();
         table.add(titulo).padBottom(30).row();
         table.add(jugarBtn).size(200, 50).padBottom(20).row();
-        table.add(configuracionBtn).size(200, 50).padBottom(20).row();
+        table.add(opcionesBtn).size(200, 50).padBottom(20).row();
         table.add(salirBtn).size(200, 50);
 
         stage.addActor(table);
