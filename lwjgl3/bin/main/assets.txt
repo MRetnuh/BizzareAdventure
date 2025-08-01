@@ -1,7 +1,9 @@
 12.png
 3.png
+CambioPersonaje.tsx
 Terreno1.tsx
 Tiles_32x32.png
+aa.png
 fondo.tsx
 fondo1.tsx
 fuentes/fuentePixel.ttf
@@ -17,6 +19,18 @@ imagenes/personajes/akame/akame_izquierda_moviendose_1.png
 imagenes/personajes/akame/akame_izquierda_moviendose_2.png
 imagenes/personajes/akame/akame_izquierda_moviendose_3.png
 imagenes/personajes/akame/akame_izquierda_moviendose_4.png
+imagenes/personajes/akame/ataque/akame_derecha_atacando_1.png
+imagenes/personajes/akame/ataque/akame_derecha_atacando_2.png
+imagenes/personajes/akame/ataque/akame_derecha_atacando_3.png
+imagenes/personajes/akame/ataque/akame_derecha_atacando_4.png
+imagenes/personajes/akame/ataque/akame_derecha_atacando_5.png
+imagenes/personajes/akame/ataque/akame_derecha_atacando_6.png
+imagenes/personajes/akame/ataque/akame_izquierda_atacando_1.png
+imagenes/personajes/akame/ataque/akame_izquierda_atacando_2.png
+imagenes/personajes/akame/ataque/akame_izquierda_atacando_3.png
+imagenes/personajes/akame/ataque/akame_izquierda_atacando_4.png
+imagenes/personajes/akame/ataque/akame_izquierda_atacando_5.png
+imagenes/personajes/akame/ataque/akame_izquierda_atacando_6.png
 imagenes/personajes/leone/leone_derecha_(detenida).png
 imagenes/personajes/leone/leone_derecha_moviendose_1.png
 imagenes/personajes/leone/leone_derecha_moviendose_2.png
@@ -32,4 +46,5 @@ mapacorregido.tmx
 musica/Balatro.mp3
 musica/derrota.mp3
 musica/primeraisla.mp3
+sonidos/EspadaCorte.mp3
 terreno.tsx
