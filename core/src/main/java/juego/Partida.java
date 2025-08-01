@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -41,8 +40,11 @@ public class Partida implements Screen {
     private Personaje personajeElegido;
     int anchoMapa; 
     int alturaMapa;
+    private final Principal juego;
+
     
     public Partida(Principal juego) {
+        this.juego = juego;
         this.musicaPartida = juego.getMusica();
     }
 
@@ -101,15 +103,12 @@ public class Partida implements Screen {
 
 @Override
 public void render(float delta) {
-	 if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
-		 musicaPartida.subirVolumen();
+	
+    if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+    	juego.setScreen(new Pausa(juego, this));
+        return;
     }
-    if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
-    	musicaPartida.bajarVolumen();
-    }
-    if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.K)) {
-    	musicaPartida.silenciar();
-    } 
+
   
     Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
