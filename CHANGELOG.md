@@ -1,3 +1,7 @@
+## [4.4.6] - 2025-08-01
+### Añadido
+- Implementacion de animacion de ataque del personaje y efectos de sonido de Espada para el personaje de Akame. Los sonidos se reproducen al atacar solamente.
+
 ## [4.3.6] - 2025-07-31
 ### Añadido
 - Creacion de la clase Opciones. Su funcion es llevarte a otra pantalla donde podes elegir entre ver los controles o subir/bajar la musica.

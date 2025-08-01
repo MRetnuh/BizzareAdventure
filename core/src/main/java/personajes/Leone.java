@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Leone extends Personaje{
 	public Leone() {
-		super("Leone", 120);
+		super("Leone", 200, "Golpe");
 	}
 	@Override
     protected void cargarTexturas() {

@@ -107,7 +107,7 @@ public void render(float delta) {
     if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
     	musicaPartida.bajarVolumen();
     }
-    if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M)) {
+    if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.K)) {
     	musicaPartida.silenciar();
     } 
   
@@ -165,7 +165,7 @@ public void render(float delta) {
     
     batch.setProjectionMatrix(camara.combined);
     batch.begin();
-    personajeElegido.dibujar(batch);     
+    personajeElegido.dibujar(batch, delta); 
     batch.end();
     stage.act(delta);
     stage.draw();

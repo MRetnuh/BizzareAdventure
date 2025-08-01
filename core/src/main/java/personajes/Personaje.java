@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Timer;
 
+import audios.EfectoSonido;
 import audios.Musica;
 
 public abstract class Personaje {
@@ -27,6 +28,8 @@ public abstract class Personaje {
 	    private Stage stage;
 	    private Musica musicaDerrota = new Musica("derrota");
 	    private boolean estaMuerto = false;
+	    private int habilidadEspecial = 1;
+	    private String nombreAtaque;
 	    
 	    protected float x, y;
 	    protected float prevX, prevY;
@@ -37,39 +40,22 @@ public abstract class Personaje {
 	    protected boolean estaMoviendose = false;
 	    protected Animation<TextureRegion> animDerecha;
 	    protected Animation<TextureRegion> animIzquierda;
+	    protected Animation<TextureRegion> animAtaqueDerecha;
+	    protected Animation<TextureRegion> animAtaqueIzquierda;
 	    protected TextureRegion quietaDerecha;
 	    protected TextureRegion quietaIzquierda;
-
-    public Personaje(String nombre, int velocidad) {
+	    protected boolean estaAtacando = false;
+	    
+    public Personaje(String nombre, int velocidad, String nombreAtaque) {
         this.nombre = nombre;
         this.velocidad = velocidad;
-        
+        this.nombreAtaque = nombreAtaque;
         cargarTexturas(); 
         x = 200;
-        y = 1100;
+        y = 930;
     }
 
     protected abstract void cargarTexturas();
-
-    public void mover(float delta) {
-        estadoTiempo += delta;
-        estaMoviendose = false;
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            x += velocidad * delta;
-            mirandoDerecha = true;
-            estaMoviendose = true;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            x -= velocidad * delta;
-            mirandoDerecha = false;
-            estaMoviendose = true;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            y += velocidad * delta;
-            estaMoviendose = true;
-        }
-    }
 
     private void morir() {
         if (estaMuerto) return;
@@ -128,13 +114,31 @@ public abstract class Personaje {
         y = prevY;
     }
     
-    public void dibujar(SpriteBatch batch) {
-        TextureRegion frameActual = estaMoviendose
-            ? (mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo) : animIzquierda.getKeyFrame(estadoTiempo))
-            : (mirandoDerecha ? quietaDerecha : quietaIzquierda);
+    public void dibujar(SpriteBatch batch, float delta) {
+        estadoTiempo += delta;
 
-        batch.draw(frameActual, x, y);
+        TextureRegion frame;
+
+        if (estaAtacando) {
+            frame = mirandoDerecha ? animAtaqueDerecha.getKeyFrame(estadoTiempo, false)
+                                   : animAtaqueIzquierda.getKeyFrame(estadoTiempo, false);
+
+            if ((mirandoDerecha && animAtaqueDerecha.isAnimationFinished(estadoTiempo)) ||
+                (!mirandoDerecha && animAtaqueIzquierda.isAnimationFinished(estadoTiempo))) {
+                estaAtacando = false;
+                estadoTiempo = 0; // reiniciar tiempo
+            }
+
+        } else if (estaMoviendose) {
+            frame = mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo, true)
+                                   : animIzquierda.getKeyFrame(estadoTiempo, true);
+        } else {
+            frame = mirandoDerecha ? quietaDerecha : quietaIzquierda;
+        }
+
+        batch.draw(frame, x, y);
     }
+
  
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
@@ -166,6 +170,26 @@ public abstract class Personaje {
         camara.position.set(camX, camY, 0);
         camara.update();
     }
+    
+    private void atacar(float delta) {
+        float tiempoAtaque = 0f;
+		if (Gdx.input.isKeyPressed(Input.Keys.M) && !estaAtacando) {
+            estaAtacando = true;
+            tiempoAtaque = 0;
+            EfectoSonido efectoAtaque = new EfectoSonido(this.nombreAtaque);
+            efectoAtaque.reproducir(); // ⬅️ Solo una vez al iniciar el ataque
+        }
+
+        if (estaAtacando) {
+            tiempoAtaque += delta;
+
+            if (tiempoAtaque > animAtaqueDerecha.getAnimationDuration()) {
+                estaAtacando = false;
+                tiempoAtaque = 0f;
+            }
+        }
+    }
+
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
         estadoTiempo += delta;
@@ -203,6 +227,7 @@ public abstract class Personaje {
         float tempX = x;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) tempX += velocidad * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.A)) tempX -= velocidad * delta;
+        atacar(delta);
         return tempX;
     }
 
@@ -210,6 +235,7 @@ public abstract class Personaje {
         float tempY = y;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) tempY += velocidad * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.S)) tempY -= velocidad * delta;
+        atacar(delta);
         return tempY;
     }
 

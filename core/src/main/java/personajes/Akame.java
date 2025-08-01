@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 public class Akame extends Personaje{
 
 	public Akame() {
-		super("Akame", 170);
+		super("Akame", 250, "EspadaCorte");
 	}
 	
 	  @Override
@@ -18,6 +18,18 @@ public class Akame extends Personaje{
 	            framesDerecha.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/personajes/akame/akame_derecha_moviendose_" + i + ".png"))));
 	        }
 	        animDerecha = new Animation<>(0.1f, framesDerecha, Animation.PlayMode.LOOP);
+	        
+	        Array<TextureRegion> framesAtaqueDerecha = new Array<>();
+	        for (int i = 1; i <= 6; i++) {
+	        	framesAtaqueDerecha.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/personajes/akame/ataque/akame_derecha_atacando_" + i + ".png"))));
+	        }
+	        animAtaqueDerecha = new Animation<>(0.1f, framesAtaqueDerecha, Animation.PlayMode.LOOP);
+	        
+	        Array<TextureRegion> framesAtaqueIzquierda = new Array<>();
+	        for (int i = 1; i <= 6; i++) {
+	        	framesAtaqueIzquierda.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/personajes/akame/ataque/akame_izquierda_atacando_" + i + ".png"))));
+	        }
+	        animAtaqueIzquierda = new Animation<>(0.1f, framesAtaqueIzquierda, Animation.PlayMode.LOOP);
 
 	        Array<TextureRegion> framesIzquierda = new Array<>();
 	        for (int i = 1; i <= 4; i++) {
