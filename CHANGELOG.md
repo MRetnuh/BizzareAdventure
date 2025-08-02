@@ -1,8 +1,9 @@
 ## [4.4.6] - 2025-08-01
 ### Añadido
 - Implementacion de animacion de ataque del personaje y efectos de sonido (sonido de espada para el personaje de Akame). Los sonidos se reproducen al atacar solamente.
+- Implementacion de la posibilidad de abrir el menu de opciones tambien durante la partida.
 ### Modificado
-- Cambio en el mapa y implementacion de objeto para evento
+- Cambio en el mapa y implementacion de objeto para evento.
 
 ## [4.3.6] - 2025-07-31
 ### Añadido

@@ -66,7 +66,9 @@ public class Partida implements Screen {
 
    
     batch = new SpriteBatch();
+    if(!jugador.getPartidaEmpezada()) {
     jugador.generarPersonajeAleatorio();
+    }
     personajeElegido = jugador.getPersonajeElegido();
     personajeElegido.setStage(stage);
 
