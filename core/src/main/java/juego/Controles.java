@@ -18,14 +18,16 @@ import estilos.EstiloTexto;
 import io.github.some.Principal;
 
 public class Controles implements Screen {
+	private Screen screenAnterior;
     private final Principal JUEGO;
     private Stage stage;
     private Skin skin;
     private Musica musicaControles;
     
-    public Controles(Principal juego) {
+    public Controles(Principal juego,  Screen screenAnterior) {
         this.JUEGO = juego;
         this.musicaControles = juego.getMusica(); 
+        this.screenAnterior = screenAnterior;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class Controles implements Screen {
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
-                JUEGO.setScreen(new Opciones(JUEGO));
+                JUEGO.setScreen(new Opciones(JUEGO, this.screenAnterior));
             }
             return true;
         });

@@ -21,15 +21,18 @@ import estilos.EstiloTexto;
 import io.github.some.Principal;
 
 public class Opciones implements Screen {
+	private Screen screenAnterior;
     private final Principal JUEGO;
     private Stage stage;
     private Skin skin;
     private Musica musicaOpciones;
     
-    public Opciones(Principal juego) {
+    public Opciones(Principal juego, Screen screenAnterior) {
         this.JUEGO = juego;
         this.musicaOpciones = juego.getMusica(); 
+        this.screenAnterior = screenAnterior;
     }
+    
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
@@ -47,21 +50,21 @@ public class Opciones implements Screen {
         sonidoBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Configuracion(JUEGO));
+                JUEGO.setScreen(new Configuracion(JUEGO, screenAnterior));
             }
         });
         
         controlesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Controles(JUEGO));
+                JUEGO.setScreen(new Controles(JUEGO, screenAnterior));
             }
         });
         
         volverBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Menu(JUEGO));
+                JUEGO.setScreen(screenAnterior);
             }
         });
         

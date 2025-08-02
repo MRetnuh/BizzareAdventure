@@ -69,7 +69,7 @@ public class Menu implements Screen {
         opcionesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Opciones(JUEGO));
+                JUEGO.setScreen(new Opciones(JUEGO, Menu.this));
             }
         });
 

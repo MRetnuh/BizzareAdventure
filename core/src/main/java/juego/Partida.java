@@ -105,7 +105,7 @@ public class Partida implements Screen {
 public void render(float delta) {
 	
     if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
-    	juego.setScreen(new Pausa(juego, this));
+    	juego.setScreen(new Opciones(juego, Partida.this));
         return;
     }
 

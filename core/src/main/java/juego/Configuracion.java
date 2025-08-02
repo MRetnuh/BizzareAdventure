@@ -14,12 +14,14 @@ import estilos.EstiloTexto;
 import io.github.some.Principal;
 
 public class Configuracion implements Screen {
+	private Screen screenAnterior;
     private final Principal JUEGO;
     private Stage stage;
     private Skin skin;
     private Musica musicaConfig;
     
-    public Configuracion(Principal juego) {
+    public Configuracion(Principal juego, Screen screenAnterior) {
+    	this.screenAnterior = screenAnterior;
         this.JUEGO = juego;
         this.musicaConfig = juego.getMusica(); 
     }
@@ -48,7 +50,7 @@ public class Configuracion implements Screen {
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
-                JUEGO.setScreen(new Opciones(JUEGO));
+                JUEGO.setScreen(new Opciones(JUEGO, this.screenAnterior));
             }
             return true;
         });
