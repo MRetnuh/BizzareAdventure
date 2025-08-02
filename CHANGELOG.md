@@ -1,3 +1,7 @@
+## [4.5.0] - 2025-08-02
+### Añadido
+- Avance en la interacción de elementos
+
 ## [4.4.6] - 2025-08-01
 ### Añadido
 - Implementacion de animacion de ataque del personaje y efectos de sonido (sonido de espada para el personaje de Akame). Los sonidos se reproducen al atacar solamente.

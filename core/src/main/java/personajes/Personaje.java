@@ -260,4 +260,11 @@ public abstract class Personaje {
     public void setY(float prevY) {
     	y = prevY;
     }
+    public void setPosicion(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+    public void setVida(int nuevaVida) {
+        this.vida = nuevaVida;
+    }
 }

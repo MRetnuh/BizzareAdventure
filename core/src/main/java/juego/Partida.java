@@ -1,6 +1,7 @@
 package juego;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -21,8 +24,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+
 import audios.Musica;
 import estilos.EstiloTexto;
+import eventos.EmisorEventos;
 import io.github.some.Principal;
 import jugadores.Jugador;
 import personajes.Personaje;
@@ -40,6 +45,12 @@ public class Partida implements Screen {
     private Personaje personajeElegido;
     int anchoMapa; 
     int alturaMapa;
+    private MapObject objetoInteractivoActual = null;
+    private final int ID_TILE_TRANSPARENTE = 0;
+    private Personaje[] personajesDisponibles;
+    private int indicePersonajeActual = 0;
+    private Label nombrePersonajeLabel;
+    private Label vidaPersonajeLabel;
     private final Principal juego;
 
     
@@ -66,6 +77,7 @@ public class Partida implements Screen {
 
    
     batch = new SpriteBatch();
+    personajesDisponibles = jugador.getListaPersonajes();
     if(!jugador.getPartidaEmpezada()) {
     jugador.generarPersonajeAleatorio();
     }
@@ -74,18 +86,16 @@ public class Partida implements Screen {
 
     skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+    nombrePersonajeLabel = new Label("Nombre: " + personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+    nombrePersonajeLabel.setAlignment(Align.left);
     
-    Label nombrePersonaje = new Label("Nombre: " + personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-    nombrePersonaje.setAlignment(Align.left);
-    
-    Label vidaPersonaje = new Label("Vida: " + personajeElegido.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-    vidaPersonaje.setAlignment(Align.left);
-
+    vidaPersonajeLabel = new Label("Vida: " + personajeElegido.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+    vidaPersonajeLabel.setAlignment(Align.left);
     
     Table table = new Table();
     table.left().top();
-    table.add(nombrePersonaje).size(350, 50).padBottom(10).row();
-    table.add(vidaPersonaje).size(350, 50);
+    table.add(nombrePersonajeLabel).size(350, 50).padBottom(10).row();
+    table.add(vidaPersonajeLabel).size(350, 50);
 
     
     Container<Table> contenedor = new Container<>(table);
@@ -98,9 +108,25 @@ public class Partida implements Screen {
     }
 
     stage.addActor(contenedor);
+    EmisorEventos.obtenerInstancia().en("cambiarPersonaje", this::cambiarPersonajeYSumarVida);
 
 }
-
+    private void cambiarPersonajeYSumarVida() {
+        indicePersonajeActual = (indicePersonajeActual + 1) % personajesDisponibles.length;
+        
+        personajeElegido = personajesDisponibles[indicePersonajeActual];
+        
+        personajeElegido.setVida(personajeElegido.getVida() + 1);
+        
+        personajeElegido.setPosicion(200, 930);
+        
+        actualizarUI();
+    }
+    
+    private void actualizarUI() {
+        nombrePersonajeLabel.setText("Nombre: " + personajeElegido.getNombre());
+        vidaPersonajeLabel.setText("Vida: " + personajeElegido.getVida());
+    }
 
 
 @Override
@@ -150,7 +176,7 @@ public void render(float delta) {
             personajeElegido.aplicarMovimiento(nuevoX, nuevoY, delta, anchoMapa, alturaMapa);
         }
         
-
+        detectarYEliminarTile(personajeElegido.getHitbox());
         personajeElegido.actualizarCamara(camara, anchoMapa, alturaMapa);
     }
     else {
@@ -171,7 +197,28 @@ public void render(float delta) {
     stage.act(delta);
     stage.draw();
 }
+	
+private void detectarYEliminarTile(Rectangle hitbox) {
+    TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
 
+    if (tileLayer == null) {
+        return;
+    }
+
+    int tileX = (int) (hitbox.x / tileLayer.getTileWidth());
+    int tileY = (int) (hitbox.y / tileLayer.getTileHeight());
+    
+    Cell cell = tileLayer.getCell(tileX, tileY);
+
+    if (cell != null && cell.getTile() != null) {
+        int tileId = cell.getTile().getId();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E) && tileId != ID_TILE_TRANSPARENTE) {
+            EmisorEventos.obtenerInstancia().emitir("cambiarPersonaje");
+            cell.setTile(mapa.getTileSets().getTile(ID_TILE_TRANSPARENTE));
+        }
+    }
+}
 private Polygon rectToPolygon(Rectangle rect) {
     Polygon poly = new Polygon(new float[]{
         0, 0,
@@ -184,25 +231,20 @@ private Polygon rectToPolygon(Rectangle rect) {
 }
 
 private boolean hayColision(Rectangle hitbox) {
-    Polygon hitboxPoligono = rectToPolygon(hitbox);
-
+	Polygon hitboxPoligono = rectToPolygon(hitbox);
     for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
-
         if (object instanceof RectangleMapObject) {
             Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
             if (hitbox.overlaps(rectMapa)) return true;
         } else if (object instanceof PolygonMapObject) {
             PolygonMapObject polygonObject = (PolygonMapObject) object;
             Polygon polygon = polygonObject.getPolygon();
-
             float x = polygonObject.getProperties().get("x", Float.class);
             float y = polygonObject.getProperties().get("y", Float.class);
-
             Polygon poligonoTransformado = new Polygon(polygon.getVertices());
             poligonoTransformado.setPosition(x, y);
-
             if (Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) {
                 return true;
             }
@@ -221,5 +263,6 @@ public void dispose() {
 	mapa.dispose();
     mapRenderer.dispose();
     batch.dispose();
+    stage.dispose();
 }
 }
