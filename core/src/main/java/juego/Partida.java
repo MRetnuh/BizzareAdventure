@@ -116,8 +116,6 @@ public class Partida implements Screen {
         
         personajeElegido = personajesDisponibles[indicePersonajeActual];
         
-        personajeElegido.setVida(personajeElegido.getVida() + 1);
-        
         personajeElegido.setPosicion(200, 930);
         
         actualizarUI();
@@ -243,7 +241,7 @@ private void detectarYEliminarTile(Rectangle hitbox) {
 	            }
 	        }
 
-	        EmisorEventos.obtenerInstancia().emitir("cambiarPersonaje");
+	        jugador.cambiarPersonaje();
 	    }
 	}
 private Polygon rectToPolygon(Rectangle rect) {
@@ -258,10 +256,13 @@ private Polygon rectToPolygon(Rectangle rect) {
 }
 
 private boolean hayColision(Rectangle hitbox) {
-	Polygon hitboxPoligono = rectToPolygon(hitbox);
+    Polygon hitboxPoligono = rectToPolygon(hitbox);
+
+    // 1. Verificar colisión con la capa "colisiones"
     for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
+
         if (object instanceof RectangleMapObject) {
             Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
             if (hitbox.overlaps(rectMapa)) return true;
@@ -277,9 +278,12 @@ private boolean hayColision(Rectangle hitbox) {
             }
         }
     }
+
+    // 2. Verificar colisión con la capa "interactivos"
     for (MapObject object : mapa.getLayers().get("interactivos").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
+
         if (object instanceof RectangleMapObject) {
             Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
             if (hitbox.overlaps(rectMapa)) return true;
@@ -295,8 +299,29 @@ private boolean hayColision(Rectangle hitbox) {
             }
         }
     }
+
+    // 3. Verificar colisión con la capa de tiles "cajasInteractivas"
+    TiledMapTileLayer layer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
+    int startX = (int)(hitbox.x / layer.getTileWidth());
+    int startY = (int)(hitbox.y / layer.getTileHeight());
+    int endX = (int)((hitbox.x + hitbox.width) / layer.getTileWidth());
+    int endY = (int)((hitbox.y + hitbox.height) / layer.getTileHeight());
+
+    for (int x = startX; x <= endX; x++) {
+        for (int y = startY; y <= endY; y++) {
+            TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+            if (cell != null && cell.getTile() != null) {
+                if (cell.getTile().getId() != ID_TILE_TRANSPARENTE) {
+                    return true;
+                }return false;
+            }
+            
+        }
+    }
+
     return false;
 }
+
 
 @Override public void resize(int width, int height) {}
 @Override public void pause() {}

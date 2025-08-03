@@ -11,9 +11,8 @@ public class Jugador {
 	  private Personaje[] personajesJugables = {new Akame(), new Leone()};
 	  private int numeroPersonajeElegido;
 	  private Personaje personajeElegido;
-	  
+	  private Random r = new Random();
 public void generarPersonajeAleatorio() {
-	Random r = new Random();
 	numeroPersonajeElegido= r.nextInt(personajesJugables.length);
 	personajeElegido = personajesJugables[numeroPersonajeElegido];
 	this.partidaEmpezada = true;
@@ -21,6 +20,15 @@ public void generarPersonajeAleatorio() {
 
 public Personaje[] getListaPersonajes() {
 	return this.personajesJugables;
+}
+
+public void cambiarPersonaje() {
+	int nuevoPersonaje = 0;
+	while(nuevoPersonaje == this.numeroPersonajeElegido) {
+		nuevoPersonaje= r.nextInt(personajesJugables.length);
+	}
+	this.numeroPersonajeElegido = nuevoPersonaje;
+	this.personajeElegido.aumentarVida();
 }
 	  
 public Personaje getPersonajeElegido() {

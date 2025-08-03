@@ -265,8 +265,8 @@ public abstract class Personaje {
         this.x = x;
         this.y = y;
     }
-    public void setVida(int nuevaVida) {
-        this.vida = nuevaVida;
+    public void aumentarVida() {
+        this.vida++;
     }
     public boolean getEstaAtacando() {
     	return this.estaAtacando;
