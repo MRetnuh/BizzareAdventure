@@ -249,6 +249,25 @@ private boolean hayColision(Rectangle hitbox) {
                 return true;
             }
         }
+        
+    }
+    for (MapObject object : mapa.getLayers().get("interactivosm").getObjects()) {
+        String clase = object.getProperties().get("type", String.class);
+        if (clase == null || !clase.equals("Tierra")) continue;
+        if (object instanceof RectangleMapObject) {
+            Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
+            if (hitbox.overlaps(rectMapa)) return true;
+        } else if (object instanceof PolygonMapObject) {
+            PolygonMapObject polygonObject = (PolygonMapObject) object;
+            Polygon polygon = polygonObject.getPolygon();
+            float x = polygonObject.getProperties().get("x", Float.class);
+            float y = polygonObject.getProperties().get("y", Float.class);
+            Polygon poligonoTransformado = new Polygon(polygon.getVertices());
+            poligonoTransformado.setPosition(x, y);
+            if (Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) {
+                return true;
+            }
+        }
     }
     return false;
 }

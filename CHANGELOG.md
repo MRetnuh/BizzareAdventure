@@ -1,3 +1,7 @@
+## [4.5.1] - 2025-08-03
+### Modificado
+- Colision del objeto interactivo
+
 ## [4.5.0] - 2025-08-02
 ### Añadido
 - Avance en la interacción de elementos
