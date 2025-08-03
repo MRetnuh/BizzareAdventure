@@ -199,26 +199,53 @@ public void render(float delta) {
 }
 	
 private void detectarYEliminarTile(Rectangle hitbox) {
-    TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
+	    TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
 
-    if (tileLayer == null) {
-        return;
-    }
+	    if (tileLayer == null) {
+	        return;
+	    }
 
-    int tileX = (int) (hitbox.x / tileLayer.getTileWidth());
-    int tileY = (int) (hitbox.y / tileLayer.getTileHeight());
-    
-    Cell cell = tileLayer.getCell(tileX, tileY);
+	    boolean cajaCercana = false;
 
-    if (cell != null && cell.getTile() != null) {
-        int tileId = cell.getTile().getId();
+	    // Definimos un área de interacción más grande (por ejemplo 1 tile alrededor del personaje)
+	    int tileX = (int) (hitbox.x / tileLayer.getTileWidth());
+	    int tileY = (int) (hitbox.y / tileLayer.getTileHeight());
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E) && tileId != ID_TILE_TRANSPARENTE) {
-            EmisorEventos.obtenerInstancia().emitir("cambiarPersonaje");
-            cell.setTile(mapa.getTileSets().getTile(ID_TILE_TRANSPARENTE));
-        }
-    }
-}
+	    // Recorremos las celdas alrededor del personaje (un radio de 1 tile)
+	    for (int x = tileX - 1; x <= tileX + 1; x++) {
+	        for (int y = tileY - 1; y <= tileY + 1; y++) {
+	            TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+	            if (cell != null && cell.getTile() != null) {
+	                int tileId = cell.getTile().getId();
+	                if (tileId != ID_TILE_TRANSPARENTE) {
+	                    cajaCercana = true;
+	                    break;
+	                }
+	            }
+	        }
+	        if (cajaCercana) break;
+	    }
+
+	    // Si hay una caja cerca y presiona E → elimina todas las cajas
+	    if (cajaCercana && personajeElegido.getEstaAtacando()) {
+	        int width = tileLayer.getWidth();
+	        int height = tileLayer.getHeight();
+
+	        for (int x = 0; x < width; x++) {
+	            for (int y = 0; y < height; y++) {
+	                TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+	                if (cell != null && cell.getTile() != null) {
+	                    int tileId = cell.getTile().getId();
+	                    if (tileId != ID_TILE_TRANSPARENTE) {
+	                        cell.setTile(mapa.getTileSets().getTile(ID_TILE_TRANSPARENTE));
+	                    }
+	                }
+	            }
+	        }
+
+	        EmisorEventos.obtenerInstancia().emitir("cambiarPersonaje");
+	    }
+	}
 private Polygon rectToPolygon(Rectangle rect) {
     Polygon poly = new Polygon(new float[]{
         0, 0,
@@ -233,25 +260,6 @@ private Polygon rectToPolygon(Rectangle rect) {
 private boolean hayColision(Rectangle hitbox) {
 	Polygon hitboxPoligono = rectToPolygon(hitbox);
     for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
-        String clase = object.getProperties().get("type", String.class);
-        if (clase == null || !clase.equals("Tierra")) continue;
-        if (object instanceof RectangleMapObject) {
-            Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
-            if (hitbox.overlaps(rectMapa)) return true;
-        } else if (object instanceof PolygonMapObject) {
-            PolygonMapObject polygonObject = (PolygonMapObject) object;
-            Polygon polygon = polygonObject.getPolygon();
-            float x = polygonObject.getProperties().get("x", Float.class);
-            float y = polygonObject.getProperties().get("y", Float.class);
-            Polygon poligonoTransformado = new Polygon(polygon.getVertices());
-            poligonoTransformado.setPosition(x, y);
-            if (Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) {
-                return true;
-            }
-        }
-        
-    }
-    for (MapObject object : mapa.getLayers().get("interactivosm").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
         if (object instanceof RectangleMapObject) {

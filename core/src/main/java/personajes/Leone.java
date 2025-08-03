@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Leone extends Personaje{
 	public Leone() {
-		super("Leone", 200, "Golpe");
+		super("Leone", 200, "EspadaCorte");
 	}
 	@Override
     protected void cargarTexturas() {
@@ -18,6 +18,19 @@ public class Leone extends Personaje{
         }
         animDerecha = new Animation<>(0.1f, framesDerecha, Animation.PlayMode.LOOP);
 
+        Array<TextureRegion> framesAtaqueDerecha = new Array<>();
+        for (int i = 1; i <= 6; i++) {
+        	framesAtaqueDerecha.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/personajes/akame/ataque/akame_derecha_atacando_" + i + ".png"))));
+        }
+        animAtaqueDerecha = new Animation<>(0.1f, framesAtaqueDerecha, Animation.PlayMode.LOOP);
+        
+        Array<TextureRegion> framesAtaqueIzquierda = new Array<>();
+        for (int i = 1; i <= 6; i++) {
+        	framesAtaqueIzquierda.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/personajes/akame/ataque/akame_izquierda_atacando_" + i + ".png"))));
+        }
+        animAtaqueIzquierda = new Animation<>(0.1f, framesAtaqueIzquierda, Animation.PlayMode.LOOP);
+
+        
         Array<TextureRegion> framesIzquierda = new Array<>();
         for (int i = 1; i <= 4; i++) {
             framesIzquierda.add(new TextureRegion(new Texture(Gdx.files.internal("imagenes/personajes/leone/leone_izquierda_moviendose_" + i + ".png"))));

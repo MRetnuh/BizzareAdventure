@@ -1,8 +1,9 @@
-## [4.5.1] - 2025-08-03
+## [4.5.7] - 2025-08-03
 ### Modificado
 - Colision del objeto interactivo
+- Desaparicion del objeto al golpearlo
 
-## [4.5.0] - 2025-08-02
+## [4.5.6] - 2025-08-02
 ### Añadido
 - Avance en la interacción de elementos
 

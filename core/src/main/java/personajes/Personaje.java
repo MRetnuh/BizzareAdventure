@@ -30,6 +30,7 @@ public abstract class Personaje {
 	    private boolean estaMuerto = false;
 	    private int habilidadEspecial = 1;
 	    private String nombreAtaque;
+	    private boolean estaAtacando = false;
 	    
 	    protected float x, y;
 	    protected float prevX, prevY;
@@ -44,7 +45,7 @@ public abstract class Personaje {
 	    protected Animation<TextureRegion> animAtaqueIzquierda;
 	    protected TextureRegion quietaDerecha;
 	    protected TextureRegion quietaIzquierda;
-	    protected boolean estaAtacando = false;
+	    
 	    
     public Personaje(String nombre, int velocidad, String nombreAtaque) {
         this.nombre = nombre;
@@ -266,5 +267,8 @@ public abstract class Personaje {
     }
     public void setVida(int nuevaVida) {
         this.vida = nuevaVida;
+    }
+    public boolean getEstaAtacando() {
+    	return this.estaAtacando;
     }
 }
