@@ -27,7 +27,8 @@ public void cambiarPersonaje() {
 	while(nuevoPersonaje == this.numeroPersonajeElegido) {
 		nuevoPersonaje= r.nextInt(personajesJugables.length);
 	}
-	this.numeroPersonajeElegido = nuevoPersonaje;
+	numeroPersonajeElegido = nuevoPersonaje;
+	personajeElegido= personajesJugables[numeroPersonajeElegido];
 	this.personajeElegido.aumentarVida();
 }
 	  

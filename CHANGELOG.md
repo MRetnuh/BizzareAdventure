@@ -1,3 +1,8 @@
+## [4.5.8] - 2025-08-04
+### Modificado
+- La colision del objeto desaparece junto a este
+- Cambio de nombre en variables y metodos en Partida
+
 ## [4.5.7] - 2025-08-03
 ### Modificado
 - Colision del objeto interactivo

@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -53,7 +54,6 @@ public class Partida implements Screen {
     private Label nombrePersonajeLabel;
     private Label vidaPersonajeLabel;
     private final Principal juego;
-
     
     public Partida(Principal juego) {
         this.juego = juego;
@@ -140,7 +140,7 @@ public void render(float delta) {
         Rectangle hitboxSuelo = new Rectangle(personajeElegido.getHitbox());
         hitboxSuelo.setY(hitboxSuelo.getY() - 1);
 
-        if (hayColision(hitboxSuelo)) {
+        if (detectarColision(hitboxSuelo)) {
             estaSobreElSuelo = true;
         }
 
@@ -151,11 +151,11 @@ public void render(float delta) {
 
         Rectangle hitboxTentativaX = new Rectangle(hitboxPersonaje);
         hitboxTentativaX.setPosition(nuevaX, personajeElegido.getY());
-        boolean colisionX = hayColision(hitboxTentativaX);
+        boolean colisionX = detectarColision(hitboxTentativaX);
 
         Rectangle hitboxTentativaY = new Rectangle(hitboxPersonaje);
         hitboxTentativaY.setPosition(personajeElegido.getX(), nuevaY);
-        boolean colisionY = hayColision(hitboxTentativaY);
+        boolean colisionY = detectarColision(hitboxTentativaY);
         if (colisionY) {
             personajeElegido.frenarCaida();
             personajeElegido.setY(personajeElegido.getPrevY());
@@ -197,46 +197,49 @@ private void detectarYEliminarTile(Rectangle hitbox) {
 
     boolean cajaCercana = false;
 
-    // Definimos un área de interacción más grande (por ejemplo 1 tile alrededor del personaje)
     int tileX = (int) (hitbox.x / tileLayer.getTileWidth());
     int tileY = (int) (hitbox.y / tileLayer.getTileHeight());
-
-    // Recorremos las celdas alrededor del personaje (un radio de 1 tile)
-    for (int x = tileX - 1; x <= tileX + 1; x++) {
-        for (int y = tileY - 1; y <= tileY + 1; y++) {
-            TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+    int checkX = tileX - 1;
+    while (checkX <= tileX + 1 && !cajaCercana) {
+        int checkY = tileY - 1;
+        while (checkY <= tileY + 1 &&  !cajaCercana) {
+            TiledMapTileLayer.Cell cell = tileLayer.getCell(checkX, checkY);
             if (cell != null && cell.getTile() != null) {
                 int tileId = cell.getTile().getId();
                 if (tileId != ID_TILE_TRANSPARENTE) {
                     cajaCercana = true;
-                    break;
                 }
             }
+            checkY++;
         }
-        if (cajaCercana) break;
+        checkX++;
     }
 
-    // Si hay una caja cerca y presiona E → elimina todas las cajas
-    if (cajaCercana && personajeElegido.getEstaAtacando()) {
-        int width = tileLayer.getWidth();
-        int height = tileLayer.getHeight();
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+
+    if (cajaCercana && personajeElegido.getEstaAtacando()) {
+        jugador.cambiarPersonaje();
+        int ancho = tileLayer.getWidth();
+        int altura = tileLayer.getHeight();
+        int mapX = 0;
+       while(mapX < ancho) {
+    	   int mapY = 0;
+            while(mapY < altura) {
+                TiledMapTileLayer.Cell cell = tileLayer.getCell(mapX, mapY);
                 if (cell != null && cell.getTile() != null) {
                     int tileId = cell.getTile().getId();
                     if (tileId != ID_TILE_TRANSPARENTE) {
                         cell.setTile(mapa.getTileSets().getTile(ID_TILE_TRANSPARENTE));
                     }
                 }
+                mapY++;
             }
+            mapX++;
         }
 
-        jugador.cambiarPersonaje();
     }
 }
-private Polygon rectToPolygon(Rectangle rect) {
+private Polygon convertirEnPoligono(Rectangle rect) {
     Polygon poly = new Polygon(new float[]{
         0, 0,
         rect.width, 0,
@@ -247,11 +250,13 @@ private Polygon rectToPolygon(Rectangle rect) {
     return poly;
 }
 
-private boolean hayColision(Rectangle hitbox) {
-	Polygon hitboxPoligono = rectToPolygon(hitbox);
+private boolean detectarColision(Rectangle hitbox) {
+    Polygon hitboxPoligono = convertirEnPoligono(hitbox);
+
     for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
+
         if (object instanceof RectangleMapObject) {
             Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
             if (hitbox.overlaps(rectMapa)) return true;
@@ -270,9 +275,12 @@ private boolean hayColision(Rectangle hitbox) {
     for (MapObject object : mapa.getLayers().get("interactivos").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
+
+        Rectangle rectMapa = null;
+
         if (object instanceof RectangleMapObject) {
-            Rectangle rectMapa = ((RectangleMapObject) object).getRectangle();
-            if (hitbox.overlaps(rectMapa)) return true;
+            rectMapa = ((RectangleMapObject) object).getRectangle();
+            if (!hitbox.overlaps(rectMapa)) continue;
         } else if (object instanceof PolygonMapObject) {
             PolygonMapObject polygonObject = (PolygonMapObject) object;
             Polygon polygon = polygonObject.getPolygon();
@@ -280,13 +288,44 @@ private boolean hayColision(Rectangle hitbox) {
             float y = polygonObject.getProperties().get("y", Float.class);
             Polygon poligonoTransformado = new Polygon(polygon.getVertices());
             poligonoTransformado.setPosition(x, y);
-            if (Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) {
-                return true;
-            }
+            if (!Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) continue;
+
+            rectMapa = poligonoTransformado.getBoundingRectangle();
         }
+
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
+        if (tileLayer != null) {
+            int startX = (int) (rectMapa.x / tileLayer.getTileWidth());
+            int endX = (int) ((rectMapa.x + rectMapa.width) / tileLayer.getTileWidth());
+            int startY = (int) (rectMapa.y / tileLayer.getTileHeight());
+            int endY = (int) ((rectMapa.y + rectMapa.height) / tileLayer.getTileHeight());
+
+            boolean tieneTile = false;
+            for (int x = startX; x <= endX; x++) {
+                for (int y = startY; y <= endY; y++) {
+                    TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+                    if (cell != null && cell.getTile() != null) {
+                        int tileId = cell.getTile().getId();
+                        if (tileId != ID_TILE_TRANSPARENTE) {
+                            tieneTile = true;
+                            break;
+                        }
+                    }
+                }
+                if (tieneTile) break;
+            }
+
+            if (!tieneTile) continue;
+        }
+
+        return true;
     }
+
+
+
     return false;
 }
+
 
 @Override public void resize(int width, int height) {}
 @Override public void pause() {}
