@@ -30,6 +30,7 @@ public void cambiarPersonaje() {
 	numeroPersonajeElegido = nuevoPersonaje;
 	personajeElegido= personajesJugables[numeroPersonajeElegido];
 	this.personajeElegido.aumentarVida();
+	//return this.personajeElegido
 }
 	  
 public Personaje getPersonajeElegido() {

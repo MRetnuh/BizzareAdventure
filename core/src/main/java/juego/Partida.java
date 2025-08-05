@@ -104,28 +104,13 @@ public class Partida implements Screen {
     contenedor.setBackground(skin.getDrawable("default-round"));
     contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight()); 
 
-    if (!musicaPartida.estaReproduciendo()) {
-        musicaPartida.show(); 
-    }
-
     stage.addActor(contenedor);
 
 }
-
-    
-    private void actualizarUI() {
-        nombrePersonajeLabel.setText("Nombre: " + personajeElegido.getNombre());
-        vidaPersonajeLabel.setText("Vida: " + personajeElegido.getVida());
-    }
-
-
 @Override
 public void render(float delta) {
 	
-    if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
-    	juego.setScreen(new Opciones(juego, Partida.this));
-        return;
-    }
+    
 
   
     Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
@@ -133,6 +118,10 @@ public void render(float delta) {
 
    
     if(personajeElegido.getVida() != 0) {
+    	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+    	juego.setScreen(new Opciones(juego, Partida.this));
+        return;
+    }
         boolean estaSobreElSuelo = false;
         Rectangle hitboxPersonaje = personajeElegido.getHitbox();
 
@@ -149,6 +138,9 @@ public void render(float delta) {
         float nuevaX = personajeElegido.getNuevaX(delta);
         float nuevaY = personajeElegido.getNuevaY(delta);
 
+        if (nuevaY < -190) {
+           personajeElegido.reducirVidaPorCaida();
+        }
         Rectangle hitboxTentativaX = new Rectangle(hitboxPersonaje);
         hitboxTentativaX.setPosition(nuevaX, personajeElegido.getY());
         boolean colisionX = detectarColision(hitboxTentativaX);
@@ -171,6 +163,7 @@ public void render(float delta) {
     }
     else {
     	musicaPartida.detenerMusica();
+    	personajeElegido.morir();
     }
 
 

@@ -26,7 +26,6 @@ public abstract class Personaje {
 	    private Texture texturaDerrota;
 	    private Image imagenDerrota;
 	    private Stage stage;
-	    private Musica musicaDerrota = new Musica("derrota");
 	    private boolean estaMuerto = false;
 	    private int habilidadEspecial = 1;
 	    private String nombreAtaque;
@@ -58,15 +57,13 @@ public abstract class Personaje {
 
     protected abstract void cargarTexturas();
 
-    private void morir() {
+    public void morir() {
         if (estaMuerto) return;
 
-        this.vida = 0;
         estaMuerto = true;
 
+        Musica musicaDerrota = new Musica("derrota");
         musicaDerrota.show();
-
-   
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
@@ -147,10 +144,6 @@ public abstract class Personaje {
             y += velocidadCaida * delta;
         } else {
             velocidadCaida = 0;
-        }
-
-        if (y < -190) {
-            morir();
         }
     }
 
@@ -270,5 +263,8 @@ public abstract class Personaje {
     }
     public boolean getEstaAtacando() {
     	return this.estaAtacando;
+    }
+    public void reducirVidaPorCaida() {
+    	this.vida = 0;
     }
 }
