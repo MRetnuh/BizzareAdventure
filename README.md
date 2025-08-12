@@ -12,6 +12,8 @@ aquí](https://github.com/MRetnuh/ProyectoFinalVideojuego6thYear/wiki)
 
 - Estado Actual del Proyecto: Progresando en el mapa mediante el desarrollo colisiones y mejoras en su diseño. Ademas, diseñando mas personajes. Interfaz de menu inicial casi terminada. Por ultimo, mejorando los movimientos de los personajes en el mapa.
 
+# [Link para ver Gampeplay del Juego](https://drive.google.com/file/d/1WjCwvz1GPO5MqzR_gW2p5_qQRF-ra9AW/view?usp=sharing)
+
 # Pasos de Instalación e importación del Proyecto:
 - Paso 1: Descargar del GitHub el zip del proyecto entero
   
