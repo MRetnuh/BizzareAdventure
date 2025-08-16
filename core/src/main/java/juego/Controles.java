@@ -32,10 +32,10 @@ public class Controles implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+    	this.stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(this.stage);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Label titulo = new Label("CONTROLES", EstiloTexto.ponerEstiloLabel(70, Color.WHITE));
         titulo.setAlignment(Align.center);
@@ -56,7 +56,7 @@ public class Controles implements Screen {
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
-                JUEGO.setScreen(new Opciones(JUEGO, this.screenAnterior));
+            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior));
             }
             return true;
         });
@@ -100,7 +100,7 @@ public class Controles implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+    	this.stage.dispose();
+    	this.skin.dispose();
     }
 }

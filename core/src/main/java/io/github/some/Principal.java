@@ -10,8 +10,8 @@ public class Principal extends Game {
 
     @Override
     public void create() {
-        musicaMenu = new Musica("primeraisla");
-        musicaMenu.show();
+    	this.musicaMenu = new Musica("primeraisla");
+    	this.musicaMenu.show();
         setScreen(new Menu(this));
     }
 

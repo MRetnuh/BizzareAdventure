@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Timer;
 
 import audios.EfectoSonido;
-import audios.Musica;
 
 public abstract class Personaje {
 	    private float velocidad;
@@ -26,7 +25,6 @@ public abstract class Personaje {
 	    private Texture texturaDerrota;
 	    private Image imagenDerrota;
 	    private Stage stage;
-	    private boolean estaMuerto = false;
 	    private int habilidadEspecial = 1;
 	    private String nombreAtaque;
 	    private boolean estaAtacando = false;
@@ -58,12 +56,6 @@ public abstract class Personaje {
     protected abstract void cargarTexturas();
 
     public void morir() {
-        if (estaMuerto) return;
-
-        estaMuerto = true;
-
-        Musica musicaDerrota = new Musica("derrota");
-        musicaDerrota.show();
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
@@ -73,25 +65,25 @@ public abstract class Personaje {
         Image fondoNegro = new Image(blackTexture);
         fondoNegro.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         fondoNegro.getColor().a = 0;
-        stage.addActor(fondoNegro);
+        this.stage.addActor(fondoNegro);
 
         fondoNegro.addAction(Actions.fadeIn(0.5f)); 
 
       
-        texturaDerrota = new Texture(Gdx.files.internal("imagenes/fondos/GameOver.png"));
-        imagenDerrota = new Image(texturaDerrota);
-        imagenDerrota.setSize(200, 50); 
-        imagenDerrota.setOrigin(imagenDerrota.getWidth() / 2f, imagenDerrota.getHeight() / 2f);
-        imagenDerrota.setPosition(
+        this.texturaDerrota = new Texture(Gdx.files.internal("imagenes/fondos/GameOver.png"));
+        this.imagenDerrota = new Image(texturaDerrota);
+        this.imagenDerrota.setSize(200, 50); 
+        this.imagenDerrota.setOrigin(imagenDerrota.getWidth() / 2f, imagenDerrota.getHeight() / 2f);
+        this.imagenDerrota.setPosition(
             (Gdx.graphics.getWidth() - imagenDerrota.getWidth()) / 2f,
             (Gdx.graphics.getHeight() - imagenDerrota.getHeight()) / 2f
         );
-        imagenDerrota.setScale(0.1f); 
-        imagenDerrota.getColor().a = 0; 
+        this.imagenDerrota.setScale(0.1f); 
+        this.imagenDerrota.getColor().a = 0; 
 
-        stage.addActor(imagenDerrota);
+        this.stage.addActor(imagenDerrota);
 
-        imagenDerrota.addAction(Actions.sequence(
+        this.imagenDerrota.addAction(Actions.sequence(
             Actions.delay(0.3f),
             Actions.parallel(
                 Actions.fadeIn(0.5f),
@@ -113,37 +105,37 @@ public abstract class Personaje {
     }
     
     public void dibujar(SpriteBatch batch, float delta) {
-        estadoTiempo += delta;
+    	this.estadoTiempo += delta;
 
         TextureRegion frame;
 
-        if (estaAtacando) {
-            frame = mirandoDerecha ? animAtaqueDerecha.getKeyFrame(estadoTiempo, false)
-                                   : animAtaqueIzquierda.getKeyFrame(estadoTiempo, false);
+        if (this.estaAtacando) {
+            frame = this.mirandoDerecha ? this.animAtaqueDerecha.getKeyFrame(this.estadoTiempo, false)
+                                   : this.animAtaqueIzquierda.getKeyFrame(this.estadoTiempo, false);
 
-            if ((mirandoDerecha && animAtaqueDerecha.isAnimationFinished(estadoTiempo)) ||
-                (!mirandoDerecha && animAtaqueIzquierda.isAnimationFinished(estadoTiempo))) {
-                estaAtacando = false;
-                estadoTiempo = 0; // reiniciar tiempo
+            if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.estadoTiempo)) ||
+                (!this.mirandoDerecha && this.animAtaqueIzquierda.isAnimationFinished(this.estadoTiempo))) {
+            	this.estaAtacando = false;
+            	this.estadoTiempo = 0; // reiniciar tiempo
             }
 
-        } else if (estaMoviendose) {
-            frame = mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo, true)
-                                   : animIzquierda.getKeyFrame(estadoTiempo, true);
+        } else if (this.estaMoviendose) {
+            frame = this.mirandoDerecha ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
+                                   : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
         } else {
-            frame = mirandoDerecha ? quietaDerecha : quietaIzquierda;
+            frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
-        batch.draw(frame, x, y);
+        batch.draw(frame, this.x, this.y);
     }
 
  
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
-            velocidadCaida += GRAVEDAD * delta;
-            y += velocidadCaida * delta;
+        	this.velocidadCaida += this.GRAVEDAD * delta;
+        	this.y += this.velocidadCaida * delta;
         } else {
-            velocidadCaida = 0;
+        	this.velocidadCaida = 0;
         }
     }
 
@@ -165,20 +157,19 @@ public abstract class Personaje {
         camara.update();
     }
     
-    private void atacar(float delta) {
+    public void atacar(float delta, float volumen) {
         float tiempoAtaque = 0f;
-		if (Gdx.input.isKeyPressed(Input.Keys.M) && !estaAtacando) {
-            estaAtacando = true;
+		if (Gdx.input.isKeyPressed(Input.Keys.M) && !this.estaAtacando) {
+			this.estaAtacando = true;
             tiempoAtaque = 0;
-            EfectoSonido efectoAtaque = new EfectoSonido(this.nombreAtaque);
-            efectoAtaque.reproducir(); // ⬅️ Solo una vez al iniciar el ataque
+            EfectoSonido.reproducir(this.nombreAtaque, volumen); // ⬅️ Solo una vez al iniciar el ataque
         }
 
-        if (estaAtacando) {
+        if (this.estaAtacando) {
             tiempoAtaque += delta;
 
-            if (tiempoAtaque > animAtaqueDerecha.getAnimationDuration()) {
-                estaAtacando = false;
+            if (tiempoAtaque > this.animAtaqueDerecha.getAnimationDuration()) {
+            	this.estaAtacando = false;
                 tiempoAtaque = 0f;
             }
         }
@@ -186,9 +177,9 @@ public abstract class Personaje {
 
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
-        estadoTiempo += delta;
-        estaMoviendose = nuevoX != x || nuevoY != y;
-        mirandoDerecha = nuevoX > x || (nuevoX == x && mirandoDerecha);
+    	this.estadoTiempo += delta;
+    	this.estaMoviendose = nuevoX != this.x || nuevoY != this.y;
+    	this.mirandoDerecha = nuevoX > this.x || (nuevoX == this.x && this.mirandoDerecha);
 
         float anchoSprite = 63;
         float altoSprite = 64;
@@ -197,13 +188,13 @@ public abstract class Personaje {
 
         nuevoY = Math.min(nuevoY, mapHeight - altoSprite);
 
-        x = nuevoX;
-        y = nuevoY;
+        this.x = nuevoX;
+        this.y = nuevoY;
     }
 
     public void guardarPosicionAnterior() {
-        prevX = x;
-        prevY = y;
+    	this.prevX = this.x;
+    	this.prevY = this.y;
     }
     
     public String getNombre() {
@@ -214,31 +205,29 @@ public abstract class Personaje {
     	return this.vida;
     }
     public Rectangle getHitbox() {
-        return new Rectangle(x, y, 16, 16); 
+        return new Rectangle(this.x, this.y, 16, 16); 
     }
     
     public float getNuevaX(float delta) {
-        float tempX = x;
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) tempX += velocidad * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) tempX -= velocidad * delta;
-        atacar(delta);
+        float tempX = this.x;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) tempX += this.velocidad * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) tempX -= this.velocidad * delta;
         return tempX;
     }
 
     public float getNuevaY(float delta) {
-        float tempY = y;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) tempY += velocidad * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) tempY -= velocidad * delta;
-        atacar(delta);
+        float tempY = this.y;
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) tempY += this.velocidad * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) tempY -= this.velocidad * delta;
         return tempY;
     }
 
     public float getX() {
-        return x;
+        return this.x;
     }
 
     public float getY() {
-        return y;
+        return this.y;
     }
 
     public void setStage(Stage stage) {
@@ -249,10 +238,10 @@ public abstract class Personaje {
     }
    
     public float getPrevY() {
-        return prevY;
+        return this.prevY;
     }
     public void setY(float prevY) {
-    	y = prevY;
+    	this.y = prevY;
     }
     public void setPosicion(float x, float y) {
         this.x = x;
@@ -264,7 +253,7 @@ public abstract class Personaje {
     public boolean getEstaAtacando() {
     	return this.estaAtacando;
     }
-    public void reducirVidaPorCaida() {
-    	this.vida = 0;
+    public void reducirVida() {
+    	this.vida--;
     }
 }

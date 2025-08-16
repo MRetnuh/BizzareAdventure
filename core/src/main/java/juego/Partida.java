@@ -54,6 +54,7 @@ public class Partida implements Screen {
     private Label nombrePersonajeLabel;
     private Label vidaPersonajeLabel;
     private final Principal juego;
+    private boolean gameOver = false;
     
     public Partida(Principal juego) {
         this.juego = juego;
@@ -63,40 +64,40 @@ public class Partida implements Screen {
     @Override
     public void show() {
     	
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
+    	this.stage = new Stage();
+        Gdx.input.setInputProcessor(this.stage);
 
       
-        mapa = new TmxMapLoader().load("mapacorregido.tmx");
-    mapRenderer = new OrthogonalTiledMapRenderer(mapa);
-    anchoMapa = mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class);
-    alturaMapa = mapa.getProperties().get("height", Integer.class) * mapa.getProperties().get("tileheight", Integer.class);
+        this.mapa = new TmxMapLoader().load("mapacorregido.tmx");
+        this.mapRenderer = new OrthogonalTiledMapRenderer(this.mapa);
+        this.anchoMapa = mapa.getProperties().get("width", Integer.class) * this.mapa.getProperties().get("tilewidth", Integer.class);
+        this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
     
     
-    camara = new OrthographicCamera();
-    camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camara = new OrthographicCamera();
+        this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
    
-    batch = new SpriteBatch();
-    personajesDisponibles = jugador.getListaPersonajes();
-    if(!jugador.getPartidaEmpezada()) {
-    jugador.generarPersonajeAleatorio();
+        this.batch = new SpriteBatch();
+        this.personajesDisponibles = jugador.getListaPersonajes();
+    if(!this.jugador.getPartidaEmpezada()) {
+    	this.jugador.generarPersonajeAleatorio();
     }
-    personajeElegido = jugador.getPersonajeElegido();
-    personajeElegido.setStage(stage);
+    this.personajeElegido = this.jugador.getPersonajeElegido();
+    this.personajeElegido.setStage(this.stage);
 
-    skin = new Skin(Gdx.files.internal("uiskin.json"));
+    this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    nombrePersonajeLabel = new Label("Nombre: " + personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-    nombrePersonajeLabel.setAlignment(Align.left);
+    this.nombrePersonajeLabel = new Label("Nombre: " + this.personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+    this.nombrePersonajeLabel.setAlignment(Align.left);
     
-    vidaPersonajeLabel = new Label("Vida: " + personajeElegido.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-    vidaPersonajeLabel.setAlignment(Align.left);
+    this.vidaPersonajeLabel = new Label("Vida: " + this.personajeElegido.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+    this.vidaPersonajeLabel.setAlignment(Align.left);
     
     Table table = new Table();
     table.left().top();
-    table.add(nombrePersonajeLabel).size(350, 50).padBottom(10).row();
-    table.add(vidaPersonajeLabel).size(350, 50);
+    table.add(this.nombrePersonajeLabel).size(350, 50).padBottom(10).row();
+    table.add(this.vidaPersonajeLabel).size(350, 50);
 
     
     Container<Table> contenedor = new Container<>(table);
@@ -104,85 +105,85 @@ public class Partida implements Screen {
     contenedor.setBackground(skin.getDrawable("default-round"));
     contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight()); 
 
-    stage.addActor(contenedor);
+    this.stage.addActor(contenedor);
 
 }
 @Override
 public void render(float delta) {
 	
-    
-
-  
     Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
    
-    if(personajeElegido.getVida() != 0) {
+    if(this.personajeElegido.getVida() != 0) {
     	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
-    	juego.setScreen(new Opciones(juego, Partida.this));
+    		this.juego.setScreen(new Opciones(this.juego, Partida.this));
         return;
     }
         boolean estaSobreElSuelo = false;
-        Rectangle hitboxPersonaje = personajeElegido.getHitbox();
+        Rectangle hitboxPersonaje = this.personajeElegido.getHitbox();
 
-        personajeElegido.guardarPosicionAnterior();
-        Rectangle hitboxSuelo = new Rectangle(personajeElegido.getHitbox());
+        this.personajeElegido.guardarPosicionAnterior();
+        Rectangle hitboxSuelo = new Rectangle(this.personajeElegido.getHitbox());
         hitboxSuelo.setY(hitboxSuelo.getY() - 1);
 
         if (detectarColision(hitboxSuelo)) {
             estaSobreElSuelo = true;
         }
 
-        personajeElegido.actualizarGravedad(delta, estaSobreElSuelo, alturaMapa);
+        this.personajeElegido.actualizarGravedad(delta, estaSobreElSuelo, this.alturaMapa);
         
-        float nuevaX = personajeElegido.getNuevaX(delta);
-        float nuevaY = personajeElegido.getNuevaY(delta);
+        float nuevaX = this.personajeElegido.getNuevaX(delta);
+        float nuevaY = this.personajeElegido.getNuevaY(delta);
 
         if (nuevaY < -190) {
-           personajeElegido.reducirVidaPorCaida();
+        	this.personajeElegido.reducirVida();
         }
         Rectangle hitboxTentativaX = new Rectangle(hitboxPersonaje);
-        hitboxTentativaX.setPosition(nuevaX, personajeElegido.getY());
+        hitboxTentativaX.setPosition(nuevaX, this.personajeElegido.getY());
         boolean colisionX = detectarColision(hitboxTentativaX);
 
         Rectangle hitboxTentativaY = new Rectangle(hitboxPersonaje);
-        hitboxTentativaY.setPosition(personajeElegido.getX(), nuevaY);
+        hitboxTentativaY.setPosition(this.personajeElegido.getX(), nuevaY);
         boolean colisionY = detectarColision(hitboxTentativaY);
         if (colisionY) {
-            personajeElegido.frenarCaida();
-            personajeElegido.setY(personajeElegido.getPrevY());
+        	this.personajeElegido.frenarCaida();
+        	this.personajeElegido.setY(this.personajeElegido.getPrevY());
         }
         if (!colisionX || !colisionY) {
-            float nuevoX = !colisionX ? nuevaX : personajeElegido.getX();
-            float nuevoY = !colisionY ? nuevaY : personajeElegido.getY();
-            personajeElegido.aplicarMovimiento(nuevoX, nuevoY, delta, anchoMapa, alturaMapa);
+            float nuevoX = !colisionX ? nuevaX : this.personajeElegido.getX();
+            float nuevoY = !colisionY ? nuevaY : this.personajeElegido.getY();
+            this.personajeElegido.aplicarMovimiento(nuevoX, nuevoY, delta, this.anchoMapa, this.alturaMapa);
         }
-        
-        detectarYEliminarTile(personajeElegido.getHitbox());
-        personajeElegido.actualizarCamara(camara, anchoMapa, alturaMapa);
+        this.personajeElegido.atacar(delta, this.musicaPartida.getVolumen());
+        detectarYEliminarTile(this.personajeElegido.getHitbox());
+        this.personajeElegido.actualizarCamara(this.camara, this.anchoMapa, this.alturaMapa);
     }
     else {
-    	musicaPartida.detenerMusica();
-    	personajeElegido.morir();
+    	if(!this.gameOver) {
+    		this.gameOver = true;
+    		this.musicaPartida.cambiarMusica("derrota");
+    		this.personajeElegido.morir();
+    	}
     }
 
 
 
     
-    mapRenderer.setView(camara);
-    mapRenderer.render();
+    this.mapRenderer.setView(this.camara);
+    this.mapRenderer.render();
 
     
-    batch.setProjectionMatrix(camara.combined);
-    batch.begin();
-    personajeElegido.dibujar(batch, delta); 
-    batch.end();
-    stage.act(delta);
-    stage.draw();
+    this.batch.setProjectionMatrix(this.camara.combined);
+    this.batch.begin();
+    this.personajeElegido.dibujar(this.batch, delta); 
+    this.batch.end();
+    this.stage.act(delta);
+    this.stage.draw();
 }
 	
 private void detectarYEliminarTile(Rectangle hitbox) {
-    TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
+    TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
 
     if (tileLayer == null) {
         return;
@@ -199,7 +200,7 @@ private void detectarYEliminarTile(Rectangle hitbox) {
             TiledMapTileLayer.Cell cell = tileLayer.getCell(checkX, checkY);
             if (cell != null && cell.getTile() != null) {
                 int tileId = cell.getTile().getId();
-                if (tileId != ID_TILE_TRANSPARENTE) {
+                if (tileId != this.ID_TILE_TRANSPARENTE) {
                     cajaCercana = true;
                 }
             }
@@ -210,8 +211,8 @@ private void detectarYEliminarTile(Rectangle hitbox) {
 
 
 
-    if (cajaCercana && personajeElegido.getEstaAtacando()) {
-        jugador.cambiarPersonaje();
+    if (cajaCercana && this.personajeElegido.getEstaAtacando()) {
+    	this.jugador.cambiarPersonaje();
         int ancho = tileLayer.getWidth();
         int altura = tileLayer.getHeight();
         int mapX = 0;
@@ -221,8 +222,8 @@ private void detectarYEliminarTile(Rectangle hitbox) {
                 TiledMapTileLayer.Cell cell = tileLayer.getCell(mapX, mapY);
                 if (cell != null && cell.getTile() != null) {
                     int tileId = cell.getTile().getId();
-                    if (tileId != ID_TILE_TRANSPARENTE) {
-                        cell.setTile(mapa.getTileSets().getTile(ID_TILE_TRANSPARENTE));
+                    if (tileId != this.ID_TILE_TRANSPARENTE) {
+                        cell.setTile(this.mapa.getTileSets().getTile(this.ID_TILE_TRANSPARENTE));
                     }
                 }
                 mapY++;
@@ -246,7 +247,7 @@ private Polygon convertirEnPoligono(Rectangle rect) {
 private boolean detectarColision(Rectangle hitbox) {
     Polygon hitboxPoligono = convertirEnPoligono(hitbox);
 
-    for (MapObject object : mapa.getLayers().get("colisiones").getObjects()) {
+    for (MapObject object : this.mapa.getLayers().get("colisiones").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
 
@@ -265,7 +266,7 @@ private boolean detectarColision(Rectangle hitbox) {
             }
         }
     }
-    for (MapObject object : mapa.getLayers().get("interactivos").getObjects()) {
+    for (MapObject object : this.mapa.getLayers().get("interactivos").getObjects()) {
         String clase = object.getProperties().get("type", String.class);
         if (clase == null || !clase.equals("Tierra")) continue;
 
@@ -286,7 +287,7 @@ private boolean detectarColision(Rectangle hitbox) {
             rectMapa = poligonoTransformado.getBoundingRectangle();
         }
 
-        TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapa.getLayers().get("cajasInteractivas");
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
         if (tileLayer != null) {
             int startX = (int) (rectMapa.x / tileLayer.getTileWidth());
             int endX = (int) ((rectMapa.x + rectMapa.width) / tileLayer.getTileWidth());
@@ -299,7 +300,7 @@ private boolean detectarColision(Rectangle hitbox) {
                     TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
                     if (cell != null && cell.getTile() != null) {
                         int tileId = cell.getTile().getId();
-                        if (tileId != ID_TILE_TRANSPARENTE) {
+                        if (tileId != this.ID_TILE_TRANSPARENTE) {
                             tieneTile = true;
                             break;
                         }
@@ -327,9 +328,9 @@ private boolean detectarColision(Rectangle hitbox) {
 
 @Override
 public void dispose() {
-	mapa.dispose();
-    mapRenderer.dispose();
-    batch.dispose();
-    stage.dispose();
+	this.mapa.dispose();
+	this.mapRenderer.dispose();
+	this.batch.dispose();
+	this.stage.dispose();
 }
 }

@@ -28,21 +28,21 @@ public class Configuracion implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+    	this.stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(this.stage);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Label titulo = new Label("Sonido", EstiloTexto.ponerEstiloLabel(60, Color.WHITE));
         titulo.setAlignment(Align.center);
 
-        Label volumenLabel = new Label("Volumen: " + (int)(musicaConfig.getVolumen() * 100) + "%", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
+        Label volumenLabel = new Label("Volumen: " + (int)(this.musicaConfig.getVolumen() * 100) + "%", EstiloTexto.ponerEstiloLabel(36, Color.WHITE));
 
         Slider volumenSlider = new Slider(0f, 1f, 0.01f, false, skin);
-        volumenSlider.setValue(musicaConfig.getVolumen());
+        volumenSlider.setValue(this.musicaConfig.getVolumen());
         volumenSlider.addListener(event -> {
             float nuevoVolumen = volumenSlider.getValue();
-            musicaConfig.setVolumen(nuevoVolumen);
+            this.musicaConfig.setVolumen(nuevoVolumen);
             volumenLabel.setText("Volumen: " + (int)(nuevoVolumen * 100) + "%");
             return false;
         });
@@ -50,7 +50,7 @@ public class Configuracion implements Screen {
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
-                JUEGO.setScreen(new Opciones(JUEGO, this.screenAnterior));
+            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior));
             }
             return true;
         });
@@ -64,15 +64,15 @@ public class Configuracion implements Screen {
         tabla.add(volumenSlider).width(300).padBottom(30).row();
         tabla.add(volverBtn).size(200, 50);
 
-        stage.addActor(tabla);
+        this.stage.addActor(tabla);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
-        stage.draw();
+        this.stage.act(delta);
+        this.stage.draw();
     }
 
     @Override public void resize(int width, int height) {}
@@ -82,7 +82,7 @@ public class Configuracion implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+    	this.stage.dispose();
+    	this.skin.dispose();
     }
 }

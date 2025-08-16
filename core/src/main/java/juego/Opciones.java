@@ -35,10 +35,10 @@ public class Opciones implements Screen {
     
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+    	this.stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(this.stage);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Label titulo = new Label("Opciones", EstiloTexto.ponerEstiloLabel(60, Color.WHITE));
         titulo.setAlignment(Align.center);
@@ -78,15 +78,15 @@ public class Opciones implements Screen {
         table.add(controlesBtn).size(215, 50).padBottom(20).row();
         table.add(volverBtn).size(215, 50);
 
-        stage.addActor(table);
+        this.stage.addActor(table);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
-        stage.draw();
+        this.stage.act(delta);
+        this.stage.draw();
     }
 
     @Override public void resize(int width, int height) {}
@@ -96,8 +96,8 @@ public class Opciones implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+    	this.stage.dispose();
+    	this.skin.dispose();
     }
 }
 

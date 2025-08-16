@@ -36,16 +36,16 @@ public class Menu implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage();
+        this.stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
     
-        fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
-        fondoImagen = new Image(fondoTextura);
-        fondoImagen.setFillParent(true);
-        stage.addActor(fondoImagen);
+        this.fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
+        this.fondoImagen = new Image(this.fondoTextura);
+        this.fondoImagen.setFillParent(true);
+        this.stage.addActor(fondoImagen);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
   
 
         
@@ -59,7 +59,6 @@ public class Menu implements Screen {
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                musicaMenu.detenerMusica();
             	musicaMenu.cambiarMusica("Balatro");
                 JUEGO.setScreen(new Partida(JUEGO));
             }
@@ -91,13 +90,13 @@ public class Menu implements Screen {
         table.add(opcionesBtn).size(200, 50).padBottom(20).row();
         table.add(salirBtn).size(200, 50);
 
-        stage.addActor(table);
+        this.stage.addActor(table);
     }
 
     @Override
     public void render(float delta) {          
-        stage.act(delta);
-        stage.draw();
+        this.stage.act(delta);
+        this.stage.draw();
     }
 
     @Override public void resize(int width, int height) {}
@@ -107,8 +106,8 @@ public class Menu implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        fondoTextura.dispose();
+        this.stage.dispose();
+        this.skin.dispose();
+        this.fondoTextura.dispose();
     }
 }

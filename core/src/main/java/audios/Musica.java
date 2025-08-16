@@ -17,39 +17,35 @@ public Musica(String nombreMusica) {
 
 @Override
 public void show() {
-    stage = new Stage();
-    Gdx.input.setInputProcessor(stage);
+    this.stage = new Stage();
+    Gdx.input.setInputProcessor(this.stage);
 
-    musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/"+ nombreMusica + ".mp3"));
-    musicaFondo.setLooping(true);
-    musicaFondo.setVolume(volumen);
-    musicaFondo.play();
-}
-
-public void detenerMusica() {
-    musicaFondo.stop();
+    this.musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musica/"+ this.nombreMusica + ".mp3"));
+    this.musicaFondo.setLooping(true);
+    this.musicaFondo.setVolume(this.volumen);
+    this.musicaFondo.play();
 }
 
 public void subirVolumen() {
-    volumen = Math.min(1f, volumen + 0.1f);
-    musicaFondo.setVolume(volumen);
+    this.volumen = Math.min(1f, this.volumen + 0.1f);
+    this.musicaFondo.setVolume(this.volumen);
 }
 
 public void bajarVolumen() {
-    volumen = Math.max(0f, volumen - 0.1f);
-    musicaFondo.setVolume(volumen);
+    this.volumen = Math.max(0f, volumen - 0.1f);
+    this.musicaFondo.setVolume(volumen);
 }
 
 public void setVolumen(float nuevoVolumen) {
 	this.volumen = Math.max(0f, Math.min(1f, nuevoVolumen));
-	if (musicaFondo != null) {
-		musicaFondo.setVolume(volumen);
+	if (this.musicaFondo != null) {
+		this.musicaFondo.setVolume(this.volumen);
 	}
 }
 
 
 public void cambiarMusica(String nombreArchivo) {
-	detenerMusica();
+	this.musicaFondo.stop();
 	this.nombreMusica = nombreArchivo;
 	show();
 }
