@@ -28,14 +28,17 @@ public abstract class Personaje {
 	    private int habilidadEspecial = 1;
 	    private String nombreAtaque;
 	    private boolean estaAtacando = false;
+	    private boolean mirandoDerecha = true;
+	    private boolean estaMoviendose = false;
+	    private boolean estaSaltando = false;
+	    private boolean moviendoDerecha = false;
+	    private boolean moviendoIzquierda = false;
+	    private final float GRAVEDAD = -500;
+	    private float x, y;
+	    private float prevX, prevY;
+        private float estadoTiempo = 0f;
+        private float velocidadCaida = 0;
 	    
-	    protected float x, y;
-	    protected float prevX, prevY;
-	    protected float estadoTiempo = 0f;
-	    protected float velocidadCaida = 0;
-	    protected final float GRAVEDAD = -500;
-	    protected boolean mirandoDerecha = true;
-	    protected boolean estaMoviendose = false;
 	    protected Animation<TextureRegion> animDerecha;
 	    protected Animation<TextureRegion> animIzquierda;
 	    protected Animation<TextureRegion> animAtaqueDerecha;
@@ -156,13 +159,13 @@ public abstract class Personaje {
         camara.position.set(camX, camY, 0);
         camara.update();
     }
-    
+
     public void atacar(float delta, float volumen) {
         float tiempoAtaque = 0f;
 		if (Gdx.input.isKeyPressed(Input.Keys.M) && !this.estaAtacando) {
 			this.estaAtacando = true;
             tiempoAtaque = 0;
-            EfectoSonido.reproducir(this.nombreAtaque, volumen); // ⬅️ Solo una vez al iniciar el ataque
+            EfectoSonido.reproducir(this.nombreAtaque, volumen); 
         }
 
         if (this.estaAtacando) {
@@ -172,6 +175,13 @@ public abstract class Personaje {
             	this.estaAtacando = false;
                 tiempoAtaque = 0f;
             }
+        }
+    }
+
+
+    public void iniciarAtaque() {
+        if (!estaAtacando) { // evita reiniciar el ataque si ya está en curso
+            estaAtacando = true;
         }
     }
 
@@ -197,6 +207,12 @@ public abstract class Personaje {
     	this.prevY = this.y;
     }
     
+    public void frenarCaida() {
+        this.velocidadCaida = 0;
+    }
+    public void reducirVida() {
+    	this.vida--;
+    }
     public String getNombre() {
     	return this.nombre;
     }
@@ -210,15 +226,14 @@ public abstract class Personaje {
     
     public float getNuevaX(float delta) {
         float tempX = this.x;
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) tempX += this.velocidad * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) tempX -= this.velocidad * delta;
+        if (this.moviendoDerecha) tempX += this.velocidad * delta;
+        if (this.moviendoIzquierda) tempX -= this.velocidad * delta;
         return tempX;
     }
 
     public float getNuevaY(float delta) {
         float tempY = this.y;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) tempY += this.velocidad * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) tempY -= this.velocidad * delta;
+        if (this.estaSaltando) tempY += this.velocidad * delta;
         return tempY;
     }
 
@@ -233,10 +248,6 @@ public abstract class Personaje {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    public void frenarCaida() {
-        this.velocidadCaida = 0;
-    }
-   
     public float getPrevY() {
         return this.prevY;
     }
@@ -253,7 +264,32 @@ public abstract class Personaje {
     public boolean getEstaAtacando() {
     	return this.estaAtacando;
     }
-    public void reducirVida() {
-    	this.vida--;
+    public void setEstaAtacando(boolean atacando) {
+        this.estaAtacando = atacando;
     }
+
+    public void setEstaMoviendose(boolean moviendose) {
+        this.estaMoviendose = moviendose;
+    }
+
+    public boolean getEstaMoviendose() {
+        return estaMoviendose;
+    }
+    public void setMoviendoDerecha(boolean moviendo) {
+        this.moviendoDerecha = moviendo;
+    }
+
+    public void setMoviendoIzquierda(boolean moviendo) {
+        this.moviendoIzquierda = moviendo;
+    }
+
+    public void setEstaSaltando(boolean moviendo) {
+    	this.estaSaltando = moviendo;
+    }
+    
+    public String getNombreAtaque() {
+    	return this.nombreAtaque;
+    }
+
+   
 }

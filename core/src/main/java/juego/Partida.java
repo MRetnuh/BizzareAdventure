@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Align;
 
 import audios.Musica;
 import estilos.EstiloTexto;
-import eventos.EmisorEventos;
+import input.InputController;
 import io.github.some.Principal;
 import jugadores.Jugador;
 import personajes.Personaje;
@@ -85,7 +85,7 @@ public class Partida implements Screen {
     }
     this.personajeElegido = this.jugador.getPersonajeElegido();
     this.personajeElegido.setStage(this.stage);
-
+    Gdx.input.setInputProcessor(new InputController(this, personajeElegido));
     this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     this.nombrePersonajeLabel = new Label("Nombre: " + this.personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
@@ -108,6 +108,11 @@ public class Partida implements Screen {
     this.stage.addActor(contenedor);
 
 }
+    public void abrirOpciones() {
+        juego.setScreen(new Opciones(juego, this));
+    }
+
+    
 @Override
 public void render(float delta) {
 	
@@ -116,10 +121,6 @@ public void render(float delta) {
 
    
     if(this.personajeElegido.getVida() != 0) {
-    	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
-    		this.juego.setScreen(new Opciones(this.juego, Partida.this));
-        return;
-    }
         boolean estaSobreElSuelo = false;
         Rectangle hitboxPersonaje = this.personajeElegido.getHitbox();
 
@@ -319,7 +320,6 @@ private boolean detectarColision(Rectangle hitbox) {
 
     return false;
 }
-
 
 @Override public void resize(int width, int height) {}
 @Override public void pause() {}

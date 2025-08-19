@@ -1,3 +1,9 @@
+## [4.6.9] - 2025-08-19
+### Añadido
+- Creacion de la clase InputProcessor
+### Modificado
+- El registro de las teclas siendo presionadas ahora lo realiza la clase InputProcessor con el uso InputProcessor
+
 ## [4.5.9] - 2025-08-16
 ### Modificado
 - El volumen del sonido de ataque ahora esta compartido con el de la musica, de modo que cuando el volumen de musica esta bajo, el del sonido tambien. La musica de derrota tambien. 
