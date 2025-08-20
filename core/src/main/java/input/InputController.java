@@ -42,6 +42,8 @@ public class InputController implements InputProcessor {
                 
             case Input.Keys.P:
                 this.partida.abrirOpciones();
+                this.personaje.setMoviendoIzquierda(false);
+                this.personaje.setMoviendoDerecha(false);
                 break;
             	
         }
