@@ -1,5 +1,8 @@
 package juego;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -44,7 +47,10 @@ public class Partida implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camara;
     private SpriteBatch batch;
+    private InputController inputController;
     private Personaje personajeElegido;
+    private Set<String> cajasDestruidas = new HashSet<>();
+
     int anchoMapa; 
     int alturaMapa;
     private MapObject objetoInteractivoActual = null;
@@ -55,6 +61,8 @@ public class Partida implements Screen {
     private Label vidaPersonajeLabel;
     private final Principal juego;
     private boolean gameOver = false;
+    float nuevaX;
+    float nuevaY;
     
     public Partida(Principal juego) {
         this.juego = juego;
@@ -72,7 +80,7 @@ public class Partida implements Screen {
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.mapa);
         this.anchoMapa = mapa.getProperties().get("width", Integer.class) * this.mapa.getProperties().get("tilewidth", Integer.class);
         this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
-    
+        restaurarEstadoCajas();
     
         this.camara = new OrthographicCamera();
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -85,7 +93,8 @@ public class Partida implements Screen {
     }
     this.personajeElegido = this.jugador.getPersonajeElegido();
     this.personajeElegido.setStage(this.stage);
-    Gdx.input.setInputProcessor(new InputController(this, personajeElegido));
+    inputController = new InputController(this, personajeElegido);
+    Gdx.input.setInputProcessor(inputController);
     this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     this.nombrePersonajeLabel = new Label("Nombre: " + this.personajeElegido.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
@@ -134,8 +143,8 @@ public void render(float delta) {
 
         this.personajeElegido.actualizarGravedad(delta, estaSobreElSuelo, this.alturaMapa);
         
-        float nuevaX = this.personajeElegido.getNuevaX(delta);
-        float nuevaY = this.personajeElegido.getNuevaY(delta);
+         nuevaX = this.personajeElegido.getNuevaX(delta);
+         nuevaY = this.personajeElegido.getNuevaY(delta);
 
         if (nuevaY < -190) {
         	this.personajeElegido.reducirVida();
@@ -182,6 +191,22 @@ public void render(float delta) {
     this.stage.act(delta);
     this.stage.draw();
 }
+
+private void actualizarHUD() {
+    this.nombrePersonajeLabel.setText("Nombre: " + this.personajeElegido.getNombre());
+    this.vidaPersonajeLabel.setText("Vida: " + this.personajeElegido.getVida());
+}
+
+private void restaurarEstadoCajas() {
+    TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
+    for (String key : cajasDestruidas) {
+        String[] partes = key.split("_");
+        int x = Integer.parseInt(partes[0]);
+        int y = Integer.parseInt(partes[1]);
+        tileLayer.setCell(x, y, null);
+    }
+}
+
 	
 private void detectarYEliminarTile(Rectangle hitbox) {
     TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
@@ -213,7 +238,9 @@ private void detectarYEliminarTile(Rectangle hitbox) {
 
 
     if (cajaCercana && this.personajeElegido.getEstaAtacando()) {
-    	this.jugador.cambiarPersonaje();
+    	this.personajeElegido =  this.jugador.cambiarPersonaje(this.nuevaX, this.nuevaY);
+    	 inputController.setPersonaje(this.personajeElegido);
+    	 actualizarHUD();
         int ancho = tileLayer.getWidth();
         int altura = tileLayer.getHeight();
         int mapX = 0;
@@ -224,6 +251,7 @@ private void detectarYEliminarTile(Rectangle hitbox) {
                 if (cell != null && cell.getTile() != null) {
                     int tileId = cell.getTile().getId();
                     if (tileId != this.ID_TILE_TRANSPARENTE) {
+                    	  cajasDestruidas.add(mapX + "_" + mapY);
                         cell.setTile(this.mapa.getTileSets().getTile(this.ID_TILE_TRANSPARENTE));
                     }
                 }

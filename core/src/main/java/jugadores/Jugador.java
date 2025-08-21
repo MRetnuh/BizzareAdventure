@@ -22,15 +22,16 @@ public Personaje[] getListaPersonajes() {
 	return this.personajesJugables;
 }
 
-public void cambiarPersonaje() {
+public Personaje cambiarPersonaje(float x, float y) {
 	int nuevoPersonaje = 0;
 	while(nuevoPersonaje == this.numeroPersonajeElegido) {
 		nuevoPersonaje= r.nextInt(personajesJugables.length);
 	}
 	numeroPersonajeElegido = nuevoPersonaje;
 	personajeElegido= personajesJugables[numeroPersonajeElegido];
+	personajeElegido.cargarUbicaciones(x, y);
 	this.personajeElegido.aumentarVida();
-	//return this.personajeElegido
+	return this.personajeElegido;
 }
 	  
 public Personaje getPersonajeElegido() {

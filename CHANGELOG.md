@@ -1,3 +1,8 @@
+## [5.6.9] - 2025-08-19
+### Modificado
+- Destruccion permanente de la caja, Ya no reaparece al presionar opciones.
+- 
+
 ## [4.6.9] - 2025-08-19
 ### Añadido
 - Creacion de la clase InputProcessor

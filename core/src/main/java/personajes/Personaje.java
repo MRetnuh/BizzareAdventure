@@ -58,6 +58,11 @@ public abstract class Personaje {
 
     protected abstract void cargarTexturas();
 
+    public void cargarUbicaciones(float x, float y) {
+    	this.x = x;
+    	this.y = y;
+    }
+    
     public void morir() {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
@@ -291,5 +296,6 @@ public abstract class Personaje {
     	return this.nombreAtaque;
     }
 
+    
    
 }

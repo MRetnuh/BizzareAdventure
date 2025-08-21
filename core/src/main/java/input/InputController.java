@@ -10,10 +10,14 @@ import personajes.Personaje;
 public class InputController implements InputProcessor {
 
     private final Partida partida;
-    private final Personaje personaje;
+    private Personaje personaje;
 
     public InputController(Partida partida, Personaje personaje) {
         this.partida = partida;
+        this.personaje = personaje;
+    }
+    
+    public void setPersonaje(Personaje personaje) {
         this.personaje = personaje;
     }
 
@@ -44,6 +48,8 @@ public class InputController implements InputProcessor {
                 this.partida.abrirOpciones();
                 this.personaje.setMoviendoIzquierda(false);
                 this.personaje.setMoviendoDerecha(false);
+                this.personaje.setEstaSaltando(false);
+                this.personaje.setEstaAtacando(false);
                 break;
             	
         }
