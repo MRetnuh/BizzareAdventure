@@ -1,7 +1,7 @@
-## [5.6.9] - 2025-08-19
+## [5.6.9] - 2025-08-20
 ### Modificado
 - Destruccion permanente de la caja, Ya no reaparece al presionar opciones.
-- 
+- Cambio de personaje y HUD al instante de ser destruida la caja.
 
 ## [4.6.9] - 2025-08-19
 ### Añadido
