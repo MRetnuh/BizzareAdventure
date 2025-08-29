@@ -1,4 +1,4 @@
-## [5.7.9] - 2025-08-20
+## [5.7.9] - 2025-08-29
 ### Añadido
 - Implementacion de enemigo moviendose en el mapa.
 
