@@ -1,3 +1,7 @@
+## [5.7.9] - 2025-08-20
+### Añadido
+- Implementacion de enemigo moviendose en el mapa.
+
 ## [5.6.9] - 2025-08-20
 ### Modificado
 - Destruccion permanente de la caja, Ya no reaparece al presionar opciones.

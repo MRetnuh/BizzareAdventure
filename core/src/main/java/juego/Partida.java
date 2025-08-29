@@ -4,20 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -35,6 +31,7 @@ import estilos.EstiloTexto;
 import input.InputController;
 import io.github.some.Principal;
 import jugadores.Jugador;
+import personajes.Enemigo;
 import personajes.Personaje;
 
 
@@ -56,6 +53,7 @@ public class Partida implements Screen {
     private MapObject objetoInteractivoActual = null;
     private final int ID_TILE_TRANSPARENTE = 0;
     private Personaje[] personajesDisponibles;
+    private Enemigo enemigo;
     private int indicePersonajeActual = 0;
     private Label nombrePersonajeLabel;
     private Label vidaPersonajeLabel;
@@ -84,7 +82,7 @@ public class Partida implements Screen {
     
         this.camara = new OrthographicCamera();
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+        enemigo = new Enemigo(400, 928); 
    
         this.batch = new SpriteBatch();
         this.personajesDisponibles = jugador.getListaPersonajes();
@@ -190,6 +188,10 @@ public void render(float delta) {
     this.batch.end();
     this.stage.act(delta);
     this.stage.draw();
+    enemigo.actualizarIA(delta, personajeElegido.getX());
+    batch.begin();
+    enemigo.dibujar(batch, delta);
+    batch.end();
 }
 
 private void actualizarHUD() {
