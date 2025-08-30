@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import juego.Controles;
+
 import audios.Musica;
 import estilos.EstiloTexto;
 import io.github.some.Principal;
