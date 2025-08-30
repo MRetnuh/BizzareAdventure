@@ -122,7 +122,7 @@ public class Controles implements InputProcessor {
     }
     
     public boolean espacio() { 
-    	return space; 
+    	return atacar2; 
     }
     
     public boolean enter() { 
