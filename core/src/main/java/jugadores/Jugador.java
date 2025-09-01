@@ -1,28 +1,43 @@
 package jugadores;
 
+import java.util.Random;
+
 import personajes.Akame;
 import personajes.Leone;
 import personajes.Personaje;
 
 public class Jugador {
-    private Personaje personaje1;
-    private Personaje personaje2;
+      private boolean partidaEmpezada = false;
+	  private Personaje[] personajesJugables = {new Akame(), new Leone()};
+	  private int numeroPersonajeElegido;
+	  private Personaje personajeElegido;
+	  private Random r = new Random();
+public void generarPersonajeAleatorio() {
+	numeroPersonajeElegido= r.nextInt(personajesJugables.length);
+	personajeElegido = personajesJugables[numeroPersonajeElegido];
+	this.partidaEmpezada = true;
+}
 
-    public Jugador() {
-        this.personaje1 = new Akame();
-        this.personaje2 = new Leone();
-    }
+public Personaje[] getListaPersonajes() {
+	return this.personajesJugables;
+}
 
-    public Personaje getPersonaje1() {
-        return personaje1;
-    }
-
-    public Personaje getPersonaje2() {
-        return personaje2;
-    }
-
-    public void setPosicionesIniciales(float x1, float y1, float x2, float y2) {
-        personaje1.cargarUbicaciones(x1, y1);
-        personaje2.cargarUbicaciones(x2, y2);
-    }
+public Personaje cambiarPersonaje(float x, float y) {
+	int nuevoPersonaje = 0;
+	while(nuevoPersonaje == this.numeroPersonajeElegido) {
+		nuevoPersonaje= r.nextInt(personajesJugables.length);
+	}
+	numeroPersonajeElegido = nuevoPersonaje;
+	personajeElegido= personajesJugables[numeroPersonajeElegido];
+	personajeElegido.cargarUbicaciones(x, y);
+	this.personajeElegido.aumentarVida();
+	return this.personajeElegido;
+}
+	  
+public Personaje getPersonajeElegido() {
+	return this.personajeElegido;
+}
+public boolean getPartidaEmpezada() {
+	return this.partidaEmpezada;
+}
 }

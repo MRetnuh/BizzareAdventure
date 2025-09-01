@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,26 +36,35 @@ import jugadores.Jugador;
 import personajes.Enemigo;
 import personajes.Personaje;
 
+
 public class Partida implements Screen {
 
     private Musica musicaPartida;
     private Stage stage;
-    private final Jugador jugador = new Jugador();
+    private final Jugador jugador1 = new Jugador();
+    private final Jugador jugador2 = new Jugador();
     private TiledMap mapa;
     private Skin skin;
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camara;
     private SpriteBatch batch;
-    private InputController inputController;
+    private InputController inputController1;
+    private InputController inputController2;
+    private Personaje personaje1;
+    private Personaje personaje2;
     private Set<String> cajasDestruidas = new HashSet<>();
+
     private int anchoMapa;
     private int alturaMapa;
     private final int ID_TILE_TRANSPARENTE = 0;
     private Enemigo enemigo;
-    private Label nombrePersonaje1Label, nombrePersonaje2Label;
-    private Label vidaPersonaje1Label, vidaPersonaje2Label;
+    private Label nombrePersonaje1Label, vidaPersonaje1Label;
+    private Label nombrePersonaje2Label, vidaPersonaje2Label;
     private final Principal juego;
-    private boolean gameOver = false;
+    private boolean gameOver1 = false;
+    private boolean gameOver2 = false;
+    private float nuevaX1, nuevaY1;
+    private float nuevaX2, nuevaY2;
 
     public Partida(Principal juego) {
         this.juego = juego;
@@ -63,7 +74,6 @@ public class Partida implements Screen {
     @Override
     public void show() {
         this.stage = new Stage();
-        Gdx.input.setInputProcessor(this.stage);
 
         this.mapa = new TmxMapLoader().load("mapacorregido.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.mapa);
@@ -73,36 +83,59 @@ public class Partida implements Screen {
 
         this.camara = new OrthographicCamera();
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        enemigo = new Enemigo(400, 928);
+        //enemigo = new Enemigo(400, 928);
 
         this.batch = new SpriteBatch();
 
-        
-        jugador.getPersonaje1().setStage(stage);
-        jugador.getPersonaje2().setStage(stage);   
-        inputController = new InputController(this, jugador.getPersonaje1(), jugador.getPersonaje2());
-        Gdx.input.setInputProcessor(inputController);
-        
+        // Generar personajes para ambos jugadores
+        if (!this.jugador1.getPartidaEmpezada()) {
+            this.jugador1.generarPersonajeAleatorio();
+        }
+        if (!this.jugador2.getPartidaEmpezada()) {
+            this.jugador2.generarPersonajeAleatorio();
+        }
+
+        this.personaje1 = this.jugador1.getPersonajeElegido();
+        this.personaje2 = this.jugador2.getPersonajeElegido();
+        this.personaje1.setStage(this.stage);
+        this.personaje2.setStage(this.stage);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(this.stage);
+        // Controladores de entrada para cada jugador
+        this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W);
+        this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP);
+        multiplexer.addProcessor(this.inputController1);
+        multiplexer.addProcessor(this.inputController2);
+        Gdx.input.setInputProcessor(multiplexer);
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
-        
-        nombrePersonaje1Label = new Label("Nombre: " + jugador.getPersonaje1().getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        vidaPersonaje1Label = new Label("Vida: " + jugador.getPersonaje1().getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        nombrePersonaje2Label = new Label("Nombre: " + jugador.getPersonaje2().getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-        vidaPersonaje2Label = new Label("Vida: " + jugador.getPersonaje2().getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
 
-        Table table = new Table();
-        table.left().top();
-        table.add(nombrePersonaje1Label).size(350, 50).padBottom(5).row();
-        table.add(vidaPersonaje1Label).size(350, 50).padBottom(10).row();
-        table.add(nombrePersonaje2Label).size(350, 50).padBottom(5).row();
-        table.add(vidaPersonaje2Label).size(350, 50);
+        // HUD Jugador 1
+        nombrePersonaje1Label = new Label("Nombre: " + personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        vidaPersonaje1Label = new Label("Vida: " + personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
 
-        Container<Table> contenedor = new Container<>(table);
-        contenedor.setSize(400, 200);
-        contenedor.setBackground(skin.getDrawable("default-round"));
-        contenedor.setPosition(0, Gdx.graphics.getHeight() - contenedor.getHeight());
+        // HUD Jugador 2
+        nombrePersonaje2Label = new Label("Nombre: " + personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+        vidaPersonaje2Label = new Label("Vida: " + personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
 
-        this.stage.addActor(contenedor);
+        Table table1 = new Table();
+        Table table2 = new Table();
+        table1.left().top();
+        table2.right().top();
+        table1.add(nombrePersonaje1Label).size(350, 50).padBottom(5).row();
+        table1.add(vidaPersonaje1Label).size(350, 50);
+        table2.add(nombrePersonaje2Label).size(350, 50).padBottom(5).row();
+        table2.add(vidaPersonaje2Label).size(350, 50);
+
+        Container<Table> contenedor1 = new Container<>(table1);
+        Container<Table> contenedor2 = new Container<>(table2);
+        contenedor1.setSize(400, 130);
+        contenedor2.setSize(400, 130);
+        contenedor1.setBackground(skin.getDrawable("default-round"));
+        contenedor2.setBackground(skin.getDrawable("default-round"));
+        contenedor1.setPosition(0, Gdx.graphics.getHeight() - contenedor1.getHeight());
+        contenedor2.setPosition(Gdx.graphics.getWidth() - contenedor2.getWidth(), Gdx.graphics.getHeight() - contenedor2.getHeight());
+        this.stage.addActor(contenedor1);
+        this.stage.addActor(contenedor2);
     }
 
     @Override
@@ -110,8 +143,8 @@ public class Partida implements Screen {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        actualizarPersonaje(jugador.getPersonaje1(), delta);
-        actualizarPersonaje(jugador.getPersonaje2(), delta);
+        actualizarPersonaje(jugador1, personaje1, delta, true);
+        actualizarPersonaje(jugador2, personaje2, delta, false);
 
         actualizarHUD();
 
@@ -120,68 +153,78 @@ public class Partida implements Screen {
 
         this.batch.setProjectionMatrix(this.camara.combined);
         this.batch.begin();
-        jugador.getPersonaje1().dibujar(batch, delta);
-        jugador.getPersonaje2().dibujar(batch, delta);
-        enemigo.dibujar(batch, delta);
+        personaje1.dibujar(batch, delta);
+        personaje2.dibujar(batch, delta);
+        //enemigo.dibujar(batch, delta);
         this.batch.end();
 
         this.stage.act(delta);
         this.stage.draw();
 
-        enemigo.actualizarIA(delta, (jugador.getPersonaje1().getX() + jugador.getPersonaje2().getX()) / 2f);
+       // enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
     }
 
-    private void actualizarPersonaje(Personaje p, float delta) {
-        if (p.getVida() <= 0) {
-            if (!gameOver) {
-                gameOver = true;
+    private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
+        if (personaje.getVida() <= 0) {
+            if ((esJugador1 && !gameOver1) || (!esJugador1 && !gameOver2)) {
+                if (esJugador1) gameOver1 = true;
+                else gameOver2 = true;
                 musicaPartida.cambiarMusica("derrota");
-                p.morir();
+                personaje.morir();
             }
             return;
         }
 
-        boolean estaSobreElSuelo = detectarColision(new Rectangle(p.getX(), p.getY() - 1, 16, 16));
+        boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
 
-        p.guardarPosicionAnterior();
-        p.actualizarGravedad(delta, estaSobreElSuelo, alturaMapa);
+        personaje.guardarPosicionAnterior();
+        personaje.actualizarGravedad(delta, estaSobreElSuelo, alturaMapa);
 
-        float nuevaX = p.getNuevaX(delta);
-        float nuevaY = p.getNuevaY(delta);
+        float nuevaX = personaje.getNuevaX(delta);
+        float nuevaY = personaje.getNuevaY(delta);
 
-        if (nuevaY < -190) {
-            p.reducirVida();
+        if (esJugador1) {
+            nuevaX1 = nuevaX;
+            nuevaY1 = nuevaY;
+        } else {
+            nuevaX2 = nuevaX;
+            nuevaY2 = nuevaY;
         }
 
-        Rectangle hitboxTentativaX = new Rectangle(p.getHitbox());
-        hitboxTentativaX.setPosition(nuevaX, p.getY());
+        if (nuevaY < -190) {
+            personaje.reducirVida();
+        }
+
+        Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());
+        hitboxTentativaX.setPosition(nuevaX, personaje.getY());
         boolean colisionX = detectarColision(hitboxTentativaX);
 
-        Rectangle hitboxTentativaY = new Rectangle(p.getHitbox());
-        hitboxTentativaY.setPosition(p.getX(), nuevaY);
+        Rectangle hitboxTentativaY = new Rectangle(personaje.getHitbox());
+        hitboxTentativaY.setPosition(personaje.getX(), nuevaY);
         boolean colisionY = detectarColision(hitboxTentativaY);
+
         if (colisionY) {
-            p.frenarCaida();
-            p.setY(p.getPrevY());
+            personaje.frenarCaida();
+            personaje.setY(personaje.getPrevY());
         }
 
         if (!colisionX || !colisionY) {
-            float finalX = !colisionX ? nuevaX : p.getX();
-            float finalY = !colisionY ? nuevaY : p.getY();
-            p.aplicarMovimiento(finalX, finalY, delta, anchoMapa, alturaMapa);
+            float finalX = !colisionX ? nuevaX : personaje.getX();
+            float finalY = !colisionY ? nuevaY : personaje.getY();
+            personaje.aplicarMovimiento(finalX, finalY, delta, anchoMapa, alturaMapa);
         }
 
-        p.atacar(delta, musicaPartida.getVolumen());
-        detectarYEliminarTile(p.getHitbox());
-        p.actualizarCamara(camara, anchoMapa, alturaMapa);
+        personaje.atacar(delta, musicaPartida.getVolumen());
+        detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
+        personaje.actualizarCamara(camara, anchoMapa, alturaMapa);
     }
 
     private void actualizarHUD() {
-        nombrePersonaje1Label.setText("Nombre: " + jugador.getPersonaje1().getNombre());
-        vidaPersonaje1Label.setText("Vida: " + jugador.getPersonaje1().getVida());
+        nombrePersonaje1Label.setText("Nombre: " + personaje1.getNombre());
+        vidaPersonaje1Label.setText("Vida: " + personaje1.getVida());
 
-        nombrePersonaje2Label.setText("Nombre: " + jugador.getPersonaje2().getNombre());
-        vidaPersonaje2Label.setText("Vida: " + jugador.getPersonaje2().getVida());
+        nombrePersonaje2Label.setText("Nombre: " + personaje2.getNombre());
+        vidaPersonaje2Label.setText("Vida: " + personaje2.getVida());
     }
 
     private void restaurarEstadoCajas() {
@@ -194,7 +237,7 @@ public class Partida implements Screen {
         }
     }
 
-    private void detectarYEliminarTile(Rectangle hitbox) {
+    private void detectarYEliminarTile(Personaje personaje, Rectangle hitbox, Jugador jugador, boolean esJugador1) {
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
         if (tileLayer == null) return;
 
@@ -218,7 +261,20 @@ public class Partida implements Screen {
             checkX++;
         }
 
-        if (cajaCercana) {
+        if (cajaCercana && personaje.getEstaAtacando()) {
+            personaje = jugador.cambiarPersonaje(
+                esJugador1 ? nuevaX1 : nuevaX2,
+                esJugador1 ? nuevaY1 : nuevaY2
+            );
+            if (esJugador1) {
+                personaje1 = personaje;
+                inputController1.setPersonaje(personaje);
+            } else {
+                personaje2 = personaje;
+                inputController2.setPersonaje(personaje);
+            }
+            actualizarHUD();
+
             int ancho = tileLayer.getWidth();
             int altura = tileLayer.getHeight();
             for (int mapX = 0; mapX < ancho; mapX++) {
@@ -264,9 +320,62 @@ public class Partida implements Screen {
                 float y = polygonObject.getProperties().get("y", Float.class);
                 Polygon poligonoTransformado = new Polygon(polygon.getVertices());
                 poligonoTransformado.setPosition(x, y);
-                if (Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) return true;
+                if (Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) {
+                    return true;
+                }
             }
         }
+        for (MapObject object : this.mapa.getLayers().get("interactivos").getObjects()) {
+            String clase = object.getProperties().get("type", String.class);
+            if (clase == null || !clase.equals("Tierra")) continue;
+
+            Rectangle rectMapa = null;
+
+            if (object instanceof RectangleMapObject) {
+                rectMapa = ((RectangleMapObject) object).getRectangle();
+                if (!hitbox.overlaps(rectMapa)) continue;
+            } else if (object instanceof PolygonMapObject) {
+                PolygonMapObject polygonObject = (PolygonMapObject) object;
+                Polygon polygon = polygonObject.getPolygon();
+                float x = polygonObject.getProperties().get("x", Float.class);
+                float y = polygonObject.getProperties().get("y", Float.class);
+                Polygon poligonoTransformado = new Polygon(polygon.getVertices());
+                poligonoTransformado.setPosition(x, y);
+                if (!Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) continue;
+
+                rectMapa = poligonoTransformado.getBoundingRectangle();
+            }
+
+            TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
+            if (tileLayer != null) {
+                int startX = (int) (rectMapa.x / tileLayer.getTileWidth());
+                int endX = (int) ((rectMapa.x + rectMapa.width) / tileLayer.getTileWidth());
+                int startY = (int) (rectMapa.y / tileLayer.getTileHeight());
+                int endY = (int) ((rectMapa.y + rectMapa.height) / tileLayer.getTileHeight());
+
+                boolean tieneTile = false;
+                for (int x = startX; x <= endX; x++) {
+                    for (int y = startY; y <= endY; y++) {
+                        TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+                        if (cell != null && cell.getTile() != null) {
+                            int tileId = cell.getTile().getId();
+                            if (tileId != this.ID_TILE_TRANSPARENTE) {
+                                tieneTile = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (tieneTile) break;
+                }
+
+                if (!tieneTile) continue;
+            }
+
+            return true;
+        }
+
+
+
         return false;
     }
 
@@ -274,16 +383,17 @@ public class Partida implements Screen {
         juego.setScreen(new Opciones(juego, this));
     }
 
-    @Override public void resize(int width, int height) {}
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
 
-    @Override
-    public void dispose() {
-        this.mapa.dispose();
-        this.mapRenderer.dispose();
-        this.batch.dispose();
-        this.stage.dispose();
-    }
+@Override public void resize(int width, int height) {}
+@Override public void pause() {}
+@Override public void resume() {}
+@Override public void hide() {}
+
+@Override
+public void dispose() {
+	this.mapa.dispose();
+	this.mapRenderer.dispose();
+	this.batch.dispose();
+	this.stage.dispose();
+}
 }

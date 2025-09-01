@@ -1,3 +1,7 @@
+## [6.8.0] - 2025-08-31
+### Añadido
+- Implementacion de dos jugadores en el mapa de forma local.
+
 ## [5.7.9] - 2025-08-29
 ### Añadido
 - Implementacion de enemigo moviendose en el mapa.
