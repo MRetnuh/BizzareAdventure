@@ -1,3 +1,8 @@
+## [6.8.1] - 2025-09-03
+### Modificado
+- El codigo no muere si uno de los personajes al morir sigue presionando teclas.
+- El codigo termina cuando ambos personajes mueren.
+
 ## [6.8.0] - 2025-08-31
 ### Añadido
 - Implementacion de dos jugadores en el mapa de forma local.

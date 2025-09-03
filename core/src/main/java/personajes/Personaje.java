@@ -63,7 +63,8 @@ public abstract class Personaje {
     	this.y = y;
     }
     
-    public void morir() {
+    public void morir(Stage stage) {
+    	this.stage = stage;
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
@@ -248,10 +249,6 @@ public abstract class Personaje {
 
     public float getY() {
         return this.y;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
     public float getPrevY() {
         return this.prevY;

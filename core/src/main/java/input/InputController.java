@@ -30,6 +30,7 @@ public class InputController implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
     	if(this.personaje.getVida() > 0) {
+    		System.out.println(keycode + "para " + this.personaje.getNombre());
         	if(keycode == this.teclaDerecha) {
                 this.personaje.setMoviendoDerecha(true);
         	}

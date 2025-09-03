@@ -97,11 +97,8 @@ public class Partida implements Screen {
 
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
-        this.personaje1.setStage(this.stage);
-        this.personaje2.setStage(this.stage);
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this.stage);
-        // Controladores de entrada para cada jugador
         this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W);
         this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP);
         multiplexer.addProcessor(this.inputController1);
@@ -169,8 +166,10 @@ public class Partida implements Screen {
             if ((esJugador1 && !gameOver1) || (!esJugador1 && !gameOver2)) {
                 if (esJugador1) gameOver1 = true;
                 else gameOver2 = true;
+                if(this.gameOver1 == true && this.gameOver2 == true) {
                 musicaPartida.cambiarMusica("derrota");
-                personaje.morir();
+                personaje.morir(this.stage);
+                }
             }
             return;
         }
