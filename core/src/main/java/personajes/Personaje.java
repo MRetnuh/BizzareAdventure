@@ -168,7 +168,7 @@ public abstract class Personaje {
 
     public void atacar(float delta, float volumen) {
         float tiempoAtaque = 0f;
-		if (Gdx.input.isKeyPressed(Input.Keys.M) && !this.estaAtacando) {
+		if (Gdx.input.isKeyPressed(Input.Keys.M) && !this.estaAtacando) {	
 			this.estaAtacando = true;
             tiempoAtaque = 0;
             EfectoSonido.reproducir(this.nombreAtaque, volumen); 
