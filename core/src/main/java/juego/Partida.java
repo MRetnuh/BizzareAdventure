@@ -139,10 +139,9 @@ public class Partida implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        actualizarPersonaje(jugador1, personaje1, delta, true);
-        actualizarPersonaje(jugador2, personaje2, delta, false);
-
+        actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
+        actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
+        actualizarCamara();
         actualizarHUD();
 
         this.mapRenderer.setView(this.camara);
@@ -161,7 +160,7 @@ public class Partida implements Screen {
        // enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
     }
 
-    private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
+    private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1, float x, float y) {
         if (personaje.getVida() <= 0) {
             if ((esJugador1 && !gameOver1) || (!esJugador1 && !gameOver2)) {
                 if (esJugador1) gameOver1 = true;
@@ -181,7 +180,12 @@ public class Partida implements Screen {
 
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
+        float minX = camara.position.x - camara.viewportWidth / 2f;
+        float maxX = camara.position.x + camara.viewportWidth / 2f - personaje.getHitbox().getWidth();
 
+        if (nuevaX < minX) nuevaX = minX;
+        if (nuevaX > maxX) nuevaX = maxX;
+        
         if (esJugador1) {
             nuevaX1 = nuevaX;
             nuevaY1 = nuevaY;
@@ -215,7 +219,7 @@ public class Partida implements Screen {
 
         personaje.atacar(delta, musicaPartida.getVolumen());
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
-        personaje.actualizarCamara(camara, anchoMapa, alturaMapa);
+  
     }
 
     private void actualizarHUD() {
@@ -236,6 +240,47 @@ public class Partida implements Screen {
         }
     }
 
+    private void actualizarCamara() {
+        float centroX;
+        float centroY;
+
+        boolean vivo1 = personaje1.getVida() > 0;
+        boolean vivo2 = personaje2.getVida() > 0;
+
+        // Si ambos vivos → calcular el centro
+        if (vivo1 && vivo2) {
+            centroX = (personaje1.getX() + personaje2.getX()) / 2f + personaje1.getHitbox().getWidth() / 2f;
+            centroY = (personaje1.getY() + personaje2.getY()) / 2f + personaje1.getHitbox().getHeight() / 2f;
+        }
+        // Si solo vive jugador 1 → seguirlo
+        else if (vivo1) {
+            centroX = personaje1.getX() + personaje1.getHitbox().getWidth() / 2f;
+            centroY = personaje1.getY() + personaje1.getHitbox().getHeight()/ 2f;
+        }
+        // Si solo vive jugador 2 → seguirlo
+        else if (vivo2) {
+            centroX = personaje2.getX() + personaje2.getHitbox().getWidth()/ 2f;
+            centroY = personaje2.getY() + personaje2.getHitbox().getHeight() / 2f;
+        }
+        // Si ambos muertos → no mover la cámara
+        else {
+            return;
+        }
+
+        // Mitad del tamaño visible de la cámara
+        float halfWidth = camara.viewportWidth / 2f;
+        float halfHeight = camara.viewportHeight / 2f;
+
+        // Limitar cámara dentro de los bordes del mapa
+        centroX = Math.max(halfWidth, Math.min(centroX, anchoMapa - halfWidth));
+        centroY = Math.max(halfHeight, Math.min(centroY, alturaMapa - halfHeight));
+
+        camara.position.set(centroX, centroY, 0);
+        camara.update();
+    }
+
+
+    
     private void detectarYEliminarTile(Personaje personaje, Rectangle hitbox, Jugador jugador, boolean esJugador1) {
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
         if (tileLayer == null) return;
