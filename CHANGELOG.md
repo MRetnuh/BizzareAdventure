@@ -1,7 +1,10 @@
-## [6.8.1] - 2025-09-03
+## [6.9.1] - 2025-09-03
 ### Modificado
 - El codigo no muere si uno de los personajes al morir sigue presionando teclas.
 - El codigo termina cuando ambos personajes mueren.
+- Si un jugador muere y el otro jugador destruye una caja, el primero revive.
+- Los jugadores no pueden salirse de la camara.
+- Se soluciono el problema de la tecla para atacar que consistia en que para funcionar adecuadamente el input se encontraba en Personaje y no en InputController.
 
 ## [6.8.0] - 2025-08-31
 ### Añadido

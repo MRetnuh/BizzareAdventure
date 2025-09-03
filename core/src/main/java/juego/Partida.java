@@ -99,8 +99,8 @@ public class Partida implements Screen {
         this.personaje2 = this.jugador2.getPersonajeElegido();
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this.stage);
-        this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W);
-        this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP);
+        this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W,Input.Keys.M, this.musicaPartida.getVolumen());
+        this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP,Input.Keys.K, this.musicaPartida.getVolumen());
         multiplexer.addProcessor(this.inputController1);
         multiplexer.addProcessor(this.inputController2);
         Gdx.input.setInputProcessor(multiplexer);
@@ -143,6 +143,7 @@ public class Partida implements Screen {
         actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
         actualizarCamara();
         actualizarHUD();
+        
 
         this.mapRenderer.setView(this.camara);
         this.mapRenderer.render();
@@ -217,7 +218,7 @@ public class Partida implements Screen {
             personaje.aplicarMovimiento(finalX, finalY, delta, anchoMapa, alturaMapa);
         }
 
-        personaje.atacar(delta, musicaPartida.getVolumen());
+        personaje.atacar(delta);
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
   
     }
@@ -304,9 +305,20 @@ public class Partida implements Screen {
             }
             checkX++;
         }
-
-        if (cajaCercana && personaje.getEstaAtacando()) {
-            personaje = jugador.cambiarPersonaje(
+              if (cajaCercana && personaje.getEstaAtacando()) {
+            if (personaje1.getVida() <= 0 && personaje2.getVida() > 0) {
+                personaje1.setPosicion(personaje2.getX(), personaje2.getY());
+                personaje1.aumentarVida();
+                gameOver1 = false;
+                inputController1.setPersonaje(personaje1);
+            } else if (personaje2.getVida() <= 0 && personaje1.getVida() > 0) {
+                personaje2.setPosicion(personaje1.getX(), personaje1.getY());
+                personaje2.aumentarVida();
+                gameOver2 = false;
+                inputController2.setPersonaje(personaje2);
+            }
+            else {
+            	personaje = jugador.cambiarPersonaje(
                 esJugador1 ? nuevaX1 : nuevaX2,
                 esJugador1 ? nuevaY1 : nuevaY2
             );
@@ -317,8 +329,9 @@ public class Partida implements Screen {
                 personaje2 = personaje;
                 inputController2.setPersonaje(personaje);
             }
+            	
+            }
             actualizarHUD();
-
             int ancho = tileLayer.getWidth();
             int altura = tileLayer.getHeight();
             for (int mapX = 0; mapX < ancho; mapX++) {

@@ -45,6 +45,7 @@ public abstract class Personaje {
 	    protected Animation<TextureRegion> animAtaqueIzquierda;
 	    protected TextureRegion quietaDerecha;
 	    protected TextureRegion quietaIzquierda;
+		private float tiempoAtaque = 0f;
 	    
 	    
     public Personaje(String nombre, int velocidad, String nombreAtaque) {
@@ -112,26 +113,34 @@ public abstract class Personaje {
         x = prevX;
         y = prevY;
     }
-    
     public void dibujar(SpriteBatch batch, float delta) {
-    	this.estadoTiempo += delta;
+        // Incrementa el tiempo del temporizador de ataque si estás atacando
+        if (this.estaAtacando) {
+            this.tiempoAtaque += delta;
+        } else {
+            // Incrementa el tiempo general si no estás atacando
+            this.tiempoAtaque += delta;
+        }
 
         TextureRegion frame;
 
         if (this.estaAtacando) {
-            frame = this.mirandoDerecha ? this.animAtaqueDerecha.getKeyFrame(this.estadoTiempo, false)
-                                   : this.animAtaqueIzquierda.getKeyFrame(this.estadoTiempo, false);
+            frame = this.mirandoDerecha ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
+                                       : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
 
-            if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.estadoTiempo)) ||
-                (!this.mirandoDerecha && this.animAtaqueIzquierda.isAnimationFinished(this.estadoTiempo))) {
-            	this.estaAtacando = false;
-            	this.estadoTiempo = 0; // reiniciar tiempo
+            // Comprueba si la animación de ataque ha terminado usando su propio temporizador
+            if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.tiempoAtaque)) ||
+                (!this.mirandoDerecha && this.animAtaqueIzquierda.isAnimationFinished(this.tiempoAtaque))) {
+                this.estaAtacando = false; // El ataque termina
+                this.tiempoAtaque = 0f; // Reinicia el temporizador
             }
 
         } else if (this.estaMoviendose) {
-            frame = this.mirandoDerecha ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
-                                   : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
+            // Usa el temporizador general para el movimiento
+            frame = this.mirandoDerecha ? this.animDerecha.getKeyFrame(this.tiempoAtaque, true)
+                                       : this.animIzquierda.getKeyFrame(this.tiempoAtaque, true);
         } else {
+            // Usa el temporizador general para el estado quieto
             frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
@@ -166,31 +175,32 @@ public abstract class Personaje {
         camara.update();
     }
 
-    public void atacar(float delta, float volumen) {
-        float tiempoAtaque = 0f;
-		if (Gdx.input.isKeyPressed(Input.Keys.M) && !this.estaAtacando) {	
-			this.estaAtacando = true;
-            tiempoAtaque = 0;
-            EfectoSonido.reproducir(this.nombreAtaque, volumen); 
-        }
+    public void atacar(float delta) {
+    	    if (this.estaAtacando) {
+    	        this.tiempoAtaque += delta;
 
-        if (this.estaAtacando) {
-            tiempoAtaque += delta;
+    	        // Comprueba si la animación ha terminado
+    	        if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
+    	            this.estaAtacando = false; // El ataque ha terminado
+    	            this.tiempoAtaque = 0f; // Reinicia el tiempo para el próximo ataque
+    	        }
+    	    }
+    	}
 
-            if (tiempoAtaque > this.animAtaqueDerecha.getAnimationDuration()) {
-            	this.estaAtacando = false;
-                tiempoAtaque = 0f;
-            }
+
+    public void iniciarAtaque(float volumen) {
+        // Solo inicia el ataque si no está en curso
+        if (!this.estaAtacando) {
+            this.estaAtacando = true;
+            this.tiempoAtaque  = 0f;  
+            EfectoSonido.reproducir(this.nombreAtaque, volumen);
+            
         }
+        
     }
-
-
-    public void iniciarAtaque() {
-        if (!estaAtacando) { // evita reiniciar el ataque si ya está en curso
-            estaAtacando = true;
-        }
-    }
-
+public void iniciarAtaque() {
+	
+}
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
     	this.estadoTiempo += delta;

@@ -14,13 +14,16 @@ public class InputController implements InputProcessor {
     private final int teclaIzquierda;
     private final int teclaDerecha;
     private final int teclaSaltar;
-    
-    public InputController(Partida partida, Personaje personaje, int izquierda, int derecha, int saltar) {
+    private float volumen;
+    private final int teclaAtacar;
+    public InputController(Partida partida, Personaje personaje, int izquierda, int derecha, int saltar, int atacar, float volumen) {
     	this.partida = partida;
     	this.personaje = personaje;
     	this.teclaIzquierda = izquierda;
     	this.teclaDerecha = derecha;
     	this.teclaSaltar = saltar;
+    	this.volumen = volumen;
+    	this.teclaAtacar = atacar;
 }
     
     public void setPersonaje(Personaje personaje) {
@@ -48,9 +51,9 @@ public class InputController implements InputProcessor {
                 this.personaje.setEstaAtacando(false);
         	}
             	
-           /* case Input.Keys.M: 
-            	this.personaje.iniciarAtaque();
-                break;*/
+        	 else if(keycode == this.teclaAtacar) {
+                 this.personaje.iniciarAtaque(volumen);
+             }
              
         }
     	
