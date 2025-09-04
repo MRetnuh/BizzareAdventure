@@ -1,3 +1,7 @@
+## [6.9.2] - 2025-09-04
+### Añadido
+- El enemigo puede disparar y ser capaz de matar a los jugadores
+
 ## [6.9.1] - 2025-09-03
 ### Modificado
 - El codigo no muere si uno de los personajes al morir sigue presionando teclas.
