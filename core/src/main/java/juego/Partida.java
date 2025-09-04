@@ -1,6 +1,7 @@
 package juego;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
@@ -224,7 +225,15 @@ public class Partida implements Screen {
 
         personaje.atacar(delta);
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
-  
+        Iterator<Proyectil> it = enemigo.getBalas().iterator();
+        while (it.hasNext()) {
+        	Proyectil b = it.next();
+            if (b.getHitbox().overlaps(personaje.getHitbox())) {
+                personaje.reducirVida();
+                b.desactivar();
+                it.remove();
+            }
+        }
     }
 
     private void actualizarHUD() {
