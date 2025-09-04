@@ -47,6 +47,7 @@ imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_5.png
 imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_6.png
 imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_7.png
 imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_8.png
+imagenes/personajes/enemigo/ataque/bala.png
 imagenes/personajes/enemigo/enemigo_quieto.png
 imagenes/personajes/leone/leone_derecha_(detenida).png
 imagenes/personajes/leone/leone_derecha_moviendose_1.png

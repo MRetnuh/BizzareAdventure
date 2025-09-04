@@ -35,6 +35,7 @@ import io.github.some.Principal;
 import jugadores.Jugador;
 import personajes.Enemigo;
 import personajes.Personaje;
+import proyectiles.Proyectil;
 
 
 public class Partida implements Screen {
@@ -83,7 +84,7 @@ public class Partida implements Screen {
 
         this.camara = new OrthographicCamera();
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //enemigo = new Enemigo(400, 928);
+        enemigo = new Enemigo(400, 928);
 
         this.batch = new SpriteBatch();
 
@@ -152,13 +153,16 @@ public class Partida implements Screen {
         this.batch.begin();
         personaje1.dibujar(batch, delta);
         personaje2.dibujar(batch, delta);
-        //enemigo.dibujar(batch, delta);
+        enemigo.dibujar(batch, delta);
+        for (Proyectil b : enemigo.getBalas()) {
+            b.dibujar(batch);
+        }
         this.batch.end();
 
         this.stage.act(delta);
         this.stage.draw();
 
-       // enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
+        enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
     }
 
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1, float x, float y) {

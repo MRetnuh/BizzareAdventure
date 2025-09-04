@@ -1,16 +1,24 @@
 package personajes;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+import proyectiles.Proyectil;
+
 public class Enemigo extends Personaje {
 
     private float rangoMovimiento = 200; 
     private float puntoInicialX;
     private boolean moviendoDerecha = true;
+    private ArrayList<Proyectil> balas = new ArrayList<>();
+    private float tiempoDisparo = 0;
+    private final float cooldownDisparo = 1.5f; // segundos entre disparos
 
     public Enemigo(float x, float y) {
         super("Enemigo", 100, "ataqueEnemigo");
@@ -44,7 +52,7 @@ public class Enemigo extends Personaje {
     }
 
     public void actualizarIA(float delta, float jugadorX) {
-        // Patrulla simple
+        // Patrulla
         float nuevaX = getX();
         if (moviendoDerecha) {
             nuevaX += getVelocidad() * delta;
@@ -55,10 +63,37 @@ public class Enemigo extends Personaje {
         }
         aplicarMovimiento(nuevaX, getY(), delta, 10000, 1000);
 
-        // Ataque si jugador está cerca
-        if (Math.abs(jugadorX - getX()) < 50 && !getEstaAtacando()) {
-            iniciarAtaque();
+        // Actualizar balas
+        Iterator<Proyectil> it = balas.iterator();
+        while (it.hasNext()) {
+        	Proyectil b = it.next();
+            b.actualizar(delta);
+            // Si sale de rango, se elimina
+            if (b.getX() < 0 || b.getX() > 2000) {
+                b.desactivar();
+                it.remove();
+            }
         }
+
+        // Control de disparo
+        tiempoDisparo += delta;
+        if (tiempoDisparo >= cooldownDisparo) {
+            float distancia = Math.abs(jugadorX - getX());
+            if (distancia < 2 * 32) { // 2 tiles (32 px por tile)
+                if ((moviendoDerecha && jugadorX > getX()) || (!moviendoDerecha && jugadorX < getX())) {
+                    disparar();
+                    tiempoDisparo = 0;
+                }
+            }
+        }
+    }
+
+    private void disparar() {
+        balas.add(new Proyectil(getX(), getY() + 16, moviendoDerecha));
+    }
+    
+    public ArrayList<Proyectil> getBalas() {
+        return balas;
     }
 
     private float getVelocidad() {
