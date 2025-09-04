@@ -80,16 +80,20 @@ public class Enemigo extends Personaje {
         if (tiempoDisparo >= cooldownDisparo) {
             float distancia = Math.abs(jugadorX - getX());
             if (distancia < 2 * 32) { // 2 tiles (32 px por tile)
-                if ((moviendoDerecha && jugadorX > getX()) || (!moviendoDerecha && jugadorX < getX())) {
-                    disparar();
+                if ((moviendoDerecha && jugadorX > getX())) {
+                    disparar("imagenes/personajes/enemigo/ataque/Bala_Derecha.png");
+                    tiempoDisparo = 0;
+                }
+                else if ((!moviendoDerecha && jugadorX < getX())) {
+                    disparar("imagenes/personajes/enemigo/ataque/Bala_Izquierda.png");
                     tiempoDisparo = 0;
                 }
             }
         }
     }
 
-    private void disparar() {
-        balas.add(new Proyectil(getX(), getY() + 16, moviendoDerecha));
+    private void disparar(String ruta) {
+        balas.add(new Proyectil(getX(), getY() + 16, moviendoDerecha, ruta));
     }
     
     public ArrayList<Proyectil> getBalas() {

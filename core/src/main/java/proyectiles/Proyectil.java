@@ -12,12 +12,12 @@ public class Proyectil {
     private Texture textura;
     private boolean activa = true;
 
-    public Proyectil(float x, float y, boolean haciaDerecha) {
+    public Proyectil(float x, float y, boolean haciaDerecha, String ruta) {
         this.x = x;
         this.y = y;
         this.haciaDerecha = haciaDerecha;
-        this.velocidad = 300;
-            this.textura = new Texture(Gdx.files.internal("imagenes/personajes/enemigo/ataque/Bala_Derecha.png"));
+        this.velocidad = 400;
+        this.textura = new Texture(Gdx.files.internal(ruta));
     }
 
     public void actualizar(float delta) {
