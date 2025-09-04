@@ -18,7 +18,7 @@ public class Enemigo extends Personaje {
     private boolean moviendoDerecha = true;
     private ArrayList<Proyectil> balas = new ArrayList<>();
     private float tiempoDisparo = 0;
-    private final float cooldownDisparo = 1.5f; // segundos entre disparos
+    private final float cooldownDisparo = 1.0f; // segundos entre disparos
 
     public Enemigo(float x, float y) {
         super("Enemigo", 100, "ataqueEnemigo");

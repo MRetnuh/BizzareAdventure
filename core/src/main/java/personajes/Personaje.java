@@ -1,7 +1,6 @@
 package personajes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -237,7 +236,7 @@ public void iniciarAtaque() {
     	return this.vida;
     }
     public Rectangle getHitbox() {
-        return new Rectangle(this.x, this.y, 16, 16); 
+        return new Rectangle(this.x, this.y, 32, 64); 
     }
     
     public float getNuevaX(float delta) {

@@ -16,8 +16,8 @@ public class Proyectil {
         this.x = x;
         this.y = y;
         this.haciaDerecha = haciaDerecha;
-        this.velocidad = 200; // px/seg
-        this.textura = new Texture(Gdx.files.internal("imagenes/personajes/enemigo/ataque/bala.png"));
+        this.velocidad = 300;
+            this.textura = new Texture(Gdx.files.internal("imagenes/personajes/enemigo/ataque/Bala_Derecha.png"));
     }
 
     public void actualizar(float delta) {
