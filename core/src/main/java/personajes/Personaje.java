@@ -20,7 +20,7 @@ import audios.EfectoSonido;
 public abstract class Personaje {
 	    private float velocidad;
 	    private String nombre;
-	    private int vida = 1;
+	    private int vida;
 	    private Texture texturaDerrota;
 	    private Image imagenDerrota;
 	    private Stage stage;
@@ -47,10 +47,11 @@ public abstract class Personaje {
 		private float tiempoAtaque = 0f;
 	    
 	    
-    public Personaje(String nombre, int velocidad, String nombreAtaque) {
+    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida) {
         this.nombre = nombre;
         this.velocidad = velocidad;
         this.nombreAtaque = nombreAtaque;
+        this.vida = vida;
         cargarTexturas(); 
         x = 200;
         y = 930;

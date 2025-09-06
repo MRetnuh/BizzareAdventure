@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 public class Akame extends Personaje{
 
 	public Akame() {
-		super("Akame", 250, "EspadaCorte");
+		super("Akame", 250, "EspadaCorte", 1);
 	}
 	
 	  @Override

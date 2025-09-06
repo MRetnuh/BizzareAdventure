@@ -1,3 +1,7 @@
+## [6.9.3] - 2025-09-05
+### Añadido
+- El jugador puede matar al enemigo
+
 ## [6.9.2] - 2025-09-04
 ### Añadido
 - El enemigo puede disparar y ser capaz de matar a los jugadores

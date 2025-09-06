@@ -20,8 +20,8 @@ public class Enemigo extends Personaje {
     private float tiempoDisparo = 0;
     private final float cooldownDisparo = 1.0f; // segundos entre disparos
 
-    public Enemigo(float x, float y) {
-        super("Enemigo", 100, "ataqueEnemigo");
+    public Enemigo(String nombre, float x, float y) {
+        super(nombre, 100, "ataqueEnemigo", 1);
         cargarUbicaciones(x, y);
         this.puntoInicialX = x;
     }

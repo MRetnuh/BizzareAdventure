@@ -54,7 +54,7 @@ public class Partida implements Screen {
     private Personaje personaje1;
     private Personaje personaje2;
     private Set<String> cajasDestruidas = new HashSet<>();
-
+    private static Set<String> enemigosMuertos = new HashSet<>();
     private int anchoMapa;
     private int alturaMapa;
     private final int ID_TILE_TRANSPARENTE = 0;
@@ -84,7 +84,10 @@ public class Partida implements Screen {
 
         this.camara = new OrthographicCamera();
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        enemigo = new Enemigo(400, 928);
+        String idEnemigo = "enemigo1";
+        if (!enemigosMuertos.contains(idEnemigo)) {
+            enemigo = new Enemigo("enemigo1", 400, 928);
+        } 
 
         this.batch = new SpriteBatch();
 
@@ -153,16 +156,19 @@ public class Partida implements Screen {
         this.batch.begin();
         personaje1.dibujar(batch, delta);
         personaje2.dibujar(batch, delta);
+        if(this.enemigo.getVida() > 0) {
         enemigo.dibujar(batch, delta);
         for (Proyectil b : enemigo.getBalas()) {
             b.dibujar(batch);
         }
+       
+        
+        enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
+        } 
         this.batch.end();
 
         this.stage.act(delta);
         this.stage.draw();
-
-        enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
     }
 
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1, float x, float y) {
@@ -176,6 +182,10 @@ public class Partida implements Screen {
                 }
             }
             return;
+        }
+        if(personaje.getEstaAtacando() && personaje.getHitbox().overlaps(enemigo.getHitbox())) {
+        	this.enemigo.reducirVida();
+            enemigosMuertos.add(this.enemigo.getNombre());
         }
 
         boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
