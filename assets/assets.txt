@@ -66,4 +66,5 @@ musica/Balatro.mp3
 musica/derrota.mp3
 musica/primeraisla.mp3
 sonidos/EspadaCorte.mp3
+sonidos/disparo.mp3
 terreno.tsx

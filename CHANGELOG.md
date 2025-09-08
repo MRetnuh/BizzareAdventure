@@ -1,3 +1,7 @@
+## [6.9.4] - 2025-09-08
+### Añadido
+- Agregado de volumen para el disparo del enemigo.
+
 ## [6.9.3] - 2025-09-05
 ### Añadido
 - El jugador puede matar al enemigo.

@@ -163,7 +163,7 @@ public class Partida implements Screen {
         }
        
         
-        enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f);
+        enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f,this.musicaPartida.getVolumen());
         } 
         this.batch.end();
 

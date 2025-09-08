@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-
+import audios.EfectoSonido;
 import proyectiles.Proyectil;
 
 public class Enemigo extends Personaje {
@@ -24,6 +24,7 @@ public class Enemigo extends Personaje {
         super(nombre, 100, "ataqueEnemigo", 1);
         cargarUbicaciones(x, y);
         this.puntoInicialX = x;
+
     }
 
     @Override
@@ -51,7 +52,7 @@ public class Enemigo extends Personaje {
                 "imagenes/personajes/enemigo/enemigo_quieto.png")));
     }
 
-    public void actualizarIA(float delta, float jugadorX) {
+    public void actualizarIA(float delta, float jugadorX, float volumen) {
         // Patrulla
         float nuevaX = getX();
         if (moviendoDerecha) {
@@ -66,7 +67,7 @@ public class Enemigo extends Personaje {
         // Actualizar balas
         Iterator<Proyectil> it = balas.iterator();
         while (it.hasNext()) {
-        	Proyectil b = it.next();
+            Proyectil b = it.next();
             b.actualizar(delta);
             // Si sale de rango, se elimina
             if (b.getX() < 0 || b.getX() > 2000) {
@@ -81,21 +82,22 @@ public class Enemigo extends Personaje {
             float distancia = Math.abs(jugadorX - getX());
             if (distancia < 2 * 32) { // 2 tiles (32 px por tile)
                 if ((moviendoDerecha && jugadorX > getX())) {
-                    disparar("imagenes/personajes/enemigo/ataque/Bala_Derecha.png");
+                    disparar("imagenes/personajes/enemigo/ataque/Bala_Derecha.png", volumen);
                     tiempoDisparo = 0;
                 }
                 else if ((!moviendoDerecha && jugadorX < getX())) {
-                    disparar("imagenes/personajes/enemigo/ataque/Bala_Izquierda.png");
+                    disparar("imagenes/personajes/enemigo/ataque/Bala_Izquierda.png", volumen);
                     tiempoDisparo = 0;
                 }
             }
         }
     }
 
-    private void disparar(String ruta) {
+    private void disparar(String ruta,float volumen ) {
         balas.add(new Proyectil(getX(), getY() + 16, moviendoDerecha, ruta));
+        EfectoSonido.reproducir("disparo",1f);
     }
-    
+
     public ArrayList<Proyectil> getBalas() {
         return balas;
     }
