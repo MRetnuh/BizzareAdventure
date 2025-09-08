@@ -36,6 +36,8 @@ import jugadores.Jugador;
 import personajes.Enemigo;
 import personajes.Personaje;
 import proyectiles.Proyectil;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Partida implements Screen {
@@ -58,7 +60,7 @@ public class Partida implements Screen {
     private int anchoMapa;
     private int alturaMapa;
     private final int ID_TILE_TRANSPARENTE = 0;
-    private Enemigo enemigo;
+    private List<Enemigo> enemigos = new ArrayList<>();
     private Label nombrePersonaje1Label, vidaPersonaje1Label;
     private Label nombrePersonaje2Label, vidaPersonaje2Label;
     private final Principal juego;
@@ -83,11 +85,21 @@ public class Partida implements Screen {
         restaurarEstadoCajas();
 
         this.camara = new OrthographicCamera();
+
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        String idEnemigo = "enemigo1";
-        if (!enemigosMuertos.contains(idEnemigo)) {
-            enemigo = new Enemigo("enemigo1", 400, 928);
-        } 
+        String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
+        float[][] posiciones = {
+                {400, 928},
+                {600, 900},
+                {300, 850}
+        };
+
+        for (int i = 0; i < idsEnemigos.length; i++) {
+            String id = idsEnemigos[i];
+            if (!enemigosMuertos.contains(id)) {
+                enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
+            }
+        }
 
         this.batch = new SpriteBatch();
 
@@ -147,7 +159,8 @@ public class Partida implements Screen {
         actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
         actualizarCamara();
         actualizarHUD();
-        
+
+        limpiarEnemigosMuertos();
 
         this.mapRenderer.setView(this.camara);
         this.mapRenderer.render();
@@ -156,15 +169,19 @@ public class Partida implements Screen {
         this.batch.begin();
         personaje1.dibujar(batch, delta);
         personaje2.dibujar(batch, delta);
-        if(this.enemigo.getVida() > 0) {
-        enemigo.dibujar(batch, delta);
-        for (Proyectil b : enemigo.getBalas()) {
-            b.dibujar(batch);
+
+        for (Enemigo enemigo : enemigos) {
+            if (enemigo.getVida() > 0) {
+                enemigo.dibujar(batch, delta);
+
+                for (Proyectil b : enemigo.getBalas()) {
+                    b.dibujar(batch);
+                }
+
+                enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
+            }
         }
-       
-        
-        enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f,this.musicaPartida.getVolumen());
-        } 
+
         this.batch.end();
 
         this.stage.act(delta);
@@ -183,10 +200,21 @@ public class Partida implements Screen {
             }
             return;
         }
-        if(personaje.getEstaAtacando() && personaje.getHitbox().overlaps(enemigo.getHitbox())) {
-        	this.enemigo.reducirVida();
-            enemigosMuertos.add(this.enemigo.getNombre());
+        if (personaje.getEstaAtacando()) {
+            Iterator<Enemigo> iter = enemigos.iterator();
+            while(iter.hasNext()) {
+                Enemigo e = iter.next();
+                if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
+                    e.reducirVida();
+                    if (e.getVida() <= 0) {
+                        enemigosMuertos.add(e.getNombre());
+                        // Si quieres, puedes eliminarlo de la lista para no procesarlo más:
+                        // iter.remove();
+                    }
+                }
+            }
         }
+
 
         boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
 
@@ -234,15 +262,23 @@ public class Partida implements Screen {
 
         personaje.atacar(delta);
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
-        Iterator<Proyectil> it = enemigo.getBalas().iterator();
-        while (it.hasNext()) {
-        	Proyectil b = it.next();
-            if (b.getHitbox().overlaps(personaje.getHitbox())) {
-                personaje.reducirVida();
-                b.desactivar();
-                it.remove();
+
+        for (Enemigo e : enemigos) {
+            Iterator<Proyectil> it = e.getBalas().iterator();
+            while (it.hasNext()) {
+                Proyectil b = it.next();
+                if (b.getHitbox().overlaps(personaje.getHitbox())) {
+                    personaje.reducirVida();
+                    b.desactivar();
+                    it.remove();
+                }
             }
         }
+
+    }
+
+    private void limpiarEnemigosMuertos() {
+        enemigos.removeIf(e -> e.getVida() <= 0);
     }
 
     private void actualizarHUD() {
