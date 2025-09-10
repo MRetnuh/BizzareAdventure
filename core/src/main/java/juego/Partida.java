@@ -153,8 +153,6 @@ public class Partida implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
         actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
         actualizarCamara();
