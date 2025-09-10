@@ -169,7 +169,7 @@ public class Partida implements Screen {
         this.batch.begin();
         personaje1.dibujar(batch, delta);
         personaje2.dibujar(batch, delta);
-
+    if(!gameOver1 || !gameOver2) {
         for (Enemigo enemigo : enemigos) {
             if (enemigo.getVida() > 0) {
                 enemigo.dibujar(batch, delta);
@@ -181,11 +181,12 @@ public class Partida implements Screen {
                 enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
             }
         }
-
+    }
         this.batch.end();
 
         this.stage.act(delta);
         this.stage.draw();
+
     }
 
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1, float x, float y) {
