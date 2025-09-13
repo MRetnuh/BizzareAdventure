@@ -1,3 +1,7 @@
+## [6.9.5] - 2025-09-13
+### Arreglo
+- Bug que permitia al jugador duplicar enemigos con entrar al menu
+
 ## [6.9.4] - 2025-09-08
 ### Añadido
 - Agregado de volumen para el disparo del enemigo.
