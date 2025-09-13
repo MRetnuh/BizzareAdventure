@@ -74,6 +74,8 @@ public class Partida implements Screen {
         this.musicaPartida = juego.getMusica();
     }
 
+    private boolean enemigosCreados = false;
+
     @Override
     public void show() {
         this.stage = new Stage();
@@ -85,20 +87,24 @@ public class Partida implements Screen {
         restaurarEstadoCajas();
 
         this.camara = new OrthographicCamera();
-
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
-        float[][] posiciones = {
-                {400, 928},
-                {600, 900},
-                {300, 850}
-        };
 
-        for (int i = 0; i < idsEnemigos.length; i++) {
-            String id = idsEnemigos[i];
-            if (!enemigosMuertos.contains(id)) {
-                enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
+        // 👇 Solo crear enemigos una vez
+        if (!enemigosCreados) {
+            String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
+            float[][] posiciones = {
+                    {400, 928},
+                    {600, 900},
+                    {300, 850}
+            };
+
+            for (int i = 0; i < idsEnemigos.length; i++) {
+                String id = idsEnemigos[i];
+                if (!enemigosMuertos.contains(id)) {
+                    enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
+                }
             }
+            enemigosCreados = true;
         }
 
         this.batch = new SpriteBatch();
@@ -113,13 +119,15 @@ public class Partida implements Screen {
 
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
+
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this.stage);
-        this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W,Input.Keys.M, this.musicaPartida.getVolumen());
-        this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP,Input.Keys.K, this.musicaPartida.getVolumen());
+        this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.M, this.musicaPartida.getVolumen());
+        this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.K, this.musicaPartida.getVolumen());
         multiplexer.addProcessor(this.inputController1);
         multiplexer.addProcessor(this.inputController2);
         Gdx.input.setInputProcessor(multiplexer);
+
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         // HUD Jugador 1
@@ -150,6 +158,7 @@ public class Partida implements Screen {
         this.stage.addActor(contenedor1);
         this.stage.addActor(contenedor2);
     }
+
 
     @Override
     public void render(float delta) {
