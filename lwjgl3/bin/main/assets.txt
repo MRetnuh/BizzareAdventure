@@ -47,7 +47,8 @@ imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_5.png
 imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_6.png
 imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_7.png
 imagenes/personajes/enemigo/Enemigo_Moviendose_Izquierda_8.png
-imagenes/personajes/enemigo/ataque/bala.png
+imagenes/personajes/enemigo/ataque/Bala_Derecha.png
+imagenes/personajes/enemigo/ataque/Bala_Izquierda.png
 imagenes/personajes/enemigo/enemigo_quieto.png
 imagenes/personajes/leone/leone_derecha_(detenida).png
 imagenes/personajes/leone/leone_derecha_moviendose_1.png
@@ -65,4 +66,5 @@ musica/Balatro.mp3
 musica/derrota.mp3
 musica/primeraisla.mp3
 sonidos/EspadaCorte.mp3
+sonidos/disparo.mp3
 terreno.tsx
