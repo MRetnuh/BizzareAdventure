@@ -237,7 +237,7 @@ public void iniciarAtaque() {
     	return this.vida;
     }
     public Rectangle getHitbox() {
-        return new Rectangle(this.x, this.y, 32, 64); 
+        return new Rectangle(this.x, this.y, 32, 32); 
     }
     
     public float getNuevaX(float delta) {
