@@ -38,16 +38,8 @@ public class Proyectil {
         return new Rectangle(x, y, 16, 16);
     }
 
-    public boolean isActiva() {
-        return activa;
-    }
-
     public void desactivar() {
         activa = false;
-    }
-
-    public void dispose() {
-        textura.dispose();
     }
 
 	public float getX() {

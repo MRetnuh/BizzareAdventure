@@ -9,7 +9,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
@@ -95,7 +94,7 @@ public class Partida implements Screen {
             float[][] posiciones = {
                     {400, 928},
                     {800, 928},
-                    {2700, 737}
+                    {1000, 928}
             };
 
             for (int i = 0; i < idsEnemigos.length; i++) {

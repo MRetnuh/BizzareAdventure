@@ -109,10 +109,6 @@ public abstract class Personaje {
         }, 8);
     }
 
-    public void retroceder() {
-        x = prevX;
-        y = prevY;
-    }
     public void dibujar(SpriteBatch batch, float delta) {
         // Incrementa el tiempo del temporizador de ataque si estás atacando
         if (this.estaAtacando) {
@@ -157,24 +153,6 @@ public abstract class Personaje {
         }
     }
 
-    
-    public void actualizarCamara(OrthographicCamera camara, int mapWidth, int mapHeight) {
-        float camX = x + 16;
-        float camY = y + 16;
-
-        float halfWidth = camara.viewportWidth / 2f;
-        float halfHeight = camara.viewportHeight / 2f;
-
-        camX = Math.max(halfWidth, camX);
-        camX = Math.min(mapWidth - halfWidth, camX);
-
-        camY = Math.max(halfHeight, camY);
-        camY = Math.min(mapHeight - halfHeight, camY);
-
-        camara.position.set(camX, camY, 0);
-        camara.update();
-    }
-
     public void atacar(float delta) {
     	    if (this.estaAtacando) {
     	        this.tiempoAtaque += delta;
@@ -198,9 +176,6 @@ public abstract class Personaje {
         }
         
     }
-public void iniciarAtaque() {
-	
-}
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
     	this.estadoTiempo += delta;
@@ -298,10 +273,7 @@ public void iniciarAtaque() {
     public void setEstaSaltando(boolean moviendo) {
     	this.estaSaltando = moviendo;
     }
-    
-    public String getNombreAtaque() {
-    	return this.nombreAtaque;
-    }
+
 
     
    
