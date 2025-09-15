@@ -94,8 +94,8 @@ public class Partida implements Screen {
             String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
             float[][] posiciones = {
                     {400, 928},
-                    {600, 900},
-                    {300, 850}
+                    {800, 928},
+                    {2700, 737}
             };
 
             for (int i = 0; i < idsEnemigos.length; i++) {
@@ -176,19 +176,19 @@ public class Partida implements Screen {
         this.batch.begin();
         personaje1.dibujar(batch, delta);
         personaje2.dibujar(batch, delta);
-    if(!gameOver1 || !gameOver2) {
-        for (Enemigo enemigo : enemigos) {
-            if (enemigo.getVida() > 0) {
-                enemigo.dibujar(batch, delta);
+        if(!gameOver1 || !gameOver2) {
+            for (Enemigo enemigo : enemigos) {
+                if (enemigo.getVida() > 0) {
+                    enemigo.dibujar(batch, delta);
 
-                for (Proyectil b : enemigo.getBalas()) {
-                    b.dibujar(batch);
+                    for (Proyectil b : enemigo.getBalas()) {
+                        b.dibujar(batch);
+                    }
+
+                    enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
                 }
-
-                enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
             }
         }
-    }
         this.batch.end();
 
         this.stage.act(delta);
@@ -202,8 +202,8 @@ public class Partida implements Screen {
                 if (esJugador1) gameOver1 = true;
                 else gameOver2 = true;
                 if(this.gameOver1 == true && this.gameOver2 == true) {
-                musicaPartida.cambiarMusica("derrota");
-                personaje.morir(this.stage);
+                    musicaPartida.cambiarMusica("derrota");
+                    personaje.morir(this.stage);
                 }
             }
             return;
@@ -236,7 +236,7 @@ public class Partida implements Screen {
 
         if (nuevaX < minX) nuevaX = minX;
         if (nuevaX > maxX) nuevaX = maxX;
-        
+
         if (esJugador1) {
             nuevaX1 = nuevaX;
             nuevaY1 = nuevaY;
@@ -347,7 +347,7 @@ public class Partida implements Screen {
     }
 
 
-    
+
     private void detectarYEliminarTile(Personaje personaje, Rectangle hitbox, Jugador jugador, boolean esJugador1) {
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
         if (tileLayer == null) return;
@@ -371,7 +371,7 @@ public class Partida implements Screen {
             }
             checkX++;
         }
-              if (cajaCercana && personaje.getEstaAtacando()) {
+        if (cajaCercana && personaje.getEstaAtacando()) {
             if (personaje1.getVida() <= 0 && personaje2.getVida() > 0) {
                 personaje1.setPosicion(personaje2.getX(), personaje2.getY());
                 personaje1.aumentarVida();
@@ -384,18 +384,18 @@ public class Partida implements Screen {
                 inputController2.setPersonaje(personaje2);
             }
             else {
-            	personaje = jugador.cambiarPersonaje(
-                esJugador1 ? nuevaX1 : nuevaX2,
-                esJugador1 ? nuevaY1 : nuevaY2
-            );
-            if (esJugador1) {
-                personaje1 = personaje;
-                inputController1.setPersonaje(personaje);
-            } else {
-                personaje2 = personaje;
-                inputController2.setPersonaje(personaje);
-            }
-            	
+                personaje = jugador.cambiarPersonaje(
+                        esJugador1 ? nuevaX1 : nuevaX2,
+                        esJugador1 ? nuevaY1 : nuevaY2
+                );
+                if (esJugador1) {
+                    personaje1 = personaje;
+                    inputController1.setPersonaje(personaje);
+                } else {
+                    personaje2 = personaje;
+                    inputController2.setPersonaje(personaje);
+                }
+
             }
             actualizarHUD();
             int ancho = tileLayer.getWidth();
@@ -417,10 +417,10 @@ public class Partida implements Screen {
 
     private Polygon convertirEnPoligono(Rectangle rect) {
         Polygon poly = new Polygon(new float[]{
-            0, 0,
-            rect.width, 0,
-            rect.width, rect.height,
-            0, rect.height
+                0, 0,
+                rect.width, 0,
+                rect.width, rect.height,
+                0, rect.height
         });
         poly.setPosition(rect.x, rect.y);
         return poly;
@@ -507,16 +507,16 @@ public class Partida implements Screen {
     }
 
 
-@Override public void resize(int width, int height) {}
-@Override public void pause() {}
-@Override public void resume() {}
-@Override public void hide() {}
+    @Override public void resize(int width, int height) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
 
-@Override
-public void dispose() {
-	this.mapa.dispose();
-	this.mapRenderer.dispose();
-	this.batch.dispose();
-	this.stage.dispose();
-}
+    @Override
+    public void dispose() {
+        this.mapa.dispose();
+        this.mapRenderer.dispose();
+        this.batch.dispose();
+        this.stage.dispose();
+    }
 }
