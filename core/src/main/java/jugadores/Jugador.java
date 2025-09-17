@@ -12,6 +12,7 @@ public class Jugador {
 	  private int numeroPersonajeElegido;
 	  private Personaje personajeElegido;
 	  private Random r = new Random();
+
 public void generarPersonajeAleatorio() {
 	numeroPersonajeElegido= r.nextInt(personajesJugables.length);
 	personajeElegido = personajesJugables[numeroPersonajeElegido];

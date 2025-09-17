@@ -1,5 +1,7 @@
 package juego;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -15,15 +17,15 @@ import io.github.some.Principal;
 
 public class Configuracion implements Screen {
 	private Screen screenAnterior;
-    private final Principal JUEGO;
+    private final Game JUEGO;
     private Stage stage;
     private Skin skin;
     private Musica musicaConfig;
     
-    public Configuracion(Principal juego, Screen screenAnterior) {
+    public Configuracion(Game juego, Screen screenAnterior, Musica musica) {
     	this.screenAnterior = screenAnterior;
         this.JUEGO = juego;
-        this.musicaConfig = juego.getMusica(); 
+        this.musicaConfig = musica;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class Configuracion implements Screen {
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
-            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior));
+            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior, musicaConfig));
             }
             return true;
         });

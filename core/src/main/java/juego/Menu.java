@@ -1,5 +1,7 @@
 package juego;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -23,31 +25,30 @@ import io.github.some.Principal;
 
 public class Menu implements Screen {
 	private Musica musicaMenu;
-	private final Principal JUEGO;
+	private final Game JUEGO; //->MAL
     private Stage stage;
     private Skin skin;
     private Texture fondoTextura;
     private Image fondoImagen;
 
-    public Menu(Principal juego) {
-        this.JUEGO = juego;
-        this.musicaMenu = juego.getMusica();
+    public Menu(Game juego) { //-> MAL
+        this.JUEGO = juego; //-> MAL
+        this.musicaMenu = new Musica("primeraisla"); //-> esto va en el menu
+        this.musicaMenu.show();
     }
 
     @Override
     public void show() {
-        this.stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-
+        this.stage = new Stage();//-> ? (o sacas el stage o haces que todx sea en el stage)
+        //--> Nueva instancia de input controler
+        Gdx.input.setInputProcessor(stage);//->MAL -> Pasar input controller
     
         this.fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
         this.fondoImagen = new Image(this.fondoTextura);
         this.fondoImagen.setFillParent(true);
         this.stage.addActor(fondoImagen);
 
-        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
-  
-
+        this.skin = new Skin(Gdx.files.internal("uiskin.json")); //-> Hace falta?
         
         Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(60, Color.PURPLE));
         titulo.setAlignment(Align.center);
@@ -60,7 +61,7 @@ public class Menu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
             	musicaMenu.cambiarMusica("Balatro");
-                JUEGO.setScreen(new Partida(JUEGO));
+                JUEGO.setScreen(new Partida(JUEGO, musicaMenu));
             }
         });
         
@@ -68,7 +69,7 @@ public class Menu implements Screen {
         opcionesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Opciones(JUEGO, Menu.this));
+                JUEGO.setScreen(new Opciones(JUEGO, Menu.this, musicaMenu));
             }
         });
 

@@ -4,10 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -62,15 +60,15 @@ public class Partida implements Screen {
     private List<Enemigo> enemigos = new ArrayList<>();
     private Label nombrePersonaje1Label, vidaPersonaje1Label;
     private Label nombrePersonaje2Label, vidaPersonaje2Label;
-    private final Principal juego;
+    private final Game juego;
     private boolean gameOver1 = false;
     private boolean gameOver2 = false;
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
 
-    public Partida(Principal juego) {
+    public Partida(Game juego, Musica musica) {
         this.juego = juego;
-        this.musicaPartida = juego.getMusica();
+        this.musicaPartida = musica;
     }
 
     private boolean enemigosCreados = false;
@@ -502,7 +500,7 @@ public class Partida implements Screen {
     }
 
     public void abrirOpciones() {
-        juego.setScreen(new Opciones(juego, this));
+        juego.setScreen(new Opciones(juego, this, musicaPartida));
     }
 
 

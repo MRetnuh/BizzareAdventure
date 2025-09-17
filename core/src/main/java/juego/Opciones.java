@@ -1,5 +1,7 @@
 package juego;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -24,14 +26,14 @@ import io.github.some.Principal;
 
 public class Opciones implements Screen {
 	private Screen screenAnterior;
-    private final Principal JUEGO;
+    private final Game JUEGO;
     private Stage stage;
     private Skin skin;
     private Musica musicaOpciones;
     
-    public Opciones(Principal juego, Screen screenAnterior) {
+    public Opciones(Game juego, Screen screenAnterior, Musica musica) {
         this.JUEGO = juego;
-        this.musicaOpciones = juego.getMusica(); 
+        this.musicaOpciones = musica;
         this.screenAnterior = screenAnterior;
     }
     
@@ -52,14 +54,14 @@ public class Opciones implements Screen {
         sonidoBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Configuracion(JUEGO, screenAnterior));
+                JUEGO.setScreen(new Configuracion(JUEGO, screenAnterior, musicaOpciones));
             }
         });
         
         controlesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Controles(JUEGO, screenAnterior));
+                JUEGO.setScreen(new Controles(JUEGO, screenAnterior, musicaOpciones));
             }
         });
         
