@@ -1,11 +1,17 @@
+## [6.9.6] - 2025-09-24
+### Modificado
+- Correcciones en InputController para que se ajusten al principio de
+responsabilidad.
+
 ## [6.9.5] - 2025-09-13
-### Arreglo
+### Modificado
 - Bug que permitia al jugador duplicar enemigos con entrar al menu
 
 ## [6.9.4] - 2025-09-08
 ### Añadido
 - Agregado de volumen para el disparo del enemigo.
 - Cambio al funcionamiento del spawn de enemigos y su cantidad
+- 
 ## [6.9.3] - 2025-09-05
 ### Añadido
 - El jugador puede matar al enemigo.

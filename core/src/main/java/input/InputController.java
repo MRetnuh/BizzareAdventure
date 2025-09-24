@@ -7,71 +7,90 @@ import juego.Partida;
 import personajes.Personaje;
 
 public class InputController implements InputProcessor {
-	 
-    private final Partida partida;
-    private Personaje personaje;
-    private final int teclaIzquierda;
-    private final int teclaDerecha;
-    private final int teclaSaltar;
-    private float volumen;
-    private final int teclaAtacar;
-    public InputController(Partida partida, Personaje personaje, int izquierda, int derecha, int saltar, int atacar, float volumen) {
-    	this.partida = partida;
-    	this.personaje = personaje;
-    	this.teclaIzquierda = izquierda;
-    	this.teclaDerecha = derecha;
-    	this.teclaSaltar = saltar;
-    	this.volumen = volumen;
-    	this.teclaAtacar = atacar;
+
+
+    private boolean saltar1 = false;
+    private boolean derecha1 = false;
+    private boolean izquierda1 = false;
+    private boolean atacar1 = false;
+    private boolean opciones = false;
+    private boolean saltar2 = false;
+    private boolean derecha2 = false;
+    private boolean izquierda2 = false;
+    private boolean atacar2 = false;
+    public InputController() {
 }
-    
-    public void setPersonaje(Personaje personaje) {
-        this.personaje = personaje;
-    }
 
     @Override
     public boolean keyDown(int keycode) {
-    	if(this.personaje.getVida() > 0) {
-        	if(keycode == this.teclaDerecha) {
-                this.personaje.setMoviendoDerecha(true);
-        	}
-        	else if(keycode == this.teclaIzquierda) {
-                this.personaje.setMoviendoIzquierda(true);
-        	}
-        	else if(keycode == this.teclaSaltar) {
-            	this.personaje.setEstaSaltando(true);
-        	}
-        	else if(keycode == Input.Keys.P) {
-                this.partida.abrirOpciones();
-                this.personaje.setMoviendoIzquierda(false);
-                this.personaje.setMoviendoDerecha(false);
-                this.personaje.setEstaSaltando(false);
-                this.personaje.setEstaAtacando(false);
-        	}
-            	
-        	 else if(keycode == this.teclaAtacar) {
-                 this.personaje.iniciarAtaque(volumen);
-             }
-             
+        switch (keycode) {
+            case (Input.Keys.D):
+                this.derecha1 = true;
+                break;
+            case (Input.Keys.A):
+                this.izquierda1 = true;
+                break;
+            case (Input.Keys.W):
+                this.saltar1 = true;
+                break;
+            case (Input.Keys.P):
+                this.opciones = true;
+                this.saltar1 = false;
+                this.izquierda1 = false;
+                this.derecha1 = false;
+                this.atacar1 = false;
+                this.saltar2 = false;
+                this.izquierda2 = false;
+                this.derecha2 = false;
+                this.atacar2 = false;
+                break;
+            case (Input.Keys.K):
+                this.atacar1 = true;
+                break;
+            case (Input.Keys.RIGHT):
+                this.derecha2 = true;
+                break;
+            case (Input.Keys.LEFT):
+                this.izquierda2 = true;
+                break;
+            case (Input.Keys.UP):
+                this.saltar2 = true;
+                break;
+
         }
-    	
-        return false;
-    }
+            return false;
+        }
+
 
     @Override
     public boolean keyUp(int keycode) {
-    	if(keycode == this.teclaDerecha) {
-            this.personaje.setMoviendoDerecha(false);
-    	}
-    	else if(keycode == this.teclaIzquierda) {
-            this.personaje.setMoviendoIzquierda(false);
-    	}
-    	else if(keycode == this.teclaSaltar) {
-        	this.personaje.setEstaSaltando(false);
-    	}
-        
-    return false;
-}
+        switch (keycode) {
+            case (Input.Keys.D):
+                this.derecha1 = false;
+                break;
+            case (Input.Keys.A):
+                this.izquierda1 = false;
+                break;
+            case (Input.Keys.W):
+                this.saltar1 = false;
+                break;
+            case (Input.Keys.K):
+                this.atacar1 = false;
+                break;
+            case (Input.Keys.RIGHT):
+                this.derecha2 = false;
+                break;
+            case (Input.Keys.LEFT):
+                this.izquierda2 = false;
+                break;
+            case (Input.Keys.UP):
+                this.saltar2 = false;
+                break;
+
+        }
+        return false;
+    }
+
 
     @Override public boolean keyTyped(char character) { return false; }
     @Override public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
@@ -84,4 +103,39 @@ public class InputController implements InputProcessor {
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
+    public boolean getSaltar1() {
+        return this.saltar1;
+    }
+
+    public boolean getDerecha1() {
+        return this.derecha1;
+    }
+
+    public boolean getIzquierda1() {
+        return this.izquierda1;
+    }
+
+    public boolean getAtacar1() {
+        return  this.atacar1;
+    }
+
+    public boolean getOpciones() {
+        return  this.opciones;
+    }
+
+    public boolean getSaltar2() {
+        return  this.saltar2;
+    }
+
+    public boolean getDerecha2() {
+        return  this.derecha2;
+    }
+
+    public boolean getIzquierda2() {
+        return  this.izquierda2;
+    }
+
+    public boolean getAtacar2() {
+        return  this.atacar2;
+    }
 }

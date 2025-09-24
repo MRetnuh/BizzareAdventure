@@ -48,8 +48,7 @@ public class Partida implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camara;
     private SpriteBatch batch;
-    private InputController inputController1;
-    private InputController inputController2;
+    private InputController inputController;
     private Personaje personaje1;
     private Personaje personaje2;
     private Set<String> cajasDestruidas = new HashSet<>();
@@ -117,13 +116,8 @@ public class Partida implements Screen {
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
 
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(this.stage);
-        this.inputController1 = new InputController(this, personaje1, Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.M, this.musicaPartida.getVolumen());
-        this.inputController2 = new InputController(this, personaje2, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.K, this.musicaPartida.getVolumen());
-        multiplexer.addProcessor(this.inputController1);
-        multiplexer.addProcessor(this.inputController2);
-        Gdx.input.setInputProcessor(multiplexer);
+        this.inputController = new InputController();
+        Gdx.input.setInputProcessor(inputController);
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -159,6 +153,14 @@ public class Partida implements Screen {
 
     @Override
     public void render(float delta) {
+            this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
+            this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
+            this.personaje1.setEstaSaltando(this.inputController.getSaltar1());
+            this.personaje1.setEstaAtacando(this.inputController.getAtacar1());
+            this.personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
+            this.personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
+            this.personaje2.setEstaSaltando(this.inputController.getSaltar2());
+            this.personaje2.setEstaAtacando(this.inputController.getAtacar2());
         actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
         actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
         actualizarCamara();
@@ -373,12 +375,10 @@ public class Partida implements Screen {
                 personaje1.setPosicion(personaje2.getX(), personaje2.getY());
                 personaje1.aumentarVida();
                 gameOver1 = false;
-                inputController1.setPersonaje(personaje1);
             } else if (personaje2.getVida() <= 0 && personaje1.getVida() > 0) {
                 personaje2.setPosicion(personaje1.getX(), personaje1.getY());
                 personaje2.aumentarVida();
                 gameOver2 = false;
-                inputController2.setPersonaje(personaje2);
             }
             else {
                 personaje = jugador.cambiarPersonaje(
@@ -387,10 +387,8 @@ public class Partida implements Screen {
                 );
                 if (esJugador1) {
                     personaje1 = personaje;
-                    inputController1.setPersonaje(personaje);
                 } else {
                     personaje2 = personaje;
-                    inputController2.setPersonaje(personaje);
                 }
 
             }

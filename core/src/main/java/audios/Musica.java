@@ -5,7 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class Musica{ //-> Sacar screen de aca
+public class Musica{
 private String nombreMusica;
 private Music musicaFondo;
 private Stage stage;
@@ -15,7 +15,7 @@ public Musica(String nombreMusica) {
     this.nombreMusica = nombreMusica;
 }
 
-public void show() { //-> Constructor
+public void show() {
     this.stage = new Stage();
     Gdx.input.setInputProcessor(this.stage);
 
