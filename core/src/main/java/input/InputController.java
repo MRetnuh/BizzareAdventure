@@ -13,11 +13,12 @@ public class InputController implements InputProcessor {
     private boolean derecha1 = false;
     private boolean izquierda1 = false;
     private boolean atacar1 = false;
-    private boolean opciones = false;
+    private boolean opciones1 = false;
     private boolean saltar2 = false;
     private boolean derecha2 = false;
     private boolean izquierda2 = false;
     private boolean atacar2 = false;
+    private boolean opciones2 = false;
     public InputController() {
 }
 
@@ -34,15 +35,11 @@ public class InputController implements InputProcessor {
                 this.saltar1 = true;
                 break;
             case (Input.Keys.P):
-                this.opciones = true;
+                this.opciones1 = true;
                 this.saltar1 = false;
                 this.izquierda1 = false;
                 this.derecha1 = false;
                 this.atacar1 = false;
-                this.saltar2 = false;
-                this.izquierda2 = false;
-                this.derecha2 = false;
-                this.atacar2 = false;
                 break;
             case (Input.Keys.K):
                 this.atacar1 = true;
@@ -56,7 +53,15 @@ public class InputController implements InputProcessor {
             case (Input.Keys.UP):
                 this.saltar2 = true;
                 break;
-
+            case (Input.Keys.M):
+                this.atacar2 = true;
+                break;
+            case (Input.Keys.O):
+                this.opciones2 = true;
+                this.saltar2 = false;
+                this.izquierda2 = false;
+                this.derecha2 = false;
+                this.atacar2 = false;
         }
             return false;
         }
@@ -85,6 +90,9 @@ public class InputController implements InputProcessor {
                 break;
             case (Input.Keys.UP):
                 this.saltar2 = false;
+                break;
+            case (Input.Keys.M):
+                this.atacar2 = false;
                 break;
 
         }
@@ -119,8 +127,12 @@ public class InputController implements InputProcessor {
         return  this.atacar1;
     }
 
-    public boolean getOpciones() {
-        return  this.opciones;
+    public boolean getOpciones1() {
+        return  this.opciones1;
+    }
+
+    public boolean getOpciones2() {
+        return  this.opciones2;
     }
 
     public boolean getSaltar2() {

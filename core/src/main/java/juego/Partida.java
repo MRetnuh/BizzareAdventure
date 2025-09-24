@@ -153,14 +153,21 @@ public class Partida implements Screen {
 
     @Override
     public void render(float delta) {
+            if(this.personaje1.getVida() > 0){
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
             this.personaje1.setEstaSaltando(this.inputController.getSaltar1());
             this.personaje1.setEstaAtacando(this.inputController.getAtacar1());
+            if(this.inputController.getOpciones1()) abrirOpciones();
+            }
+
+            if(this.personaje2.getVida() > 0){
             this.personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
             this.personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
             this.personaje2.setEstaSaltando(this.inputController.getSaltar2());
             this.personaje2.setEstaAtacando(this.inputController.getAtacar2());
+            if(this.inputController.getOpciones2()) abrirOpciones();
+            }
         actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
         actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
         actualizarCamara();
@@ -266,7 +273,6 @@ public class Partida implements Screen {
             float finalY = !colisionY ? nuevaY : personaje.getY();
             personaje.aplicarMovimiento(finalX, finalY, delta, anchoMapa, alturaMapa);
         }
-
         personaje.atacar(delta);
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
 

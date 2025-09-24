@@ -170,11 +170,11 @@ public abstract class Personaje {
         // Solo inicia el ataque si no está en curso
         if (!this.estaAtacando) {
             this.estaAtacando = true;
-            this.tiempoAtaque  = 0f;  
+            this.tiempoAtaque  = 0f;
             EfectoSonido.reproducir(this.nombreAtaque, volumen);
-            
+
         }
-        
+
     }
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
@@ -255,13 +255,6 @@ public abstract class Personaje {
         this.estaAtacando = atacando;
     }
 
-    public void setEstaMoviendose(boolean moviendose) {
-        this.estaMoviendose = moviendose;
-    }
-
-    public boolean getEstaMoviendose() {
-        return estaMoviendose;
-    }
     public void setMoviendoDerecha(boolean moviendo) {
         this.moviendoDerecha = moviendo;
     }
