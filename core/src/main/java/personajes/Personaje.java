@@ -154,16 +154,16 @@ public abstract class Personaje {
     }
 
     public void atacar(float delta) {
-    	    if (this.estaAtacando) {
-    	        this.tiempoAtaque += delta;
+	    if (this.estaAtacando) {
+	        this.tiempoAtaque += delta;
 
-    	        // Comprueba si la animación ha terminado
-    	        if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
-    	            this.estaAtacando = false; // El ataque ha terminado
-    	            this.tiempoAtaque = 0f; // Reinicia el tiempo para el próximo ataque
-    	        }
-    	    }
-    	}
+	        // Comprueba si la animación ha terminado
+	        if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
+	            this.estaAtacando = false; // El ataque ha terminado
+	            this.tiempoAtaque = 0f; // Reinicia el tiempo para el próximo ataque
+	        }
+	    }
+	}
 
 
     public void iniciarAtaque(float volumen) {

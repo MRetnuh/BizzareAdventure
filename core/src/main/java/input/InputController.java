@@ -79,9 +79,6 @@ public class InputController implements InputProcessor {
             case (Input.Keys.W):
                 this.saltar1 = false;
                 break;
-            case (Input.Keys.K):
-                this.atacar1 = false;
-                break;
             case (Input.Keys.RIGHT):
                 this.derecha2 = false;
                 break;
@@ -90,9 +87,6 @@ public class InputController implements InputProcessor {
                 break;
             case (Input.Keys.UP):
                 this.saltar2 = false;
-                break;
-            case (Input.Keys.M):
-                this.atacar2 = false;
                 break;
 
         }
@@ -126,7 +120,15 @@ public class InputController implements InputProcessor {
     public boolean getAtacar1() {
         return  this.atacar1;
     }
-
+    
+    public void setAtacarFalso1() {
+        this.atacar1 = false;
+    }
+    
+    public void setAtacarFalso2() {
+        this.atacar2 = false;
+    }
+    
     public boolean getOpciones1() {
         return  this.opciones1;
     }

@@ -157,7 +157,10 @@ public class Partida implements Screen {
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
             this.personaje1.setEstaSaltando(this.inputController.getSaltar1());
-            this.personaje1.setEstaAtacando(this.inputController.getAtacar1());
+            if(this.inputController.getAtacar1()) {
+                this.personaje1.iniciarAtaque(this.musicaPartida.getVolumen());
+                this.inputController.setAtacarFalso1(); 
+            }
             if(this.inputController.getOpciones1()) abrirOpciones();
             }
 
@@ -165,7 +168,10 @@ public class Partida implements Screen {
             this.personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
             this.personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
             this.personaje2.setEstaSaltando(this.inputController.getSaltar2());
-            this.personaje2.setEstaAtacando(this.inputController.getAtacar2());
+            if(this.inputController.getAtacar2()) {
+                this.personaje2.iniciarAtaque(this.musicaPartida.getVolumen());
+                this.inputController.setAtacarFalso2(); 
+            }
             if(this.inputController.getOpciones2()) abrirOpciones();
             }
         actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
@@ -222,8 +228,6 @@ public class Partida implements Screen {
                     e.reducirVida();
                     if (e.getVida() <= 0) {
                         enemigosMuertos.add(e.getNombre());
-                        // Si quieres, puedes eliminarlo de la lista para no procesarlo más:
-                        // iter.remove();
                     }
                 }
             }

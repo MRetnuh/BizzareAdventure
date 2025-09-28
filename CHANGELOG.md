@@ -1,3 +1,7 @@
+## [6.9.6] - 2025-09-28
+### Modificado
+- Correcciones en el ataque del personaje
+
 ## [6.9.6] - 2025-09-24
 ### Modificado
 - Correcciones en InputController para que se ajusten al principio de
