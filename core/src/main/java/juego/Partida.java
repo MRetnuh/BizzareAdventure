@@ -3,9 +3,10 @@ package juego;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,23 +25,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import audios.Musica;
 import estilos.EstiloTexto;
 import input.InputController;
-import io.github.some.Principal;
+// import io.github.some.Principal; // Importación no usada, eliminada o comentada si no es necesaria
 import jugadores.Jugador;
 import personajes.Enemigo;
 import personajes.Personaje;
 import proyectiles.Proyectil;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Partida implements Screen {
 
     private Musica musicaPartida;
-    private Stage stage;
+    private Stage stage;        // Stage para el MUNDO (Personajes, Enemigos - usa cámara móvil)
+    private Stage stageHUD;     // Stage para el HUD (Labels/Tablas - usa cámara fija)
     private final Jugador jugador1 = new Jugador();
     private final Jugador jugador2 = new Jugador();
     private TiledMap mapa;
@@ -74,16 +75,23 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
-        this.stage = new Stage();
+        this.camara = new OrthographicCamera();
+        this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        this.batch = new SpriteBatch();
+        
+        // 👈 STAGE DEL MUNDO: Para los personajes. Usa ScreenViewport que se adaptará al tamaño
+        // El Stage.draw() usará la ProjectionMatrix del batch (establecida con this.camara.combined)
+        this.stage = new Stage(new ScreenViewport(this.camara), this.batch); 
+
+        // 👈 STAGE DEL HUD: Para las tablas. Usa ScreenViewport para mantenerse fijo en la pantalla.
+        this.stageHUD = new Stage(new ScreenViewport(), this.batch);
 
         this.mapa = new TmxMapLoader().load("mapacorregido.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.mapa);
         this.anchoMapa = mapa.getProperties().get("width", Integer.class) * this.mapa.getProperties().get("tilewidth", Integer.class);
         this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
         restaurarEstadoCajas();
-
-        this.camara = new OrthographicCamera();
-        this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // 👇 Solo crear enemigos una vez
         if (!enemigosCreados) {
@@ -103,8 +111,6 @@ public class Partida implements Screen {
             enemigosCreados = true;
         }
 
-        this.batch = new SpriteBatch();
-
         // Generar personajes para ambos jugadores
         if (!this.jugador1.getPartidaEmpezada()) {
             this.jugador1.generarPersonajeAleatorio();
@@ -116,6 +122,12 @@ public class Partida implements Screen {
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
 
+        // 👈 AÑADIR PERSONAJES AL STAGE DEL MUNDO
+        this.stage.addActor(this.personaje1);
+        this.stage.addActor(this.personaje2);
+        for (Enemigo enemigo : enemigos) {
+            this.stage.addActor(enemigo);
+        }
         this.inputController = new InputController();
         Gdx.input.setInputProcessor(inputController);
 
@@ -146,34 +158,36 @@ public class Partida implements Screen {
         contenedor2.setBackground(skin.getDrawable("default-round"));
         contenedor1.setPosition(0, Gdx.graphics.getHeight() - contenedor1.getHeight());
         contenedor2.setPosition(Gdx.graphics.getWidth() - contenedor2.getWidth(), Gdx.graphics.getHeight() - contenedor2.getHeight());
-        this.stage.addActor(contenedor1);
-        this.stage.addActor(contenedor2);
+
+        // 👈 Los contenedores del HUD son Actores y se añaden al STAGE DEL HUD
+        this.stageHUD.addActor(contenedor1);
+        this.stageHUD.addActor(contenedor2);
     }
 
 
     @Override
     public void render(float delta) {
-            if(this.personaje1.getVida() > 0){
+        if(this.personaje1.getVida() > 0){
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
             this.personaje1.setEstaSaltando(this.inputController.getSaltar1());
             if(this.inputController.getAtacar1()) {
                 this.personaje1.iniciarAtaque(this.musicaPartida.getVolumen());
-                this.inputController.setAtacarFalso1(); 
+                this.inputController.setAtacarFalso1();
             }
             if(this.inputController.getOpciones1()) abrirOpciones();
-            }
+        }
 
-            if(this.personaje2.getVida() > 0){
+        if(this.personaje2.getVida() > 0){
             this.personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
             this.personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
             this.personaje2.setEstaSaltando(this.inputController.getSaltar2());
             if(this.inputController.getAtacar2()) {
                 this.personaje2.iniciarAtaque(this.musicaPartida.getVolumen());
-                this.inputController.setAtacarFalso2(); 
+                this.inputController.setAtacarFalso2();
             }
             if(this.inputController.getOpciones2()) abrirOpciones();
-            }
+        }
         actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
         actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
         actualizarCamara();
@@ -181,20 +195,21 @@ public class Partida implements Screen {
 
         limpiarEnemigosMuertos();
 
+        // 1. DIBUJAR EL MAPA (Usa this.camara)
         this.mapRenderer.setView(this.camara);
         this.mapRenderer.render();
 
+        // 2. DIBUJAR ENTIDADES DEL MUNDO NO ACTORES (Proyectiles, Enemigos, etc.)
+        // Sincronizar la matriz del batch con la cámara del mundo
         this.batch.setProjectionMatrix(this.camara.combined);
         this.batch.begin();
-        personaje1.dibujar(batch, delta);
-        personaje2.dibujar(batch, delta);
+        
         if(!gameOver1 || !gameOver2) {
             for (Enemigo enemigo : enemigos) {
                 if (enemigo.getVida() > 0) {
-                    enemigo.dibujar(batch, delta);
 
                     for (Proyectil b : enemigo.getBalas()) {
-                        b.dibujar(batch);
+                        this.stage.addActor(b);
                     }
 
                     enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
@@ -202,9 +217,16 @@ public class Partida implements Screen {
             }
         }
         this.batch.end();
-
+        
+        // 3. DIBUJAR PERSONAJES (Stage del Mundo)
+        // El stage ya usa el batch que tiene la matriz de la cámara del mundo
         this.stage.act(delta);
         this.stage.draw();
+
+        // 4. DIBUJAR HUD (Stage del HUD)
+        // El stageHUD usa su propio Viewport/Cámara fija, por lo que no se mueve con el mundo.
+        this.stageHUD.act(delta);
+        this.stageHUD.draw();
 
     }
 
@@ -215,7 +237,8 @@ public class Partida implements Screen {
                 else gameOver2 = true;
                 if(this.gameOver1 == true && this.gameOver2 == true) {
                     musicaPartida.cambiarMusica("derrota");
-                    personaje.morir(this.stage);
+                    // Usar el Stage del MUNDO para la animación de morir/GameOver
+                    personaje.morir(this.stageHUD); 
                 }
             }
             return;
@@ -277,7 +300,7 @@ public class Partida implements Screen {
             float finalY = !colisionY ? nuevaY : personaje.getY();
             personaje.aplicarMovimiento(finalX, finalY, delta, anchoMapa, alturaMapa);
         }
-        personaje.atacar(delta);
+        personaje.atacar(delta); 
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
 
         for (Enemigo e : enemigos) {
@@ -316,6 +339,7 @@ public class Partida implements Screen {
         }
     }
 
+ // Partida.java - Reemplazar el método actualizarCamara
     private void actualizarCamara() {
         float centroX;
         float centroY;
@@ -325,18 +349,21 @@ public class Partida implements Screen {
 
         // Si ambos vivos → calcular el centro
         if (vivo1 && vivo2) {
-            centroX = (personaje1.getX() + personaje2.getX()) / 2f + personaje1.getHitbox().getWidth() / 2f;
-            centroY = (personaje1.getY() + personaje2.getY()) / 2f + personaje1.getHitbox().getHeight() / 2f;
+            // Calcula el centro entre los dos
+            centroX = (personaje1.getX() + personaje2.getX()) / 2f + personaje1.getWidth() / 2f; 
+            centroY = (personaje1.getY() + personaje2.getY()) / 2f + personaje1.getHeight() / 2f; 
         }
         // Si solo vive jugador 1 → seguirlo
         else if (vivo1) {
-            centroX = personaje1.getX() + personaje1.getHitbox().getWidth() / 2f;
-            centroY = personaje1.getY() + personaje1.getHitbox().getHeight()/ 2f;
+            // Centrar la cámara en personaje 1
+            centroX = personaje1.getX() + personaje1.getWidth() / 2f;
+            centroY = personaje1.getY() + personaje1.getHeight()/ 2f;
         }
         // Si solo vive jugador 2 → seguirlo
         else if (vivo2) {
-            centroX = personaje2.getX() + personaje2.getHitbox().getWidth()/ 2f;
-            centroY = personaje2.getY() + personaje2.getHitbox().getHeight() / 2f;
+            // Centrar la cámara en personaje 2
+            centroX = personaje2.getX() + personaje2.getWidth()/ 2f;
+            centroY = personaje2.getY() + personaje2.getHeight() / 2f;
         }
         // Si ambos muertos → no mover la cámara
         else {
@@ -348,8 +375,14 @@ public class Partida implements Screen {
         float halfHeight = camara.viewportHeight / 2f;
 
         // Limitar cámara dentro de los bordes del mapa
+        // 🛑 IMPORTANTE: Asegúrate de que anchoMapa y alturaMapa están correctos
         centroX = Math.max(halfWidth, Math.min(centroX, anchoMapa - halfWidth));
         centroY = Math.max(halfHeight, Math.min(centroY, alturaMapa - halfHeight));
+
+        // Si la altura del mapa es menor que la altura de la cámara, fíjate en el centro del mapa.
+        if (alturaMapa < camara.viewportHeight) {
+            centroY = alturaMapa / 2f;
+        }
 
         camara.position.set(centroX, centroY, 0);
         camara.update();
@@ -396,9 +429,15 @@ public class Partida implements Screen {
                         esJugador1 ? nuevaY1 : nuevaY2
                 );
                 if (esJugador1) {
+                    // Reemplazar el actor en el Stage del MUNDO si cambia de personaje
+                    this.stage.getActors().removeValue(personaje1, true);
                     personaje1 = personaje;
+                    this.stage.addActor(personaje1);
                 } else {
+                    // Reemplazar el actor en el Stage del MUNDO si cambia de personaje
+                    this.stage.getActors().removeValue(personaje2, true);
                     personaje2 = personaje;
+                    this.stage.addActor(personaje2);
                 }
 
             }
@@ -502,8 +541,6 @@ public class Partida implements Screen {
             return true;
         }
 
-
-
         return false;
     }
 
@@ -512,7 +549,16 @@ public class Partida implements Screen {
     }
 
 
-    @Override public void resize(int width, int height) {}
+    @Override 
+    public void resize(int width, int height) {
+        // Asegúrate de actualizar el viewport de AMBOS Stages
+        if (this.stage != null) {
+            this.stage.getViewport().update(width, height, true);
+        }
+        if (this.stageHUD != null) {
+            this.stageHUD.getViewport().update(width, height, true);
+        }
+    }
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
@@ -523,5 +569,6 @@ public class Partida implements Screen {
         this.mapRenderer.dispose();
         this.batch.dispose();
         this.stage.dispose();
+        this.stageHUD.dispose(); // 👈 Liberar el Stage del HUD
     }
 }

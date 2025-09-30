@@ -68,7 +68,6 @@ public class Enemigo extends Personaje {
         Iterator<Proyectil> it = balas.iterator();
         while (it.hasNext()) {
             Proyectil b = it.next();
-            b.actualizar(delta);
             // Si sale de rango, se elimina
             if (b.getX() < 0 || b.getX() > 2000) {
                 b.desactivar();
