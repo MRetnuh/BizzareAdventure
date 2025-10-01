@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 
 import audios.EfectoSonido;
 
-public abstract class Personaje extends Actor { // 👈 Hereda de Actor
+public abstract class Personaje extends Actor {
     private float velocidad;
     private String nombre;
     private int vida;
@@ -35,7 +35,7 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
     private boolean moviendoDerecha = false;
     private boolean moviendoIzquierda = false;
     private final float GRAVEDAD = -500;
-    private float prevX, prevY; // Se mantienen para el seguimiento de colisiones
+    private float prevX, prevY;
     private float estadoTiempo = 0f;
     private float velocidadCaida = 0;
     private Texture texturaPrincipal; 
@@ -48,27 +48,25 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
     private float tiempoAtaque = 0f;
 
 
-    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida) {
+    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida) {//-> pasale el stage aca
         this.nombre = nombre;
         this.velocidad = velocidad;
         this.nombreAtaque = nombreAtaque;
         this.vida = vida;
-        cargarTexturas();
-        // Usa los métodos de Actor para la posición
-        setX(200);
-        setY(930);
-        // Define el tamaño del Actor para el dibujo y colisiones (ajustar si el tamaño es dinámico)
+        this.cargarTexturas();
+        super.setX(200);
+        super.setY(930);
         setSize(quietaDerecha.getRegionWidth(), quietaDerecha.getRegionHeight());
     }
 
     protected abstract void cargarTexturas();
 
     public void cargarUbicaciones(float x, float y) {
-        setX(x); // 👈 Usar el método de Actor
-        setY(y); // 👈 Usar el método de Actor
+        setX(x);
+        setY(y);
     }
 
-    public void morir(Stage stage) {
+    public void morir(Stage stage) {//-> Aca no le pases el stage
         this.stage = stage;
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
@@ -113,7 +111,6 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
         }, 8);
     }
 
-    // 👈 Método draw: El Stage llama a este para dibujar el Actor
     @Override
     public void draw(Batch batch, float parentAlpha) {
         TextureRegion frame;
@@ -129,33 +126,26 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
             frame = mirandoDerecha ? quietaDerecha : quietaIzquierda;
         }
 
-        batch.draw(frame, getX(), getY());
+        batch.draw(frame, getX(), getY());//->Capaz esta bien
     }
 
-    // 👈 Método act: El Stage llama a este para actualizar la lógica del Actor
     @Override
     public void act(float delta) {
-        super.act(delta); // Llamada importante
+        super.act(delta);
 
-        // Mover la lógica de temporización de animación aquí (antes estaba en dibujar)
         if (this.estaAtacando) {
             this.tiempoAtaque += delta;
 
-            // Comprueba si la animación de ataque ha terminado
             if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.tiempoAtaque)) ||
                     (!this.mirandoDerecha && this.animAtaqueIzquierda.isAnimationFinished(this.tiempoAtaque))) {
-                this.estaAtacando = false; // El ataque termina
-                this.tiempoAtaque = 0f; // Reinicia el temporizador
+                this.estaAtacando = false;
+                this.tiempoAtaque = 0f;
             }
 
         } else {
-            // Incrementa el tiempo general si no estás atacando para animación de movimiento/quieto
             this.estadoTiempo += delta;
         }
     }
-
-    // ELIMINADO: public void dibujar(SpriteBatch batch, float delta) -> sustituido por draw/act
-
 
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
@@ -170,7 +160,6 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
 	    if (this.estaAtacando) {
 	        this.tiempoAtaque += delta;
 
-	        // Comprueba si la animación ha terminado
 	        if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
 	            this.estaAtacando = false; // El ataque ha terminado
 	            this.tiempoAtaque = 0f; // Reinicia el tiempo para el próximo ataque
@@ -180,7 +169,6 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
 
 
     public void iniciarAtaque(float volumen) {
-        // Solo inicia el ataque si no está en curso
         if (!this.estaAtacando) {
             this.estaAtacando = true;
             this.tiempoAtaque  = 0f;
@@ -191,24 +179,23 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
     }
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
-        // this.estadoTiempo += delta; // Se movió a act(delta)
         this.estaMoviendose = nuevoX != getX() || nuevoY != getY();
         this.mirandoDerecha = nuevoX > getX() || (nuevoX == getX() && this.mirandoDerecha);
 
-        float anchoSprite = getWidth(); // Usar getWidth() del Actor
-        float altoSprite = getHeight(); // Usar getHeight() del Actor
+        float anchoSprite = getWidth();
+        float altoSprite = getHeight();
 
         nuevoX = Math.max(0, Math.min(nuevoX, mapWidth - anchoSprite));
 
         nuevoY = Math.min(nuevoY, mapHeight - altoSprite);
 
-        setX(nuevoX); // 👈 Usar el método de Actor
-        setY(nuevoY); // 👈 Usar el método de Actor
+        setX(nuevoX);
+        setY(nuevoY);
     }
 
     public void guardarPosicionAnterior() {
-        this.prevX = getX(); // 👈 Usar el método de Actor
-        this.prevY = getY(); // 👈 Usar el método de Actor
+        this.prevX = getX();
+        this.prevY = getY();
     }
 
     public void frenarCaida() {
@@ -225,19 +212,18 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
         return this.vida;
     }
     public Rectangle getHitbox() {
-        // Usa getX() y getY() del Actor
         return new Rectangle(getX(), getY(), 32, 32);
     }
 
     public float getNuevaX(float delta) {
-        float tempX = getX(); // 👈 Usar el método de Actor
+        float tempX = getX();
         if (this.moviendoDerecha) tempX += this.velocidad * delta;
         if (this.moviendoIzquierda) tempX -= this.velocidad * delta;
         return tempX;
     }
 
     public float getNuevaY(float delta) {
-        float tempY = getY(); // 👈 Usar el método de Actor
+        float tempY = getY();
         if (this.estaSaltando) tempY += this.velocidad * delta;
         return tempY;
     }
@@ -251,8 +237,8 @@ public abstract class Personaje extends Actor { // 👈 Hereda de Actor
         super.setY(prevY); // 👈 Usar el método de Actor
     }
     public void setPosicion(float x, float y) {
-        setX(x); // 👈 Usar el método de Actor
-        setY(y); // 👈 Usar el método de Actor
+        setX(x);
+        setY(y);
     }
     public void aumentarVida() {
         this.vida++;

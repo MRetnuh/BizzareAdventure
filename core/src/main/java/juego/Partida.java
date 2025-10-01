@@ -40,8 +40,8 @@ import proyectiles.Proyectil;
 public class Partida implements Screen {
 
     private Musica musicaPartida;
-    private Stage stage;        // Stage para el MUNDO (Personajes, Enemigos - usa cámara móvil)
-    private Stage stageHUD;     // Stage para el HUD (Labels/Tablas - usa cámara fija)
+    private Stage stage;
+    private Stage stageHUD;
     private final Jugador jugador1 = new Jugador();
     private final Jugador jugador2 = new Jugador();
     private TiledMap mapa;
@@ -69,31 +69,23 @@ public class Partida implements Screen {
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
         this.musicaPartida = musica;
+        this.camara = new OrthographicCamera();
+        this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.batch = new SpriteBatch();
+        this.stage = new Stage(new ScreenViewport(this.camara), this.batch);
+        this.stageHUD = new Stage(new ScreenViewport(), this.batch);
     }
 
     private boolean enemigosCreados = false;
 
     @Override
     public void show() {
-        this.camara = new OrthographicCamera();
-        this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        this.batch = new SpriteBatch();
-        
-        // 👈 STAGE DEL MUNDO: Para los personajes. Usa ScreenViewport que se adaptará al tamaño
-        // El Stage.draw() usará la ProjectionMatrix del batch (establecida con this.camara.combined)
-        this.stage = new Stage(new ScreenViewport(this.camara), this.batch); 
-
-        // 👈 STAGE DEL HUD: Para las tablas. Usa ScreenViewport para mantenerse fijo en la pantalla.
-        this.stageHUD = new Stage(new ScreenViewport(), this.batch);
-
         this.mapa = new TmxMapLoader().load("mapacorregido.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.mapa);
         this.anchoMapa = mapa.getProperties().get("width", Integer.class) * this.mapa.getProperties().get("tilewidth", Integer.class);
         this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
         restaurarEstadoCajas();
 
-        // 👇 Solo crear enemigos una vez
         if (!enemigosCreados) {
             String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
             float[][] posiciones = {
@@ -111,7 +103,6 @@ public class Partida implements Screen {
             enemigosCreados = true;
         }
 
-        // Generar personajes para ambos jugadores
         if (!this.jugador1.getPartidaEmpezada()) {
             this.jugador1.generarPersonajeAleatorio();
         }
@@ -122,7 +113,6 @@ public class Partida implements Screen {
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
 
-        // 👈 AÑADIR PERSONAJES AL STAGE DEL MUNDO
         this.stage.addActor(this.personaje1);
         this.stage.addActor(this.personaje2);
         for (Enemigo enemigo : enemigos) {
@@ -133,11 +123,9 @@ public class Partida implements Screen {
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        // HUD Jugador 1
         nombrePersonaje1Label = new Label("Nombre: " + personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         vidaPersonaje1Label = new Label("Vida: " + personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
 
-        // HUD Jugador 2
         nombrePersonaje2Label = new Label("Nombre: " + personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
         vidaPersonaje2Label = new Label("Vida: " + personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
 
@@ -159,7 +147,6 @@ public class Partida implements Screen {
         contenedor1.setPosition(0, Gdx.graphics.getHeight() - contenedor1.getHeight());
         contenedor2.setPosition(Gdx.graphics.getWidth() - contenedor2.getWidth(), Gdx.graphics.getHeight() - contenedor2.getHeight());
 
-        // 👈 Los contenedores del HUD son Actores y se añaden al STAGE DEL HUD
         this.stageHUD.addActor(contenedor1);
         this.stageHUD.addActor(contenedor2);
     }
@@ -195,14 +182,11 @@ public class Partida implements Screen {
 
         limpiarEnemigosMuertos();
 
-        // 1. DIBUJAR EL MAPA (Usa this.camara)
         this.mapRenderer.setView(this.camara);
         this.mapRenderer.render();
 
-        // 2. DIBUJAR ENTIDADES DEL MUNDO NO ACTORES (Proyectiles, Enemigos, etc.)
-        // Sincronizar la matriz del batch con la cámara del mundo
         this.batch.setProjectionMatrix(this.camara.combined);
-        this.batch.begin();
+        this.batch.begin();//->?????????????????
         
         if(!gameOver1 || !gameOver2) {
             for (Enemigo enemigo : enemigos) {
@@ -216,15 +200,11 @@ public class Partida implements Screen {
                 }
             }
         }
-        this.batch.end();
-        
-        // 3. DIBUJAR PERSONAJES (Stage del Mundo)
-        // El stage ya usa el batch que tiene la matriz de la cámara del mundo
+        this.batch.end();//-> ???????????????
+
         this.stage.act(delta);
         this.stage.draw();
 
-        // 4. DIBUJAR HUD (Stage del HUD)
-        // El stageHUD usa su propio Viewport/Cámara fija, por lo que no se mueve con el mundo.
         this.stageHUD.act(delta);
         this.stageHUD.draw();
 
@@ -237,7 +217,6 @@ public class Partida implements Screen {
                 else gameOver2 = true;
                 if(this.gameOver1 == true && this.gameOver2 == true) {
                     musicaPartida.cambiarMusica("derrota");
-                    // Usar el Stage del MUNDO para la animación de morir/GameOver
                     personaje.morir(this.stageHUD); 
                 }
             }
@@ -338,8 +317,6 @@ public class Partida implements Screen {
             tileLayer.setCell(x, y, null);
         }
     }
-
- // Partida.java - Reemplazar el método actualizarCamara
     private void actualizarCamara() {
         float centroX;
         float centroY;
@@ -347,39 +324,27 @@ public class Partida implements Screen {
         boolean vivo1 = personaje1.getVida() > 0;
         boolean vivo2 = personaje2.getVida() > 0;
 
-        // Si ambos vivos → calcular el centro
         if (vivo1 && vivo2) {
-            // Calcula el centro entre los dos
             centroX = (personaje1.getX() + personaje2.getX()) / 2f + personaje1.getWidth() / 2f; 
             centroY = (personaje1.getY() + personaje2.getY()) / 2f + personaje1.getHeight() / 2f; 
         }
-        // Si solo vive jugador 1 → seguirlo
         else if (vivo1) {
-            // Centrar la cámara en personaje 1
             centroX = personaje1.getX() + personaje1.getWidth() / 2f;
             centroY = personaje1.getY() + personaje1.getHeight()/ 2f;
         }
-        // Si solo vive jugador 2 → seguirlo
         else if (vivo2) {
-            // Centrar la cámara en personaje 2
             centroX = personaje2.getX() + personaje2.getWidth()/ 2f;
             centroY = personaje2.getY() + personaje2.getHeight() / 2f;
         }
-        // Si ambos muertos → no mover la cámara
         else {
             return;
         }
-
-        // Mitad del tamaño visible de la cámara
         float halfWidth = camara.viewportWidth / 2f;
         float halfHeight = camara.viewportHeight / 2f;
 
-        // Limitar cámara dentro de los bordes del mapa
-        // 🛑 IMPORTANTE: Asegúrate de que anchoMapa y alturaMapa están correctos
         centroX = Math.max(halfWidth, Math.min(centroX, anchoMapa - halfWidth));
         centroY = Math.max(halfHeight, Math.min(centroY, alturaMapa - halfHeight));
 
-        // Si la altura del mapa es menor que la altura de la cámara, fíjate en el centro del mapa.
         if (alturaMapa < camara.viewportHeight) {
             centroY = alturaMapa / 2f;
         }
@@ -429,12 +394,10 @@ public class Partida implements Screen {
                         esJugador1 ? nuevaY1 : nuevaY2
                 );
                 if (esJugador1) {
-                    // Reemplazar el actor en el Stage del MUNDO si cambia de personaje
                     this.stage.getActors().removeValue(personaje1, true);
                     personaje1 = personaje;
                     this.stage.addActor(personaje1);
                 } else {
-                    // Reemplazar el actor en el Stage del MUNDO si cambia de personaje
                     this.stage.getActors().removeValue(personaje2, true);
                     personaje2 = personaje;
                     this.stage.addActor(personaje2);
@@ -551,7 +514,6 @@ public class Partida implements Screen {
 
     @Override 
     public void resize(int width, int height) {
-        // Asegúrate de actualizar el viewport de AMBOS Stages
         if (this.stage != null) {
             this.stage.getViewport().update(width, height, true);
         }

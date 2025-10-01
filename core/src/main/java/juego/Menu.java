@@ -31,17 +31,17 @@ public class Menu implements Screen {
     private Texture fondoTextura;
     private Image fondoImagen;
 
-    public Menu(Game juego) { //-> MAL
-        this.JUEGO = juego; //-> MAL
+    public Menu(Game juego) {
+        this.stage = new Stage();//-> ? (o sacas el stage o haces que todx sea en el stage)
+        this.JUEGO = juego;
         this.musicaMenu = new Musica("primeraisla"); //-> esto va en el menu
         this.musicaMenu.show();
     }
 
     @Override
     public void show() {
-        this.stage = new Stage();//-> ? (o sacas el stage o haces que todx sea en el stage)
-        //--> Nueva instancia de input controler
-        Gdx.input.setInputProcessor(stage);//->MAL -> Pasar input controller
+
+        Gdx.input.setInputProcessor(stage);
     
         this.fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
         this.fondoImagen = new Image(this.fondoTextura);
@@ -56,6 +56,8 @@ public class Menu implements Screen {
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton opcionesBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        this.stage.addActor(jugarBtn);
+        //-> Agregar los otros botones
 
         jugarBtn.addListener(new ChangeListener() {
             @Override
@@ -109,6 +111,5 @@ public class Menu implements Screen {
     public void dispose() {
         this.stage.dispose();
         this.skin.dispose();
-        this.fondoTextura.dispose();
     }
 }

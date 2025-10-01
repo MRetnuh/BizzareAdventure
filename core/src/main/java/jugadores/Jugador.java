@@ -6,9 +6,13 @@ import personajes.Akame;
 import personajes.Leone;
 import personajes.Personaje;
 
+//-> ENUM con los personajes -> Asociar a cada elemento del enum las texturas correspondientes a cada personaje
+//-> crearPersonaje() -> new Personaje(this.values()[indicePersonaje].parametro1, ...parametro2, ...parametro3)
+
 public class Jugador {
       private boolean partidaEmpezada = false;
-	  private Personaje[] personajesJugables = {new Akame(), new Leone()};
+	  private Personaje[] personajesJugables = {new Akame(), new Leone()}; //-> FACTORY DE PERSONAJES
+	//-> private Personaje personaje = ENUM.crearPersonaje(indiceRandom);
 	  private int numeroPersonajeElegido;
 	  private Personaje personajeElegido;
 	  private Random r = new Random();
