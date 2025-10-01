@@ -48,7 +48,7 @@ public class Menu implements Screen {
         this.fondoImagen.setFillParent(true);
         this.stage.addActor(fondoImagen);
 
-        this.skin = new Skin(Gdx.files.internal("uiskin.json")); //-> Hace falta?
+        this.skin = new Skin(Gdx.files.internal("uiskin.json")); //-> Hace falta? //kevin (el follador de hornet) Investiga para que mierda sirve el skin
         
         Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(60, Color.PURPLE));
         titulo.setAlignment(Align.center);

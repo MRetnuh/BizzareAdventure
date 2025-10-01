@@ -121,7 +121,7 @@ public class Partida implements Screen {
         this.inputController = new InputController();
         Gdx.input.setInputProcessor(this.inputController);
 
-        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("uiskin.json")); //kevin (el follador de hornet)
 
         this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
