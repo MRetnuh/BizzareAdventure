@@ -7,8 +7,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Proyectil extends Actor {
-    // Ya no necesitas 'private float x, y;' porque Actor lo maneja
-
     private float velocidad;
     private boolean haciaDerecha;
     private Texture textura;
@@ -17,13 +15,11 @@ public class Proyectil extends Actor {
     private final int HEIGHT = 16;
 
     public Proyectil(float inicialX, float inicialY, boolean haciaDerecha, String ruta) {
-        // 1. Establece la posición inicial usando los métodos de Actor
-        this.setX(inicialX);
-        this.setY(inicialY);
+        super.setX(inicialX);
+        super.setY(inicialY);
 
-        // 2. Establece el tamaño del Actor para que la hitbox sea precisa
-        this.setWidth(WIDTH);
-        this.setHeight(HEIGHT);
+        this.setWidth(this.WIDTH);
+        this.setHeight(this.HEIGHT);
 
         this.haciaDerecha = haciaDerecha;
         this.velocidad = 400;
@@ -32,32 +28,26 @@ public class Proyectil extends Actor {
     }
     @Override
     public void act(float delta) {
-        if (!activa) return; // Si no está activo, no se mueve
+        if (!this.activa) return; // Si no está activo, no se mueve
 
-        float movimiento = velocidad * delta;
+        float movimiento = this.velocidad * delta;
 
-        if (haciaDerecha) {
-            // Mueve el Actor y actualiza su X automáticamente
-            this.setX(getX() + movimiento);
+        if (this.haciaDerecha) {
+            super.setX(getX() + movimiento);
         } else {
-            this.setX(getX() - movimiento);
+            super.setX(getX() - movimiento);
         }
     }
-
-    /**
-     * Sobreescribe el método draw() de Actor para renderizar el proyectil.
-     * Batch es el tipo correcto para usar en Actor.draw().
-     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (activa) {
+        if (this.activa) {
             // Usa getX() y getY() del Actor
-            batch.draw(textura, getX(), getY(), getWidth(), getHeight());
+            batch.draw(this.textura, super.getX(), super.getY(), super.getWidth(), super.getHeight());
         }
     }
 
     public Rectangle getHitbox() {
-        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+        return new Rectangle(super.getX(), super.getY(), super.getWidth(), super.getHeight());
     }
 
     public void desactivar() {

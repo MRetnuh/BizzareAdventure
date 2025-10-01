@@ -86,7 +86,7 @@ public class Partida implements Screen {
         this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
         restaurarEstadoCajas();
 
-        if (!enemigosCreados) {
+        if (!this.enemigosCreados) {
             String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
             float[][] posiciones = {
                     {400, 928},
@@ -96,11 +96,11 @@ public class Partida implements Screen {
 
             for (int i = 0; i < idsEnemigos.length; i++) {
                 String id = idsEnemigos[i];
-                if (!enemigosMuertos.contains(id)) {
-                    enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
+                if (!this.enemigosMuertos.contains(id)) {
+                    this.enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
                 }
             }
-            enemigosCreados = true;
+            this.enemigosCreados = true;
         }
 
         if (!this.jugador1.getPartidaEmpezada()) {
@@ -115,35 +115,35 @@ public class Partida implements Screen {
 
         this.stage.addActor(this.personaje1);
         this.stage.addActor(this.personaje2);
-        for (Enemigo enemigo : enemigos) {
+        for (Enemigo enemigo : this.enemigos) {
             this.stage.addActor(enemigo);
         }
         this.inputController = new InputController();
-        Gdx.input.setInputProcessor(inputController);
+        Gdx.input.setInputProcessor(this.inputController);
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        nombrePersonaje1Label = new Label("Nombre: " + personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        vidaPersonaje1Label = new Label("Vida: " + personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
 
-        nombrePersonaje2Label = new Label("Nombre: " + personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-        vidaPersonaje2Label = new Label("Vida: " + personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+        this.nombrePersonaje2Label = new Label("Nombre: " + this.personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+        this.vidaPersonaje2Label = new Label("Vida: " + this.personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
 
         Table table1 = new Table();
         Table table2 = new Table();
         table1.left().top();
         table2.right().top();
-        table1.add(nombrePersonaje1Label).size(350, 50).padBottom(5).row();
-        table1.add(vidaPersonaje1Label).size(350, 50);
-        table2.add(nombrePersonaje2Label).size(350, 50).padBottom(5).row();
-        table2.add(vidaPersonaje2Label).size(350, 50);
+        table1.add(this.nombrePersonaje1Label).size(350, 50).padBottom(5).row();
+        table1.add(this.vidaPersonaje1Label).size(350, 50);
+        table2.add(this.nombrePersonaje2Label).size(350, 50).padBottom(5).row();
+        table2.add(this.vidaPersonaje2Label).size(350, 50);
 
         Container<Table> contenedor1 = new Container<>(table1);
         Container<Table> contenedor2 = new Container<>(table2);
         contenedor1.setSize(400, 130);
         contenedor2.setSize(400, 130);
-        contenedor1.setBackground(skin.getDrawable("default-round"));
-        contenedor2.setBackground(skin.getDrawable("default-round"));
+        contenedor1.setBackground(this.skin.getDrawable("default-round"));
+        contenedor2.setBackground(this.skin.getDrawable("default-round"));
         contenedor1.setPosition(0, Gdx.graphics.getHeight() - contenedor1.getHeight());
         contenedor2.setPosition(Gdx.graphics.getWidth() - contenedor2.getWidth(), Gdx.graphics.getHeight() - contenedor2.getHeight());
 
@@ -175,8 +175,8 @@ public class Partida implements Screen {
             }
             if(this.inputController.getOpciones2()) abrirOpciones();
         }
-        actualizarPersonaje(jugador1, personaje1, delta, true, nuevaX1, nuevaY1);
-        actualizarPersonaje(jugador2, personaje2, delta, false, nuevaX2, nuevaY2);
+        actualizarPersonaje(this.jugador1, this.personaje1, delta, true, this.nuevaX1, this.nuevaY1);
+        actualizarPersonaje(this.jugador2, this.personaje2, delta, false, this.nuevaX2, this.nuevaY2);
         actualizarCamara();
         actualizarHUD();
 
@@ -186,21 +186,19 @@ public class Partida implements Screen {
         this.mapRenderer.render();
 
         this.batch.setProjectionMatrix(this.camara.combined);
-        this.batch.begin();//->?????????????????
-        
-        if(!gameOver1 || !gameOver2) {
-            for (Enemigo enemigo : enemigos) {
+
+        if(!this.gameOver1 || !this.gameOver2) {
+            for (Enemigo enemigo : this.enemigos) {
                 if (enemigo.getVida() > 0) {
 
                     for (Proyectil b : enemigo.getBalas()) {
                         this.stage.addActor(b);
                     }
 
-                    enemigo.actualizarIA(delta, (personaje1.getX() + personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
+                    enemigo.actualizarIA(delta, (this.personaje1.getX() + this.personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
                 }
             }
         }
-        this.batch.end();//-> ???????????????
 
         this.stage.act(delta);
         this.stage.draw();
@@ -212,24 +210,24 @@ public class Partida implements Screen {
 
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1, float x, float y) {
         if (personaje.getVida() <= 0) {
-            if ((esJugador1 && !gameOver1) || (!esJugador1 && !gameOver2)) {
-                if (esJugador1) gameOver1 = true;
-                else gameOver2 = true;
+            if ((esJugador1 && ! this.gameOver1) || (!esJugador1 && ! this.gameOver2)) {
+                if (esJugador1) this.gameOver1 = true;
+                else this.gameOver2 = true;
                 if(this.gameOver1 == true && this.gameOver2 == true) {
-                    musicaPartida.cambiarMusica("derrota");
+                    this.musicaPartida.cambiarMusica("derrota");
                     personaje.morir(this.stageHUD); 
                 }
             }
             return;
         }
         if (personaje.getEstaAtacando()) {
-            Iterator<Enemigo> iter = enemigos.iterator();
+            Iterator<Enemigo> iter = this.enemigos.iterator();
             while(iter.hasNext()) {
                 Enemigo e = iter.next();
                 if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                     e.reducirVida();
                     if (e.getVida() <= 0) {
-                        enemigosMuertos.add(e.getNombre());
+                        this.enemigosMuertos.add(e.getNombre());
                     }
                 }
             }
@@ -239,22 +237,22 @@ public class Partida implements Screen {
         boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
 
         personaje.guardarPosicionAnterior();
-        personaje.actualizarGravedad(delta, estaSobreElSuelo, alturaMapa);
+        personaje.actualizarGravedad(delta, estaSobreElSuelo, this.alturaMapa);
 
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
-        float minX = camara.position.x - camara.viewportWidth / 2f;
-        float maxX = camara.position.x + camara.viewportWidth / 2f - personaje.getHitbox().getWidth();
+        float minX = this.camara.position.x - this.camara.viewportWidth / 2f;
+        float maxX = this.camara.position.x + this.camara.viewportWidth / 2f - personaje.getHitbox().getWidth();
 
         if (nuevaX < minX) nuevaX = minX;
         if (nuevaX > maxX) nuevaX = maxX;
 
         if (esJugador1) {
-            nuevaX1 = nuevaX;
-            nuevaY1 = nuevaY;
+            this.nuevaX1 = nuevaX;
+            this.nuevaY1 = nuevaY;
         } else {
-            nuevaX2 = nuevaX;
-            nuevaY2 = nuevaY;
+            this.nuevaX2 = nuevaX;
+            this.nuevaY2 = nuevaY;
         }
 
         if (nuevaY < -190) {
@@ -277,12 +275,12 @@ public class Partida implements Screen {
         if (!colisionX || !colisionY) {
             float finalX = !colisionX ? nuevaX : personaje.getX();
             float finalY = !colisionY ? nuevaY : personaje.getY();
-            personaje.aplicarMovimiento(finalX, finalY, delta, anchoMapa, alturaMapa);
+            personaje.aplicarMovimiento(finalX, finalY, delta, this.anchoMapa, this.alturaMapa);
         }
         personaje.atacar(delta); 
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
 
-        for (Enemigo e : enemigos) {
+        for (Enemigo e : this.enemigos) {
             Iterator<Proyectil> it = e.getBalas().iterator();
             while (it.hasNext()) {
                 Proyectil b = it.next();
@@ -297,20 +295,20 @@ public class Partida implements Screen {
     }
 
     private void limpiarEnemigosMuertos() {
-        enemigos.removeIf(e -> e.getVida() <= 0);
+        this.enemigos.removeIf(e -> e.getVida() <= 0);
     }
 
     private void actualizarHUD() {
-        nombrePersonaje1Label.setText("Nombre: " + personaje1.getNombre());
-        vidaPersonaje1Label.setText("Vida: " + personaje1.getVida());
+        this.nombrePersonaje1Label.setText("Nombre: " + this.personaje1.getNombre());
+        this.vidaPersonaje1Label.setText("Vida: " + this.personaje1.getVida());
 
-        nombrePersonaje2Label.setText("Nombre: " + personaje2.getNombre());
-        vidaPersonaje2Label.setText("Vida: " + personaje2.getVida());
+        this.nombrePersonaje2Label.setText("Nombre: " + this.personaje2.getNombre());
+        this.vidaPersonaje2Label.setText("Vida: " + this.personaje2.getVida());
     }
 
     private void restaurarEstadoCajas() {
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
-        for (String key : cajasDestruidas) {
+        for (String key : this.cajasDestruidas) {
             String[] partes = key.split("_");
             int x = Integer.parseInt(partes[0]);
             int y = Integer.parseInt(partes[1]);
@@ -321,36 +319,36 @@ public class Partida implements Screen {
         float centroX;
         float centroY;
 
-        boolean vivo1 = personaje1.getVida() > 0;
-        boolean vivo2 = personaje2.getVida() > 0;
+        boolean vivo1 = this.personaje1.getVida() > 0;
+        boolean vivo2 = this.personaje2.getVida() > 0;
 
         if (vivo1 && vivo2) {
-            centroX = (personaje1.getX() + personaje2.getX()) / 2f + personaje1.getWidth() / 2f; 
-            centroY = (personaje1.getY() + personaje2.getY()) / 2f + personaje1.getHeight() / 2f; 
+            centroX = (this.personaje1.getX() + this.personaje2.getX()) / 2f + this.personaje1.getWidth() / 2f;
+            centroY = (this.personaje1.getY() + this.personaje2.getY()) / 2f + this.personaje1.getHeight() / 2f;
         }
         else if (vivo1) {
-            centroX = personaje1.getX() + personaje1.getWidth() / 2f;
-            centroY = personaje1.getY() + personaje1.getHeight()/ 2f;
+            centroX = this.personaje1.getX() + this.personaje1.getWidth() / 2f;
+            centroY = this.personaje1.getY() + this.personaje1.getHeight()/ 2f;
         }
         else if (vivo2) {
-            centroX = personaje2.getX() + personaje2.getWidth()/ 2f;
-            centroY = personaje2.getY() + personaje2.getHeight() / 2f;
+            centroX = this.personaje2.getX() + this.personaje2.getWidth()/ 2f;
+            centroY = this.personaje2.getY() + this.personaje2.getHeight() / 2f;
         }
         else {
             return;
         }
-        float halfWidth = camara.viewportWidth / 2f;
-        float halfHeight = camara.viewportHeight / 2f;
+        float halfWidth = this.camara.viewportWidth / 2f;
+        float halfHeight = this.camara.viewportHeight / 2f;
 
-        centroX = Math.max(halfWidth, Math.min(centroX, anchoMapa - halfWidth));
-        centroY = Math.max(halfHeight, Math.min(centroY, alturaMapa - halfHeight));
+        centroX = Math.max(halfWidth, Math.min(centroX, this.anchoMapa - halfWidth));
+        centroY = Math.max(halfHeight, Math.min(centroY, this.alturaMapa - halfHeight));
 
-        if (alturaMapa < camara.viewportHeight) {
-            centroY = alturaMapa / 2f;
+        if (this.alturaMapa < this.camara.viewportHeight) {
+            centroY = this.alturaMapa / 2f;
         }
 
-        camara.position.set(centroX, centroY, 0);
-        camara.update();
+        this.camara.position.set(centroX, centroY, 0);
+        this.camara.update();
     }
 
 
@@ -379,28 +377,28 @@ public class Partida implements Screen {
             checkX++;
         }
         if (cajaCercana && personaje.getEstaAtacando()) {
-            if (personaje1.getVida() <= 0 && personaje2.getVida() > 0) {
-                personaje1.setPosicion(personaje2.getX(), personaje2.getY());
-                personaje1.aumentarVida();
-                gameOver1 = false;
-            } else if (personaje2.getVida() <= 0 && personaje1.getVida() > 0) {
-                personaje2.setPosicion(personaje1.getX(), personaje1.getY());
-                personaje2.aumentarVida();
-                gameOver2 = false;
+            if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
+                this.personaje1.setPosicion(this.personaje2.getX(), this.personaje2.getY());
+                this.personaje1.aumentarVida();
+                this.gameOver1 = false;
+            } else if (personaje2.getVida() <= 0 && this.personaje1.getVida() > 0) {
+                this.personaje2.setPosicion(this.personaje1.getX(), this.personaje1.getY());
+                this.personaje2.aumentarVida();
+                this.gameOver2 = false;
             }
             else {
                 personaje = jugador.cambiarPersonaje(
-                        esJugador1 ? nuevaX1 : nuevaX2,
-                        esJugador1 ? nuevaY1 : nuevaY2
+                        esJugador1 ? this.nuevaX1 : this.nuevaX2,
+                        esJugador1 ? this.nuevaY1 : this.nuevaY2
                 );
                 if (esJugador1) {
-                    this.stage.getActors().removeValue(personaje1, true);
-                    personaje1 = personaje;
-                    this.stage.addActor(personaje1);
+                    this.stage.getActors().removeValue(this.personaje1, true);
+                    this.personaje1 = personaje;
+                    this.stage.addActor(this.personaje1);
                 } else {
-                    this.stage.getActors().removeValue(personaje2, true);
-                    personaje2 = personaje;
-                    this.stage.addActor(personaje2);
+                    this.stage.getActors().removeValue(this.personaje2, true);
+                    this.personaje2 = personaje;
+                    this.stage.addActor(this.personaje2);
                 }
 
             }
@@ -413,7 +411,7 @@ public class Partida implements Screen {
                     if (cell != null && cell.getTile() != null) {
                         int tileId = cell.getTile().getId();
                         if (tileId != this.ID_TILE_TRANSPARENTE) {
-                            cajasDestruidas.add(mapX + "_" + mapY);
+                            this.cajasDestruidas.add(mapX + "_" + mapY);
                             cell.setTile(this.mapa.getTileSets().getTile(this.ID_TILE_TRANSPARENTE));
                         }
                     }
@@ -508,7 +506,7 @@ public class Partida implements Screen {
     }
 
     public void abrirOpciones() {
-        juego.setScreen(new Opciones(juego, this, musicaPartida));
+        this.juego.setScreen(new Opciones(this.juego, this, this.musicaPartida));
     }
 
 

@@ -54,18 +54,18 @@ public class Enemigo extends Personaje {
 
     public void actualizarIA(float delta, float jugadorX, float volumen) {
         // Patrulla
-        float nuevaX = getX();
-        if (moviendoDerecha) {
+        float nuevaX = super.getX();
+        if (this.moviendoDerecha) {
             nuevaX += getVelocidad() * delta;
-            if (nuevaX > puntoInicialX + rangoMovimiento) moviendoDerecha = false;
+            if (nuevaX > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;
         } else {
             nuevaX -= getVelocidad() * delta;
-            if (nuevaX < puntoInicialX - rangoMovimiento) moviendoDerecha = true;
+            if (nuevaX < this.puntoInicialX - this.rangoMovimiento) this.moviendoDerecha = true;
         }
-        aplicarMovimiento(nuevaX, getY(), delta, 10000, 1000);
+        aplicarMovimiento(nuevaX, super.getY(), delta, 10000, 1000);
 
         // Actualizar balas
-        Iterator<Proyectil> it = balas.iterator();
+        Iterator<Proyectil> it = this.balas.iterator();
         while (it.hasNext()) {
             Proyectil b = it.next();
             // Si sale de rango, se elimina
@@ -76,29 +76,29 @@ public class Enemigo extends Personaje {
         }
 
         // Control de disparo
-        tiempoDisparo += delta;
-        if (tiempoDisparo >= cooldownDisparo) {
-            float distancia = Math.abs(jugadorX - getX());
+        this.tiempoDisparo += delta;
+        if (this.tiempoDisparo >= this.cooldownDisparo) {
+            float distancia = Math.abs(jugadorX - super.getX());
             if (distancia < 2 * 32) { // 2 tiles (32 px por tile)
-                if ((moviendoDerecha && jugadorX > getX())) {
+                if ((this.moviendoDerecha && jugadorX > super.getX())) {
                     disparar("imagenes/personajes/enemigo/ataque/Bala_Derecha.png", volumen);
-                    tiempoDisparo = 0;
+                    this.tiempoDisparo = 0;
                 }
-                else if ((!moviendoDerecha && jugadorX < getX())) {
+                else if ((!this.moviendoDerecha && jugadorX < super.getX())) {
                     disparar("imagenes/personajes/enemigo/ataque/Bala_Izquierda.png", volumen);
-                    tiempoDisparo = 0;
+                    this.tiempoDisparo = 0;
                 }
             }
         }
     }
 
     private void disparar(String ruta,float volumen ) {
-        balas.add(new Proyectil(getX(), getY() + 16, moviendoDerecha, ruta));
+        this.balas.add(new Proyectil(getX(), getY() + 16, this.moviendoDerecha, ruta));
         EfectoSonido.reproducir("disparo",volumen);
     }
 
     public ArrayList<Proyectil> getBalas() {
-        return balas;
+        return this.balas;
     }
 
     private float getVelocidad() {

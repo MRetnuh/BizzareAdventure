@@ -49,10 +49,10 @@ public class Configuracion implements Screen {
             return false;
         });
 
-        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
+        TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(this.skin, 48, Color.RED));
         volverBtn.addListener(event -> {
             if (Gdx.input.isTouched()) {
-            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior, musicaConfig));
+            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior, this.musicaConfig));
             }
             return true;
         });

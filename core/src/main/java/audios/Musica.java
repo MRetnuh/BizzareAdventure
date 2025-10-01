@@ -31,8 +31,8 @@ public void subirVolumen() {
 }
 
 public void bajarVolumen() {
-    this.volumen = Math.max(0f, volumen - 0.1f);
-    this.musicaFondo.setVolume(volumen);
+    this.volumen = Math.max(0f, this.volumen - 0.1f);
+    this.musicaFondo.setVolume(this.volumen);
 }
 
 public void setVolumen(float nuevoVolumen) {

@@ -38,7 +38,7 @@ public abstract class Personaje extends Actor {
     private float prevX, prevY;
     private float estadoTiempo = 0f;
     private float velocidadCaida = 0;
-    private Texture texturaPrincipal; 
+    private Texture texturaPrincipal;
     protected Animation<TextureRegion> animDerecha;
     protected Animation<TextureRegion> animIzquierda;
     protected Animation<TextureRegion> animAtaqueDerecha;
@@ -56,14 +56,14 @@ public abstract class Personaje extends Actor {
         this.cargarTexturas();
         super.setX(200);
         super.setY(930);
-        setSize(quietaDerecha.getRegionWidth(), quietaDerecha.getRegionHeight());
+        setSize(this.quietaDerecha.getRegionWidth(), this.quietaDerecha.getRegionHeight());
     }
 
     protected abstract void cargarTexturas();
 
     public void cargarUbicaciones(float x, float y) {
-        setX(x);
-        setY(y);
+        super.setX(x);
+        super.setY(y);
     }
 
     public void morir(Stage stage) {//-> Aca no le pases el stage
@@ -83,17 +83,17 @@ public abstract class Personaje extends Actor {
 
 
         this.texturaDerrota = new Texture(Gdx.files.internal("imagenes/fondos/GameOver.png"));
-        this.imagenDerrota = new Image(texturaDerrota);
+        this.imagenDerrota = new Image(this.texturaDerrota);
         this.imagenDerrota.setSize(200, 50);
-        this.imagenDerrota.setOrigin(imagenDerrota.getWidth() / 2f, imagenDerrota.getHeight() / 2f);
+        this.imagenDerrota.setOrigin(this.imagenDerrota.getWidth() / 2f, this.imagenDerrota.getHeight() / 2f);
         this.imagenDerrota.setPosition(
-                (Gdx.graphics.getWidth() - imagenDerrota.getWidth()) / 2f,
-                (Gdx.graphics.getHeight() - imagenDerrota.getHeight()) / 2f
+                (Gdx.graphics.getWidth() - this.imagenDerrota.getWidth()) / 2f,
+                (Gdx.graphics.getHeight() - this.imagenDerrota.getHeight()) / 2f
         );
         this.imagenDerrota.setScale(0.1f);
         this.imagenDerrota.getColor().a = 0;
 
-        this.stage.addActor(imagenDerrota);
+        this.stage.addActor(this.imagenDerrota);
 
         this.imagenDerrota.addAction(Actions.sequence(
                 Actions.delay(0.3f),
@@ -115,15 +115,15 @@ public abstract class Personaje extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         TextureRegion frame;
         // elegir frame según estado
-        if (estaAtacando) {
+        if (this.estaAtacando) {
             // tu lógica de ataque
-            frame = mirandoDerecha ? animAtaqueDerecha.getKeyFrame(tiempoAtaque, false)
-                    : animAtaqueIzquierda.getKeyFrame(tiempoAtaque, false);
-        } else if (estaMoviendose) {
-            frame = mirandoDerecha ? animDerecha.getKeyFrame(estadoTiempo, true)
-                    : animIzquierda.getKeyFrame(estadoTiempo, true);
+            frame = this.mirandoDerecha ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
+                    : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
+        } else if (this.estaMoviendose) {
+            frame = this.mirandoDerecha ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
+                    : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
         } else {
-            frame = mirandoDerecha ? quietaDerecha : quietaIzquierda;
+            frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
         batch.draw(frame, getX(), getY());//->Capaz esta bien
@@ -150,7 +150,7 @@ public abstract class Personaje extends Actor {
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
             this.velocidadCaida += this.GRAVEDAD * delta;
-            setY(getY() + this.velocidadCaida * delta); // 👈 Usar setY()
+            super.setY(getY() + this.velocidadCaida * delta); // 👈 Usar setY()
         } else {
             this.velocidadCaida = 0;
         }
@@ -179,8 +179,8 @@ public abstract class Personaje extends Actor {
     }
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
-        this.estaMoviendose = nuevoX != getX() || nuevoY != getY();
-        this.mirandoDerecha = nuevoX > getX() || (nuevoX == getX() && this.mirandoDerecha);
+        this.estaMoviendose = nuevoX != super.getX() || nuevoY != super.getY();
+        this.mirandoDerecha = nuevoX > super.getX() || nuevoX == super.getX() && this.mirandoDerecha;
 
         float anchoSprite = getWidth();
         float altoSprite = getHeight();
@@ -194,8 +194,8 @@ public abstract class Personaje extends Actor {
     }
 
     public void guardarPosicionAnterior() {
-        this.prevX = getX();
-        this.prevY = getY();
+        this.prevX = super.getX();
+        this.prevY = super.getY();
     }
 
     public void frenarCaida() {
@@ -212,7 +212,7 @@ public abstract class Personaje extends Actor {
         return this.vida;
     }
     public Rectangle getHitbox() {
-        return new Rectangle(getX(), getY(), 32, 32);
+        return new Rectangle(super.getX(), super.getY(), 32, 32);
     }
 
     public float getNuevaX(float delta) {
@@ -223,7 +223,7 @@ public abstract class Personaje extends Actor {
     }
 
     public float getNuevaY(float delta) {
-        float tempY = getY();
+        float tempY = super.getY();
         if (this.estaSaltando) tempY += this.velocidad * delta;
         return tempY;
     }
@@ -234,11 +234,11 @@ public abstract class Personaje extends Actor {
         return this.prevY;
     }
     public void setY(float prevY) {
-        super.setY(prevY); // 👈 Usar el método de Actor
+        super.setY(prevY); // Usar el método de Actor
     }
     public void setPosicion(float x, float y) {
-        setX(x);
-        setY(y);
+        super.setX(x);
+        super.setY(y);
     }
     public void aumentarVida() {
         this.vida++;
