@@ -32,16 +32,16 @@ public class Menu implements Screen {
     private Image fondoImagen;
 
     public Menu(Game juego) {
-        this.stage = new Stage();//-> ? (o sacas el stage o haces que todx sea en el stage)
+        this.stage = new Stage();
         this.JUEGO = juego;
-        this.musicaMenu = new Musica("primeraisla"); //-> esto va en el menu
-        this.musicaMenu.show();
+        this.musicaMenu = new Musica("primeraisla");
+        this.musicaMenu.show(this.stage);
     }
 
     @Override
     public void show() {
 
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(this.stage);
     
         this.fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
         this.fondoImagen = new Image(this.fondoTextura);
