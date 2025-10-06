@@ -66,9 +66,6 @@ public class Partida implements Screen {
     private boolean gameOver2 = false;
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
-    private float posXGuardada1, posYGuardada1;
-    private float posXGuardada2, posYGuardada2;
-    private boolean restaurarPosiciones = false;
 
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
@@ -116,11 +113,6 @@ public class Partida implements Screen {
 
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
-        if (this.restaurarPosiciones) {
-            this.personaje1.setPosition(this.posXGuardada1, this.posYGuardada1);
-            this.personaje2.setPosition(this.posXGuardada2, this.posYGuardada2);
-            this.restaurarPosiciones = false;
-        }
 
         this.stage.addActor(this.personaje1);
         this.stage.addActor(this.personaje2);
@@ -161,14 +153,6 @@ public class Partida implements Screen {
 
     @Override
     public void render(float delta) {
-        if(this.inputController.getOpciones1() || this.inputController.getOpciones2()) {
-            this.posXGuardada1 = this.personaje1.getX();
-            this.posYGuardada1 = this.personaje1.getY();
-            this.posXGuardada2 = this.personaje2.getX();
-            this.posYGuardada2 = this.personaje2.getY();
-            this.restaurarPosiciones = true;
-            abrirOpciones();
-        }
         if(this.personaje1.getVida() > 0){
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
