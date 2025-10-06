@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -65,6 +66,9 @@ public class Partida implements Screen {
     private boolean gameOver2 = false;
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
+    private float posXGuardada1, posYGuardada1;
+    private float posXGuardada2, posYGuardada2;
+    private boolean restaurarPosiciones = false;
 
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
@@ -72,7 +76,7 @@ public class Partida implements Screen {
         this.camara = new OrthographicCamera();
         this.camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.batch = new SpriteBatch();
-        this.stage = new Stage(new ScreenViewport(this.camara), this.batch);
+        this.stage = new Stage(new ScreenViewport(), this.batch);
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
     }
 
@@ -112,6 +116,11 @@ public class Partida implements Screen {
 
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
+        if (this.restaurarPosiciones) {
+            this.personaje1.setPosition(this.posXGuardada1, this.posYGuardada1);
+            this.personaje2.setPosition(this.posXGuardada2, this.posYGuardada2);
+            this.restaurarPosiciones = false;
+        }
 
         this.stage.addActor(this.personaje1);
         this.stage.addActor(this.personaje2);
@@ -122,13 +131,11 @@ public class Partida implements Screen {
         Gdx.input.setInputProcessor(this.inputController);
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json")); //kevin (el follador de hornet)
-
         this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
         this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
 
         this.nombrePersonaje2Label = new Label("Nombre: " + this.personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
         this.vidaPersonaje2Label = new Label("Vida: " + this.personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-
         Table table1 = new Table();
         Table table2 = new Table();
         table1.left().top();
@@ -154,6 +161,14 @@ public class Partida implements Screen {
 
     @Override
     public void render(float delta) {
+        if(this.inputController.getOpciones1() || this.inputController.getOpciones2()) {
+            this.posXGuardada1 = this.personaje1.getX();
+            this.posYGuardada1 = this.personaje1.getY();
+            this.posXGuardada2 = this.personaje2.getX();
+            this.posYGuardada2 = this.personaje2.getY();
+            this.restaurarPosiciones = true;
+            abrirOpciones();
+        }
         if(this.personaje1.getVida() > 0){
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
@@ -199,6 +214,12 @@ public class Partida implements Screen {
                 }
             }
         }
+        // sincronizar la cámara del stage con la cámara del mundo
+        OrthographicCamera stageCam = (OrthographicCamera) this.stage.getViewport().getCamera();
+        stageCam.position.set(this.camara.position.x, this.camara.position.y, this.camara.position.z);
+        stageCam.zoom = this.camara.zoom; // opcional si cambias zoom
+        this.stage.getViewport().apply();  // aplica tamaño y matrices
+        stageCam.update();
 
         this.stage.act(delta);
         this.stage.draw();
@@ -226,6 +247,7 @@ public class Partida implements Screen {
                 Enemigo e = iter.next();
                 if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                     e.reducirVida();
+                    e.remove();
                     if (e.getVida() <= 0) {
                         this.enemigosMuertos.add(e.getNombre());
                     }
@@ -291,7 +313,6 @@ public class Partida implements Screen {
                 }
             }
         }
-
     }
 
     private void limpiarEnemigosMuertos() {
@@ -325,31 +346,36 @@ public class Partida implements Screen {
         if (vivo1 && vivo2) {
             centroX = (this.personaje1.getX() + this.personaje2.getX()) / 2f + this.personaje1.getWidth() / 2f;
             centroY = (this.personaje1.getY() + this.personaje2.getY()) / 2f + this.personaje1.getHeight() / 2f;
-        }
-        else if (vivo1) {
+        } else if (vivo1) {
             centroX = this.personaje1.getX() + this.personaje1.getWidth() / 2f;
-            centroY = this.personaje1.getY() + this.personaje1.getHeight()/ 2f;
-        }
-        else if (vivo2) {
-            centroX = this.personaje2.getX() + this.personaje2.getWidth()/ 2f;
+            centroY = this.personaje1.getY() + this.personaje1.getHeight() / 2f;
+        } else if (vivo2) {
+            centroX = this.personaje2.getX() + this.personaje2.getWidth() / 2f;
             centroY = this.personaje2.getY() + this.personaje2.getHeight() / 2f;
-        }
-        else {
+        } else {
             return;
         }
+
         float halfWidth = this.camara.viewportWidth / 2f;
         float halfHeight = this.camara.viewportHeight / 2f;
 
-        centroX = Math.max(halfWidth, Math.min(centroX, this.anchoMapa - halfWidth));
-        centroY = Math.max(halfHeight, Math.min(centroY, this.alturaMapa - halfHeight));
+        // 🔹 Ajuste más robusto usando MathUtils.clamp (más limpio)
+        centroX = MathUtils.clamp(centroX, halfWidth, this.anchoMapa - halfWidth);
+        centroY = MathUtils.clamp(centroY, halfHeight, this.alturaMapa - halfHeight);
 
+        // 🔹 Corrección clave: si el mapa es más chico que la cámara
+        if (this.anchoMapa < this.camara.viewportWidth) {
+            centroX = this.anchoMapa / 2f;
+        }
         if (this.alturaMapa < this.camara.viewportHeight) {
             centroY = this.alturaMapa / 2f;
         }
 
+        // 🔹 Corrige la posición final de la cámara
         this.camara.position.set(centroX, centroY, 0);
         this.camara.update();
     }
+
 
 
 
