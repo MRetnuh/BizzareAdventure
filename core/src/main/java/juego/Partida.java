@@ -90,7 +90,7 @@ public class Partida implements Screen {
         if (!this.enemigosCreados) {
             String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
             float[][] posiciones = {
-                    {400, 928},
+                    {600, 928},
                     {800, 928},
                     {1000, 928}
             };
@@ -194,7 +194,7 @@ public class Partida implements Screen {
                         this.stage.addActor(b);
                     }
 
-                    enemigo.actualizarIA(delta, (this.personaje1.getX() + this.personaje2.getX()) / 2f, this.musicaPartida.getVolumen());
+                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen());
                 }
             }
         }

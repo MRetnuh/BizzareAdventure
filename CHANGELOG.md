@@ -1,3 +1,19 @@
+## [7.1.2] - 2025-10-07
+### Modificado
+- Modificaciones en los movimientos de los enemigos de manera que actualmente cuando ven a un jugador, se quedan quietos y disparan.
+
+## [7.0.2] - 2025-10-06
+### Modificado
+- Cambios en la camara de Partida para solucionar un error que provocaba cambio de ubicacion de los personajes al llegar al limite del mapa
+
+## [7.0.1] - 2025-10-03
+### Modificado
+- Reemplazo de las clases Leone y Akame por un enum (factory) llamado FabricaDePersonajes que se encarga de instanciar a Leone y Akame y sus sprites.
+
+## [7.0.0] - 2025-10-01
+### Modificado
+- Correcciones en como se dibujan los personajes, enemigos y las balas, de forma que ahora estos se extienden de actor y el stage partida se encarga de dibujarlos (con el fin de seguir convenciones).
+
 ## [6.9.6] - 2025-09-28
 ### Modificado
 - Correcciones en el ataque del personaje

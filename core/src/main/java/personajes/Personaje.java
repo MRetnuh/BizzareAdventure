@@ -29,8 +29,8 @@ public abstract class Personaje extends Actor {
     private int habilidadEspecial = 1;
     private String nombreAtaque;
     private boolean estaAtacando = false;
-    private boolean mirandoDerecha = true;
-    private boolean estaMoviendose = false;
+    protected boolean mirandoDerecha = true;
+    protected boolean estaMoviendose = false;
     private boolean estaSaltando = false;
     private boolean moviendoDerecha = false;
     private boolean moviendoIzquierda = false;
@@ -46,7 +46,7 @@ public abstract class Personaje extends Actor {
     protected TextureRegion quietaDerecha;
     protected TextureRegion quietaIzquierda;
     private float tiempoAtaque = 0f;
-
+    protected TextureRegion frame;
 
     public Personaje(String nombre, int velocidad, String nombreAtaque, int vida) {//-> pasale el stage aca
         this.nombre = nombre;
@@ -113,7 +113,6 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        TextureRegion frame;
         // elegir frame según estado
         if (this.estaAtacando) {
             // tu lógica de ataque
@@ -126,7 +125,7 @@ public abstract class Personaje extends Actor {
             frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
-        batch.draw(frame, getX(), getY());//->Capaz esta bien
+        batch.draw(frame, getX(), getY());
     }
 
     @Override

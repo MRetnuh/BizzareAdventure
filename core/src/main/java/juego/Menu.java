@@ -25,7 +25,7 @@ import io.github.some.Principal;
 
 public class Menu implements Screen {
 	private Musica musicaMenu;
-	private final Game JUEGO; //->MAL
+	private final Game JUEGO;
     private Stage stage;
     private Skin skin;
     private Texture fondoTextura;
@@ -52,12 +52,10 @@ public class Menu implements Screen {
         
         Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(60, Color.PURPLE));
         titulo.setAlignment(Align.center);
-
+   
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton opcionesBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
-        this.stage.addActor(jugarBtn);
-        //-> Agregar los otros botones
 
         jugarBtn.addListener(new ChangeListener() {
             @Override
