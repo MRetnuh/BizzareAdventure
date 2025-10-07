@@ -113,9 +113,18 @@ public class Enemigo extends Personaje {
     }
 
     private boolean detectarRango(Personaje jugador) {
-        float distancia = Math.abs(jugador.getX() - super.getX());
-        return distancia <= this.rangoVision;
+        float distanciaX = jugador.getX() - super.getX();
+
+        // Verificar rango horizontal y dirección
+        if (this.moviendoDerecha) {
+            // Solo detecta si el jugador está a la derecha
+            return distanciaX > 0 && distanciaX <= this.rangoVision;
+        } else {
+            // Solo detecta si el jugador está a la izquierda
+            return distanciaX < 0 && Math.abs(distanciaX) <= this.rangoVision;
+        }
     }
+
 
     // 🔹 Patrullaje normal
     private void patrullar(float delta) {
