@@ -66,7 +66,8 @@ public class Partida implements Screen {
     private boolean gameOver2 = false;
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
-
+    private boolean victoria = false;
+    
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
         this.musicaPartida = musica;
@@ -153,6 +154,7 @@ public class Partida implements Screen {
 
     @Override
     public void render(float delta) {
+    	if(this.victoria == false) {
         if(this.personaje1.getVida() > 0){
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
@@ -174,11 +176,23 @@ public class Partida implements Screen {
             }
             if(this.inputController.getOpciones2()) abrirOpciones();
         }
+    	}
         actualizarPersonaje(this.jugador1, this.personaje1, delta, true, this.nuevaX1, this.nuevaY1);
         actualizarPersonaje(this.jugador2, this.personaje2, delta, false, this.nuevaX2, this.nuevaY2);
+        
+        if(this.nuevaX1 >= 3502.00 && this.nuevaX1 <= 3700.00 && this.nuevaY1 >= 1250.00 || this.nuevaX2 >= 3502.00 && this.nuevaX2 <= 3502.00 && this.nuevaY2 >= 1250.00) {
+        	this.victoria = true;
+        	this.personaje1.setMoviendoDerecha(false);
+        	this.musicaPartida.cambiarMusica("primeraisla");
+        } 
+        
         actualizarCamara();
         actualizarHUD();
-
+        System.out.println(victoria);
+        System.out.println(nuevaX1);
+        System.out.println(nuevaX2);
+        System.out.println(nuevaY1);
+        System.out.println(nuevaY2);
         limpiarEnemigosMuertos();
 
         this.mapRenderer.setView(this.camara);
@@ -189,7 +203,7 @@ public class Partida implements Screen {
         if(!this.gameOver1 || !this.gameOver2) {
             for (Enemigo enemigo : this.enemigos) {
                 if (enemigo.getVida() > 0) {
-
+                	
                     for (Proyectil b : enemigo.getBalas()) {
                         this.stage.addActor(b);
                     }
