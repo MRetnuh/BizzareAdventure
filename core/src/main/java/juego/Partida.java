@@ -208,7 +208,7 @@ public class Partida implements Screen {
                         this.stage.addActor(b);
                     }
 
-                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen());
+                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this);
                 }
             }
         }
@@ -455,7 +455,7 @@ public class Partida implements Screen {
         return poly;
     }
 
-    private boolean detectarColision(Rectangle hitbox) {
+    public boolean detectarColision(Rectangle hitbox) {
         Polygon hitboxPoligono = convertirEnPoligono(hitbox);
 
         for (MapObject object : this.mapa.getLayers().get("colisiones").getObjects()) {
