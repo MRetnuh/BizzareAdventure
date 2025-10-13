@@ -18,6 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Timer;
 
 import audios.EfectoSonido;
+import proyectiles.Proyectil;
+
+import java.util.ArrayList;
 
 public abstract class Personaje extends Actor {
     private float velocidad;
@@ -38,7 +41,6 @@ public abstract class Personaje extends Actor {
     private float prevX, prevY;
     private float estadoTiempo = 0f;
     private float velocidadCaida = 0;
-    private Texture texturaPrincipal;
     protected Animation<TextureRegion> animDerecha;
     protected Animation<TextureRegion> animIzquierda;
     protected Animation<TextureRegion> animAtaqueDerecha;
@@ -47,13 +49,16 @@ public abstract class Personaje extends Actor {
     protected TextureRegion quietaIzquierda;
     private float tiempoAtaque = 0f;
     protected TextureRegion frame;
+    private TipoAtaque tipoAtaque;
+    private ArrayList<Proyectil> balas = new ArrayList<>();
 
-    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida) {//-> pasale el stage aca
+    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida, TipoAtaque tipoAtaque) {//-> pasale el stage aca
         this.nombre = nombre;
         this.velocidad = velocidad;
         this.nombreAtaque = nombreAtaque;
         this.vida = vida;
         this.cargarTexturas();
+        this.tipoAtaque = tipoAtaque;
         super.setX(200);
         super.setY(930);
         setSize(this.quietaDerecha.getRegionWidth(), this.quietaDerecha.getRegionHeight());
@@ -115,7 +120,6 @@ public abstract class Personaje extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         // elegir frame según estado
         if (this.estaAtacando) {
-            // tu lógica de ataque
             frame = this.mirandoDerecha ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
                     : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
         } else if (this.estaMoviendose) {
@@ -126,6 +130,7 @@ public abstract class Personaje extends Actor {
         }
 
         batch.draw(frame, getX(), getY());
+
     }
 
     @Override
@@ -144,7 +149,12 @@ public abstract class Personaje extends Actor {
         } else {
             this.estadoTiempo += delta;
         }
+        for (Proyectil p : balas) {
+            p.act(delta);
+        }
+        balas.removeIf(p -> !p.isActivo());
     }
+
 
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
@@ -156,14 +166,25 @@ public abstract class Personaje extends Actor {
     }
 
     public void atacar(float delta) {
-	    if (this.estaAtacando) {
-	        this.tiempoAtaque += delta;
+        if(this.tipoAtaque.getTipo().equals("Melee")) {
+            if (this.estaAtacando) {
+                this.tiempoAtaque += delta;
 
-	        if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
-	            this.estaAtacando = false; // El ataque ha terminado
-	            this.tiempoAtaque = 0f; // Reinicia el tiempo para el próximo ataque
-	        }
-	    }
+                if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
+                    this.estaAtacando = false; // El ataque ha terminado
+                    this.tiempoAtaque = 0f; // Reinicia el tiempo para el próximo ataque
+                }
+            }
+        }
+
+    else{
+
+            String ruta = mirandoDerecha ?
+                    "imagenes/personajes/enemigo/ataque/Bala_Derecha.png" :
+                    "imagenes/personajes/enemigo/ataque/Bala_Izquierda.png";
+            balas.add(new Proyectil(getX(), getY() + 16, this.mirandoDerecha, ruta));
+
+        }
 	}
 
 
@@ -226,8 +247,6 @@ public abstract class Personaje extends Actor {
         if (this.estaSaltando) tempY += this.velocidad * delta;
         return tempY;
     }
-
-    // ELIMINADO: public float getX() / public float getY() (Usar super.getX(), super.getY())
 
     public float getPrevY() {
         return this.prevY;

@@ -1,3 +1,8 @@
+## [7.2.2] - 2025-10-13
+### Añadido
+- Pequeña implementacion para que algunos personajes ataquen a 
+distancia
+
 ## [7.1.2] - 2025-10-07
 ### Modificado
 - Modificaciones en los movimientos de los enemigos de manera que actualmente cuando ven a un jugador, se quedan quietos y disparan.

@@ -55,7 +55,6 @@ public class Proyectil extends Actor {
         this.remove();
     }
 
-    // ✅ Método pedido por Enemigo.java
     public void mover(float delta, Partida partida) {
         if (!activa) return;
 
@@ -65,7 +64,6 @@ public class Proyectil extends Actor {
         }
     }
 
-    // ✅ Método pedido por Enemigo.java
     public boolean isActivo() {
         return activa;
     }

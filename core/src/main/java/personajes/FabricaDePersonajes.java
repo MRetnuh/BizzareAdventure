@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 public enum FabricaDePersonajes {
 
-    AKAME("Akame", 250, "EspadaCorte", 1,
+    AKAME("Akame", 250, "EspadaCorte", 1, TipoAtaque.MELEE,
             "imagenes/personajes/akame/akame_derecha_moviendose_",
             "imagenes/personajes/akame/akame_izquierda_moviendose_",
             "imagenes/personajes/akame/ataque/akame_derecha_atacando_",
@@ -16,7 +16,7 @@ public enum FabricaDePersonajes {
             "imagenes/personajes/akame/akame_derecha_(detenida).png",
             "imagenes/personajes/akame/akame_izquierda_(detenida).png"
     ),
-    LEONE("Leone", 230, "EspadaCorte", 1,
+    LEONE("Leone", 230, "EspadaCorte", 1, TipoAtaque.DISTANCIA,
             "imagenes/personajes/leone/leone_derecha_moviendose_",
             "imagenes/personajes/leone/leone_izquierda_moviendose_",
             "imagenes/personajes/akame/ataque/akame_derecha_atacando_",
@@ -32,8 +32,9 @@ public enum FabricaDePersonajes {
     private final String rutaMovDerecha, rutaMovIzquierda;
     private final String rutaAtaqueDerecha, rutaAtaqueIzquierda;
     private final String rutaQuietoDerecha, rutaQuietoIzquierda;
-    
-    FabricaDePersonajes(String nombre, int velocidad, String nombreAtaque, int vida,
+    private final TipoAtaque tipoAtaque;
+
+    FabricaDePersonajes(String nombre, int velocidad, String nombreAtaque, int vida,TipoAtaque tipoAtaque,
                         String rutaMovDerecha, String rutaMovIzquierda,
                         String rutaAtaqueDerecha, String rutaAtaqueIzquierda,
                         String rutaQuietoDerecha, String rutaQuietoIzquierda) {
@@ -47,10 +48,11 @@ public enum FabricaDePersonajes {
         this.rutaAtaqueIzquierda = rutaAtaqueIzquierda;
         this.rutaQuietoDerecha = rutaQuietoDerecha;
         this.rutaQuietoIzquierda = rutaQuietoIzquierda;
+        this.tipoAtaque = tipoAtaque;
     }
 
     public Personaje crear() {
-        Personaje pj = new Personaje(nombre, velocidad, nombreAtaque, vida) {
+        Personaje pj = new Personaje(nombre, velocidad, nombreAtaque, vida, tipoAtaque) {
             @Override
             protected void cargarTexturas() {
                 Array<TextureRegion> framesDerecha = new Array<>();

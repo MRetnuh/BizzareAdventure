@@ -27,7 +27,7 @@ public class Enemigo extends Personaje {
     private Personaje objetivoActual = null;
 
     public Enemigo(String nombre, float x, float y) {
-        super(nombre, 100, "ataqueEnemigo", 1);
+        super(nombre, 100, "ataqueEnemigo", 1, TipoAtaque.DISTANCIA);
         setPosition(x, y);
         this.puntoInicialX = x;
     }
@@ -54,7 +54,6 @@ public class Enemigo extends Personaje {
                 "imagenes/personajes/enemigo/enemigo_quieto_izquierda.png")));
     }
 
-    // 🔹 Actualiza IA y colisiones
     public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, Partida partida)
     {
         seleccionarObjetivo(jugador1, jugador2);
@@ -64,7 +63,6 @@ public class Enemigo extends Personaje {
             this.estaMoviendose = false;
             this.tiempoDisparo += delta;
 
-            // Mirar hacia el objetivo
             this.mirandoDerecha = this.objetivoActual.getX() > super.getX();
             super.frame = this.mirandoDerecha ? super.quietaDerecha : super.quietaIzquierda;
 
@@ -78,11 +76,10 @@ public class Enemigo extends Personaje {
             patrullar(delta, partida);
         }
 
-        // Actualizar balas
         Iterator<Proyectil> it = this.balas.iterator();
         while (it.hasNext()) {
             Proyectil b = it.next();
-            b.mover(delta, partida); // 👈 ahora verifica colisión con el mapa
+            b.mover(delta, partida);
             if (!b.isActivo()) it.remove();
         }
     }
