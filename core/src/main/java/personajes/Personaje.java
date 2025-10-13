@@ -120,6 +120,9 @@ public abstract class Personaje extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         // elegir frame según estado
         if (this.estaAtacando) {
+            for (Proyectil p : balas) {
+                p.draw(batch, 23123123f);
+            }
             frame = this.mirandoDerecha ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
                     : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
         } else if (this.estaMoviendose) {
@@ -138,6 +141,10 @@ public abstract class Personaje extends Actor {
         super.act(delta);
 
         if (this.estaAtacando) {
+            for (Proyectil p : balas) {
+            p.act(delta);
+        }
+            balas.removeIf(p -> !p.isActivo());
             this.tiempoAtaque += delta;
 
             if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.tiempoAtaque)) ||
@@ -149,10 +156,7 @@ public abstract class Personaje extends Actor {
         } else {
             this.estadoTiempo += delta;
         }
-        for (Proyectil p : balas) {
-            p.act(delta);
-        }
-        balas.removeIf(p -> !p.isActivo());
+
     }
 
 
