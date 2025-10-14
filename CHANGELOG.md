@@ -1,3 +1,7 @@
+## [7.3.2] - 2025-10-14
+### Añadido
+- Ahora algunos personajes pueden disparar en vez de atacar a distancia
+
 ## [7.2.2] - 2025-10-13
 ### Añadido
 - Pequeña implementacion para que algunos personajes ataquen a 

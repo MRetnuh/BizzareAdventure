@@ -31,7 +31,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import audios.Musica;
 import estilos.EstiloTexto;
 import input.InputController;
-// import io.github.some.Principal; // Importación no usada, eliminada o comentada si no es necesaria
 import jugadores.Jugador;
 import personajes.Enemigo;
 import personajes.Personaje;
@@ -243,6 +242,7 @@ public class Partida implements Screen {
             Iterator<Enemigo> iter = this.enemigos.iterator();
             while(iter.hasNext()) {
                 Enemigo e = iter.next();
+                if(personaje.getTipoAtaque().getTipo().equals("Melee")) {
                 if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                     e.reducirVida();
                     e.remove();
@@ -251,8 +251,23 @@ public class Partida implements Screen {
                     }
                 }
             }
+                else if (personaje.getTipoAtaque().getTipo().equals("Distancia")) {
+                    Iterator<Proyectil> it = personaje.getBalas().iterator(); // 🔹 AHORA usa las balas del personaje
+                    while (it.hasNext()) {
+                        Proyectil b = it.next();
+                        if (b.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
+                            e.reducirVida();
+                            b.desactivar(); // opcional: elimina la bala al golpear
+                            it.remove();
+                            if (e.getVida() <= 0) {
+                                this.enemigosMuertos.add(e.getNombre());
+                                e.remove();
+                            }
+                        }
+                    }
+                }
+            }
         }
-
 
         boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
 
@@ -297,7 +312,7 @@ public class Partida implements Screen {
             float finalY = !colisionY ? nuevaY : personaje.getY();
             personaje.aplicarMovimiento(finalX, finalY, delta, this.anchoMapa, this.alturaMapa);
         }
-        personaje.atacar(delta); 
+        personaje.atacar(delta, this); 
         detectarYEliminarTile(personaje, personaje.getHitbox(), jugador, esJugador1);
 
         for (Enemigo e : this.enemigos) {
