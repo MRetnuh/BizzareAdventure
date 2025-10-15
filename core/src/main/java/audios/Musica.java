@@ -42,8 +42,12 @@ public void setVolumen(float nuevoVolumen) {
 		this.musicaFondo.setVolume(this.volumen);
 	}
 
-}
 
+	
+}
+public void bajarACero() {
+	this.volumen = 0f;
+}
 
 public void cambiarMusica(String nombreArchivo) {
 	this.musicaFondo.stop();

@@ -109,7 +109,7 @@ public class Enemigo extends Personaje {
         if (!partida.detectarColision(hitbox)) {
             super.aplicarMovimiento(nuevaX, super.getY(), delta, 10000, 1000);
         } else {
-            this.moviendoDerecha = !this.moviendoDerecha; // Cambia de dirección si choca
+            this.moviendoDerecha = !this.moviendoDerecha;
         }
 
         if (super.getX() > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;

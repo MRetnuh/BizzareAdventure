@@ -58,7 +58,6 @@ public class Proyectil extends Actor {
     public void mover(float delta, Partida partida) {
         if (!activa) return;
 
-        act(delta); // usa tu propio movimiento
         if (partida != null && partida.detectarColision(getHitbox()) || getX() >= 2000) {
             desactivar();
         }

@@ -1,3 +1,7 @@
+## [8.3.2] - 2025-10-14
+### Añadido
+- Ahora hay cambio de niveles a llegar a un punto de cada mapa.
+
 ## [7.3.2] - 2025-10-14
 ### Añadido
 - Ahora algunos personajes pueden disparar en vez de atacar a distancia
