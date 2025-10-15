@@ -19,7 +19,6 @@ public class Enemigo extends Personaje {
     private float rangoMovimiento = 200;
     private float rangoVision = 250;
     private float puntoInicialX;
-    private boolean atacando = false;
     private float tiempoDisparo = 0;
     private final float cooldownDisparo = 1.0f;
     private Personaje objetivoActual = null;
@@ -57,7 +56,6 @@ public class Enemigo extends Personaje {
         seleccionarObjetivo(jugador1, jugador2);
 
         if (this.objetivoActual != null) {
-            this.atacando = true;
             this.estaMoviendose = false;
             this.tiempoDisparo += delta;
 
@@ -69,7 +67,6 @@ public class Enemigo extends Personaje {
                 this.tiempoDisparo = 0;
             }
         } else {
-            this.atacando = false;
             this.estaMoviendose = true;
             patrullar(delta, partida);
         }
