@@ -156,7 +156,6 @@ public class Partida implements Screen {
         // 3. COMPROBAR VICTORIA (Delegando al Nivel)
         if(this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.victoria = true;
-            musicaPartida.bajarACero();
             this.indiceNivelActual++;
             this.nivelActual = this.niveles[indiceNivelActual];
             inicializarNivel();
