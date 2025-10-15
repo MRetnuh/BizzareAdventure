@@ -19,9 +19,7 @@ public class Enemigo extends Personaje {
     private float rangoMovimiento = 200;
     private float rangoVision = 250;
     private float puntoInicialX;
-    private boolean moviendoDerecha = true;
     private boolean atacando = false;
-    private ArrayList<Proyectil> balas = new ArrayList<>();
     private float tiempoDisparo = 0;
     private final float cooldownDisparo = 1.0f;
     private Personaje objetivoActual = null;
@@ -138,10 +136,6 @@ public class Enemigo extends Personaje {
     private void disparar(String ruta, float volumen) {
         this.balas.add(new Proyectil(getX(), getY() + 16, this.moviendoDerecha, ruta));
         EfectoSonido.reproducir("disparo", volumen);
-    }
-
-    public ArrayList<Proyectil> getBalas() {
-        return this.balas;
     }
 
     private float getVelocidad() {

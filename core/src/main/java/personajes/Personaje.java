@@ -37,7 +37,7 @@ public abstract class Personaje extends Actor {
     protected boolean mirandoDerecha = true;
     protected boolean estaMoviendose = false;
     private boolean estaSaltando = false;
-    private boolean moviendoDerecha = false;
+    protected boolean moviendoDerecha = false;
     private boolean moviendoIzquierda = false;
     private final float GRAVEDAD = -500;
     private float prevX, prevY;
@@ -52,7 +52,7 @@ public abstract class Personaje extends Actor {
     private float tiempoAtaque = 0f;
     protected TextureRegion frame;
     private TipoAtaque tipoAtaque;
-    private ArrayList<Proyectil> balas = new ArrayList<>();
+    protected ArrayList<Proyectil> balas = new ArrayList<>();
     private float tiempoDisparo = 0f;
     private final float cooldownDisparo = 0.5f;
     private Partida partida;
