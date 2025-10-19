@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
@@ -23,8 +24,6 @@ import personajes.Enemigo;
 import personajes.Personaje;
 
 public abstract class NivelBase {
-    
-    // 🔹 ATRIBUTOS DEL MUNDO (COMUNES)
     public TiledMap mapa;
     protected OrthogonalTiledMapRenderer mapRenderer;
     protected int anchoMapa;
@@ -32,9 +31,8 @@ public abstract class NivelBase {
     public final int ID_TILE_TRANSPARENTE = 0;
     protected List<Enemigo> enemigos = new ArrayList<>();
     public Set<String> cajasDestruidas = new HashSet<>();
-    protected static Set<String> enemigosMuertosGlobal = new HashSet<>(); // Para persistir las muertes entre niveles
+    protected static Set<String> enemigosMuertosGlobal = new HashSet<>(); 
     
-    // 🔹 ATRIBUTOS ESPECÍFICOS (A IMPLEMENTAR EN CLASES HIJAS)
     protected float inicioX1, inicioY1;
     protected float inicioX2, inicioY2;
     protected String nombreMapa;
@@ -42,18 +40,16 @@ public abstract class NivelBase {
     public NivelBase(String nombreMapa) {
         this.nombreMapa = nombreMapa;
         cargarMapa();
-        definirPosicionesIniciales(); // Llamado en el constructor base
+        definirPosicionesIniciales(); 
     }
     
-    // 🔹 TEMPLATE METHODS (Lógica que debe ser definida por la subclase)
     public abstract void definirPosicionesIniciales();
     public abstract void crearEnemigos(); 
     public abstract boolean comprobarVictoria(float nuevaX1, float nuevaY1, float nuevaX2, float nuevaY2);
 
-    // 🔹 MÉTODOS DE LÓGICA DEL MUNDO (Comunes a todos)
     
     private void cargarMapa() {
-        this.mapa = new TmxMapLoader().load(this.nombreMapa); // Se asume que la ruta es correcta
+        this.mapa = new TmxMapLoader().load(this.nombreMapa);
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.mapa);
         this.anchoMapa = mapa.getProperties().get("width", Integer.class) * this.mapa.getProperties().get("tilewidth", Integer.class);
         this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
@@ -99,7 +95,6 @@ public abstract class NivelBase {
     public boolean detectarColision(Rectangle hitbox) {
         Polygon hitboxPoligono = convertirEnPoligono(hitbox);
 
-        // 1. Detección de colisiones con la capa "colisiones"
         for (MapObject object : this.mapa.getLayers().get("colisiones").getObjects()) {
             String clase = object.getProperties().get("type", String.class);
             if (clase == null || !clase.equals("Tierra")) continue;
@@ -120,7 +115,6 @@ public abstract class NivelBase {
             }
         }
         
-        // 2. Detección de colisiones con objetos interactivos que tienen un tile
         for (MapObject object : this.mapa.getLayers().get("interactivos").getObjects()) {
              String clase = object.getProperties().get("type", String.class);
              if (clase == null || !clase.equals("Tierra")) continue;
@@ -188,12 +182,10 @@ public abstract class NivelBase {
             String[] partes = key.split("_");
             int x = Integer.parseInt(partes[0]);
             int y = Integer.parseInt(partes[1]);
-            // Asume que el tile transparente está disponible
             tileLayer.setCell(x, y, null); 
         }
     }
     
-    // 🔹 GETTERS
     public TiledMap getMapa() { return this.mapa; }
     public OrthogonalTiledMapRenderer getMapRenderer() { return this.mapRenderer; }
     public List<Enemigo> getEnemigos() { return this.enemigos; }
@@ -204,7 +196,6 @@ public abstract class NivelBase {
     public float getInicioX2() { return inicioX2; }
     public float getInicioY2() { return inicioY2; }
 
-    // 🔹 DISPOSE (para manejar la memoria)
     public void dispose() {
         if (this.mapa != null) this.mapa.dispose();
         if (this.mapRenderer != null) this.mapRenderer.dispose();

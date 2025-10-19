@@ -68,7 +68,7 @@ public class Partida implements Screen {
         this.nivelActual = this.niveles[this.indiceNivelActual];
     }
     
-    public boolean detectarColision(Rectangle hitbox) {
+    public boolean detectarColisionNivel(Rectangle hitbox) {
         if (this.nivelActual != null) {
             return this.nivelActual.detectarColision(hitbox);
         }
@@ -127,7 +127,7 @@ public class Partida implements Screen {
                 this.personaje1.iniciarAtaque(this.musicaPartida.getVolumen());
                 this.inputController.setAtacarFalso1();
             }
-            if(this.inputController.getOpciones1()) abrirOpciones();
+            if(this.inputController.getOpciones1()) abrirOpciones();this.inputController.setOpcionesFalso1();
         }
 
         if(this.personaje2.getVida() > 0){
@@ -138,7 +138,7 @@ public class Partida implements Screen {
                 this.personaje2.iniciarAtaque(this.musicaPartida.getVolumen());
                 this.inputController.setAtacarFalso2();
             }
-            if(this.inputController.getOpciones2()) abrirOpciones();
+            if(this.inputController.getOpciones2()) abrirOpciones();this.inputController.setOpcionesFalso2();
         }
         
         actualizarPersonaje(this.jugador1, this.personaje1, delta, true);
@@ -203,7 +203,7 @@ public class Partida implements Screen {
             }
         }
         
-        boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
+        boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, personaje.getWidth(), personaje.getHeight()));
 
         personaje.guardarPosicionAnterior();
         personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa()); 
@@ -225,11 +225,11 @@ public class Partida implements Screen {
         
         Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());
         hitboxTentativaX.setPosition(nuevaX, personaje.getY());
-        boolean colisionX = detectarColision(hitboxTentativaX);
+        boolean colisionX = detectarColisionNivel(hitboxTentativaX);
 
         Rectangle hitboxTentativaY = new Rectangle(personaje.getHitbox());
         hitboxTentativaY.setPosition(personaje.getX(), nuevaY);
-        boolean colisionY = detectarColision(hitboxTentativaY);
+        boolean colisionY = detectarColisionNivel(hitboxTentativaY);
 
         if (colisionY) {
             personaje.frenarCaida();
@@ -345,16 +345,8 @@ public class Partida implements Screen {
         if (this.skin != null) this.skin.dispose(); 
     }
 
-	@Override
-	public void resize(int width, int height) {
-	}
-	@Override
-	public void pause() {
-	}
-	@Override
-	public void resume() {
-	}
-	@Override
-	public void hide() {
-	}
+	@Override public void resize(int width, int height) {}
+	@Override public void pause() {}
+	@Override public void resume() {}
+	@Override public void hide() {}
 }

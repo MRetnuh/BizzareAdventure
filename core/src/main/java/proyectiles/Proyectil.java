@@ -58,7 +58,7 @@ public class Proyectil extends Actor {
     public void mover(float delta, Partida partida) {
         if (!activa) return;
 
-        if (partida != null && partida.detectarColision(getHitbox()) || getX() >= 2000) {
+        if (partida != null && partida.detectarColisionNivel(getHitbox()) || getX() >= 2000) {
             desactivar();
         }
     }

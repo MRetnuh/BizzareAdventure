@@ -152,4 +152,12 @@ public class InputController implements InputProcessor {
     public boolean getAtacar2() {
         return  this.atacar2;
     }
+
+	public void setOpcionesFalso1() {
+		this.opciones1 = false;
+	}
+	
+	public void setOpcionesFalso2() {
+		this.opciones2 = false;
+	}
 }
