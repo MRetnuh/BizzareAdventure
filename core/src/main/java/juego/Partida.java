@@ -54,7 +54,7 @@ public class Partida implements Screen {
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
     private boolean victoria = false;
-    private boolean partidaIniciada = false; // Bandera para controlar la inicialización única
+    private boolean partidaIniciada = false; 
     
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
@@ -65,11 +65,9 @@ public class Partida implements Screen {
         this.stage = new Stage(new ScreenViewport(), this.batch);
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
         
-        // Inicialización de niveles
         this.nivelActual = this.niveles[this.indiceNivelActual];
     }
     
-    // 🔹 MÉTODO DELEGADOR (Necesario para Proyectil.java)
     public boolean detectarColision(Rectangle hitbox) {
         if (this.nivelActual != null) {
             return this.nivelActual.detectarColision(hitbox);
@@ -78,15 +76,12 @@ public class Partida implements Screen {
     }
 
     private void inicializarNivel() {
-        // 1. Delega la inicialización del mapa y enemigos
         this.nivelActual.restaurarEstadoCajas();
         this.nivelActual.crearEnemigos(); 
         
-        // 2. Posiciona los personajes (ya deben estar asignados en show())
         this.personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
         this.personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
         
-        // 3. Configurar Stage
         this.stage.clear();
         this.stage.addActor(this.personaje1);
         this.stage.addActor(this.personaje2);
@@ -103,7 +98,6 @@ public class Partida implements Screen {
     @Override
     public void show() {
         if (!this.partidaIniciada) {
-            // Lógica de generación de personajes (se mantiene aquí, no en Nivel)
             if (!this.jugador1.getPartidaEmpezada()) {
                 this.jugador1.generarPersonajeAleatorio();
             }
@@ -114,19 +108,17 @@ public class Partida implements Screen {
             this.partidaIniciada = true;
         }
 
-        // 🚨 CORRECCIÓN 1: ASIGNAR PERSONAJES ANTES DE HUD (Arregla NPE)
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
         
-        inicializarHUD(); // Ahora tiene personajes válidos
-        inicializarNivel(); // Ahora configura mapa, enemigos y Stage
+        inicializarHUD(); 
+        inicializarNivel(); 
     }
 
 
     @Override
     public void render(float delta) {
         
-        // 1. PROCESAR INPUT (Copia del código del usuario)
         if(this.personaje1.getVida() > 0){
             this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
             this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
@@ -149,11 +141,9 @@ public class Partida implements Screen {
             if(this.inputController.getOpciones2()) abrirOpciones();
         }
         
-        // 2. ACTUALIZAR PERSONAJES (Delegando la lógica del mundo)
         actualizarPersonaje(this.jugador1, this.personaje1, delta, true);
         actualizarPersonaje(this.jugador2, this.personaje2, delta, false);
         
-        // 3. COMPROBAR VICTORIA (Delegando al Nivel)
         if(this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.victoria = true;
             this.indiceNivelActual++;
@@ -161,48 +151,38 @@ public class Partida implements Screen {
             inicializarNivel();
         }
         
-        // 4. ACTUALIZAR MUNDO Y CÁMARA (Delegando al Nivel)
         this.nivelActual.actualizarCamara(this.camara, this.personaje1, this.personaje2);
         actualizarHUD();
         nivelActual.limpiarEnemigosMuertos(); 
         
-        // 5. RENDERIZADO DEL MAPA
         this.nivelActual.getMapRenderer().setView(this.camara);
         this.nivelActual.getMapRenderer().render();
 
-        // 6. RENDERIZADO DE ACTORES (Personajes, Enemigos, Proyectiles)
-        
-        // 🚨 CORRECCIÓN 2: ARREGLAR DIBUJADO DEL STAGE
-        // Sincronizar la cámara del Stage con la cámara del mundo para que los actores se muevan con el mapa
         OrthographicCamera stageCam = (OrthographicCamera) this.stage.getCamera();
         stageCam.position.set(this.camara.position.x, this.camara.position.y, this.camara.position.z);
         stageCam.zoom = this.camara.zoom;
         stageCam.update();
         
-        this.batch.setProjectionMatrix(this.camara.combined); // Opcional, pero limpio si el batch es compartido
+        this.batch.setProjectionMatrix(this.camara.combined);
 
-        // 7. ACTUALIZAR ENEMIGOS (Delegando al Nivel)
         if(!this.gameOver1 || !this.gameOver2) {
             for (Enemigo enemigo : this.nivelActual.getEnemigos()) { 
                  if (enemigo.getVida() > 0) {
-                     // Añadir balas al stage aquí
                      for (Proyectil b : enemigo.getBalas()) {
                           this.stage.addActor(b);
                      }
-                     // El enemigo recibe los límites del mapa del nivel
                      enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this);
                  }
             }
         }
         
         this.stage.act(delta);
-        this.stage.draw(); // Dibuja los actores con la cámara sincronizada
+        this.stage.draw(); 
 
         this.stageHUD.act(delta);
         this.stageHUD.draw();
     }
     
-    // Simplificamos la firma de este método, ya que los valores X/Y se obtienen internamente
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
         if (personaje.getVida() <= 0) {
             if ((esJugador1 && ! this.gameOver1) || (!esJugador1 && ! this.gameOver2)) {
@@ -216,7 +196,6 @@ public class Partida implements Screen {
             return;
         }
         
-        // Lógica de ataque y colisión con Enemigos (permanece como Lógica de Juego)
         if (personaje.getEstaAtacando()) {
             Iterator<Enemigo> iter = this.nivelActual.getEnemigos().iterator(); 
             while(iter.hasNext()) {
@@ -224,11 +203,9 @@ public class Partida implements Screen {
             }
         }
         
-        // Detección de suelo DELEGADA
         boolean estaSobreElSuelo = detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
 
         personaje.guardarPosicionAnterior();
-        // 🔹 Delegación de altura del mapa para la gravedad
         personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa()); 
 
         float nuevaX = personaje.getNuevaX(delta);
@@ -242,7 +219,7 @@ public class Partida implements Screen {
             this.nuevaY2 = nuevaY;
         }
 
-        if (nuevaY < -190) { // Límite de caída al vacío
+        if (nuevaY < -190) {
             personaje.reducirVida();
         }
         
@@ -262,16 +239,12 @@ public class Partida implements Screen {
         if (!colisionX || !colisionY) {
             float finalX = !colisionX ? nuevaX : personaje.getX();
             float finalY = !colisionY ? nuevaY : personaje.getY();
-            // Pasa los límites del mapa del nivel
             personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
         }
         
         personaje.atacar(delta, this); 
-        
-        // 🔹 DELEGAR DESTRUCCIÓN DE TILE AL NIVEL, MANTENIENDO EL EFECTO DE JUEGO AQUÍ
         detectarYEliminarTile(personaje, jugador, esJugador1);
 
-        // Colisión con proyectiles enemigos
         for (Enemigo e : this.nivelActual.getEnemigos()) {
             Iterator<Proyectil> it = e.getBalas().iterator();
             while (it.hasNext()) {
@@ -285,13 +258,10 @@ public class Partida implements Screen {
         }
     }
 
-    // 🔹 LÓGICA DEL JUEGO: Efecto de romper la caja (copiado del usuario)
     private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
-        // 1. Delega la detección y DESTRUCCIÓN de la caja al Nivel (Lógica del MUNDO)
         boolean cajaRota = this.nivelActual.detectarColision(personaje.getHitbox());
         
         if (cajaRota) {
-            // 2. Si el Nivel confirma que se rompió, Partida aplica el efecto (Lógica del JUEGO)
             
             if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
                 this.personaje1.setPosicion(this.personaje2.getX(), this.personaje2.getY());
@@ -330,7 +300,6 @@ public class Partida implements Screen {
         
  }
         private void inicializarHUD() {
-            // ... (Copiar la lógica de inicialización del HUD desde Partida.show()) ...
             this.skin = new Skin(Gdx.files.internal("uiskin.json")); 
             this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
             this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
@@ -364,15 +333,12 @@ public class Partida implements Screen {
             this.juego.setScreen(new Opciones(this.juego, this, this.musicaPartida));
         }
 
-    // ... (resize, pause, resume, hide) ...
 
     @Override
     public void dispose() {
-        // Disponer todos los niveles
         for (NivelBase nivel : this.niveles) {
             nivel.dispose();
         }
-        
         this.batch.dispose();
         this.stage.dispose();
         this.stageHUD.dispose();
@@ -381,24 +347,14 @@ public class Partida implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		
 	}
-
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
 	}
 }
