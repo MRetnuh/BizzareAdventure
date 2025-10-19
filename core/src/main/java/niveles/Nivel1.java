@@ -19,7 +19,7 @@ public class Nivel1 extends NivelBase {
 
     @Override
     public void crearEnemigos() {
-        this.enemigos.clear(); // Limpiar enemigos anteriores si se reutiliza la instancia
+        this.enemigos.clear(); 
 
         String[] idsEnemigos = {"enemigo1"};
         float[][] posiciones = {
@@ -35,7 +35,6 @@ public class Nivel1 extends NivelBase {
 
     @Override
     public boolean comprobarVictoria(float nuevaX1, float nuevaY1, float nuevaX2, float nuevaY2) {
-        // La condición de victoria es alcanzar un punto de salida
         return (nuevaX1 >= 3502.00 && nuevaX1 <= 3700.00 && nuevaY1 >= 1250.00) || 
                (nuevaX2 >= 3502.00 && nuevaX2 <= 3700.00 && nuevaY2 >= 1250.00);
     }

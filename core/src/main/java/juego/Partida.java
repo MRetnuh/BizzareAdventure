@@ -217,9 +217,6 @@ public class Partida implements Screen {
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
         
-        // ----------------------------------------------------------------------
-        // INICIO: LÓGICA DE RESTRICCIÓN DE CÁMARA (Para que ambos jugadores permanezcan en pantalla)
-        // ----------------------------------------------------------------------
         Personaje otroPersonaje = esJugador1 ? this.personaje2 : this.personaje1;
         boolean otroVivo = otroPersonaje.getVida() > 0;
         
@@ -277,9 +274,6 @@ public class Partida implements Screen {
         if (!colisionX || !colisionY) {
             float finalX = !colisionX ? nuevaX : personaje.getX();
             float finalY = !colisionY ? nuevaY : personaje.getY();
-            // Nota: La restricción de mapa que tenías aquí se vuelve redundante 
-            // si la cámara ya está sujeta al mapa en NivelBase.actualizarCamara,
-            // pero se mantiene para evitar que salgan *visualmente* de los límites.
             personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
         }
         

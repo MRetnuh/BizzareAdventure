@@ -124,7 +124,6 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        // 🔹 Elegir frame según el estado
         if (this.estaAtacando) {
             frame = this.mirandoDerecha
                     ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
@@ -137,10 +136,8 @@ public abstract class Personaje extends Actor {
             frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
-        // 🔹 Dibujar al personaje
         batch.draw(frame, getX(), getY());
 
-        // 🔹 Dibujar las balas SIEMPRE
         for (Proyectil p : balas) {
             if (p.isActivo())
                 p.draw(batch, parentAlpha);
@@ -151,7 +148,6 @@ public abstract class Personaje extends Actor {
     public void act(float delta) {
         super.act(delta);
 
-        // 🔹 Actualizar balas
         Iterator<Proyectil> it = balas.iterator();
         while (it.hasNext()) {
             Proyectil p = it.next();
@@ -159,7 +155,6 @@ public abstract class Personaje extends Actor {
             if (!p.isActivo()) it.remove();
         }
 
-        // 🔹 Controlar animaciones de ataque o movimiento
         if (this.estaAtacando) {
             this.tiempoAtaque += delta;
 
@@ -177,7 +172,7 @@ public abstract class Personaje extends Actor {
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
         if (!estaEnElSuelo) {
             this.velocidadCaida += this.GRAVEDAD * delta;
-            super.setY(getY() + this.velocidadCaida * delta); // 👈 Usar setY()
+            super.setY(getY() + this.velocidadCaida * delta); 
         } else {
             this.velocidadCaida = 0;
         }
@@ -194,9 +189,8 @@ public abstract class Personaje extends Actor {
                 }
             }
         } 
-        else { // Ataque a distancia
+        else { 
             if (this.estaAtacando && !disparoRealizado) {
-                // 🔹 Crear bala una sola vez por ataque
                 String ruta = mirandoDerecha
                     ? "imagenes/personajes/enemigo/ataque/Bala_Derecha.png"
                     : "imagenes/personajes/enemigo/ataque/Bala_Izquierda.png";
@@ -206,8 +200,6 @@ public abstract class Personaje extends Actor {
 
                 disparoRealizado = true;
             }
-
-            // 🔹 Cuando termina la animación, permitimos volver a disparar
             if (this.estaAtacando) {
                 this.tiempoAtaque += delta;
                 if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.tiempoAtaque)) ||
@@ -218,7 +210,6 @@ public abstract class Personaje extends Actor {
                 }
             }
 
-            // 🔹 Mover las balas y limpiar las que colisionan
             Iterator<Proyectil> it = this.balas.iterator();
             while (it.hasNext()) {
                 Proyectil b = it.next();
@@ -295,7 +286,7 @@ public abstract class Personaje extends Actor {
         return this.prevY;
     }
     public void setY(float prevY) {
-        super.setY(prevY); // Usar el método de Actor
+        super.setY(prevY); 
     }
     public void setPosicion(float x, float y) {
         super.setX(x);
