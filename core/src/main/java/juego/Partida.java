@@ -92,7 +92,6 @@ public class Partida implements Screen {
         this.victoria = false;
         this.gameOver1 = false;
         this.gameOver2 = false;
-        Gdx.input.setInputProcessor(this.inputController);
     }
 
     @Override
@@ -106,13 +105,17 @@ public class Partida implements Screen {
             }
             this.inputController = new InputController();
             this.partidaIniciada = true;
+            
+            this.personaje1 = this.jugador1.getPersonajeElegido();
+            this.personaje2 = this.jugador2.getPersonajeElegido();
+            
+            inicializarNivel(); 
         }
-
         this.personaje1 = this.jugador1.getPersonajeElegido();
         this.personaje2 = this.jugador2.getPersonajeElegido();
         
         inicializarHUD(); 
-        inicializarNivel(); 
+        Gdx.input.setInputProcessor(this.inputController);
     }
 
 
