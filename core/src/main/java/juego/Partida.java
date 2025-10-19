@@ -35,7 +35,8 @@ public class Partida implements Screen {
     private Stage stageHUD;
     private final Jugador jugador1 = new Jugador();
     private final Jugador jugador2 = new Jugador();
-    
+    private final float MAX_DISTANCIA_X = Gdx.graphics.getWidth() * 0.95f; 
+    private final float MAX_DISTANCIA_Y = Gdx.graphics.getHeight() * 0.95f;
     private Skin skin;
     private OrthographicCamera camara;
     private SpriteBatch batch;
@@ -186,6 +187,8 @@ public class Partida implements Screen {
         this.stageHUD.draw();
     }
     
+ // juego/Partida.java - Método actualizado
+
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
         if (personaje.getVida() <= 0) {
             if ((esJugador1 && ! this.gameOver1) || (!esJugador1 && ! this.gameOver2)) {
@@ -213,6 +216,38 @@ public class Partida implements Screen {
 
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
+        
+        // ----------------------------------------------------------------------
+        // INICIO: LÓGICA DE RESTRICCIÓN DE CÁMARA (Para que ambos jugadores permanezcan en pantalla)
+        // ----------------------------------------------------------------------
+        Personaje otroPersonaje = esJugador1 ? this.personaje2 : this.personaje1;
+        boolean otroVivo = otroPersonaje.getVida() > 0;
+        
+        if (otroVivo) {
+            // Usamos los centros para calcular la distancia de separación
+            float centroPersonajeX = nuevaX + personaje.getWidth() / 2f;
+            float centroOtroX = otroPersonaje.getX() + otroPersonaje.getWidth() / 2f;
+            float distanciaX = Math.abs(centroPersonajeX - centroOtroX);
+
+            float centroPersonajeY = nuevaY + personaje.getHeight() / 2f;
+            float centroOtroY = otroPersonaje.getY() + otroPersonaje.getHeight() / 2f;
+            float distanciaY = Math.abs(centroPersonajeY - centroOtroY);
+
+            // Comprobación Horizontal
+            if (distanciaX > this.MAX_DISTANCIA_X) {
+                // Frena el movimiento en la posición horizontal anterior (efecto choque)
+                nuevaX = personaje.getX();
+            }
+
+            // Comprobación Vertical
+            if (distanciaY > this.MAX_DISTANCIA_Y) {
+                // Frena el movimiento en la posición vertical anterior (efecto choque)
+                nuevaY = personaje.getY();
+            }
+        }
+        // ----------------------------------------------------------------------
+        // FIN: LÓGICA DE RESTRICCIÓN DE CÁMARA
+        // ----------------------------------------------------------------------
         
         if (esJugador1) {
             this.nuevaX1 = nuevaX;
@@ -242,6 +277,9 @@ public class Partida implements Screen {
         if (!colisionX || !colisionY) {
             float finalX = !colisionX ? nuevaX : personaje.getX();
             float finalY = !colisionY ? nuevaY : personaje.getY();
+            // Nota: La restricción de mapa que tenías aquí se vuelve redundante 
+            // si la cámara ya está sujeta al mapa en NivelBase.actualizarCamara,
+            // pero se mantiene para evitar que salgan *visualmente* de los límites.
             personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
         }
         
@@ -260,7 +298,6 @@ public class Partida implements Screen {
             }
         }
     }
-
     private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
         boolean cajaRota = this.nivelActual.detectarColision(personaje.getHitbox());
         
