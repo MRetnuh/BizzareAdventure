@@ -1,9 +1,6 @@
-
 package juego;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
@@ -26,7 +23,7 @@ import niveles.Nivel2;
 import niveles.NivelBase;
 import personajes.Enemigo;
 import personajes.Personaje;
-import proyectiles.Proyectil; // Importamos Nivel
+import proyectiles.Proyectil;
 
 public class Partida implements Screen {
 
@@ -35,7 +32,7 @@ public class Partida implements Screen {
     private Stage stageHUD;
     private final Jugador jugador1 = new Jugador();
     private final Jugador jugador2 = new Jugador();
-    private final float MAX_DISTANCIA_X = Gdx.graphics.getWidth() * 0.95f; 
+    private final float MAX_DISTANCIA_X = Gdx.graphics.getWidth() * 0.95f;
     private final float MAX_DISTANCIA_Y = Gdx.graphics.getHeight() * 0.95f;
     private Skin skin;
     private OrthographicCamera camara;
@@ -46,7 +43,7 @@ public class Partida implements Screen {
     private NivelBase[] niveles = {new Nivel1(), new Nivel2()};
     private NivelBase nivelActual;
     private int indiceNivelActual = 0;
-    
+
     private Label nombrePersonaje1Label, vidaPersonaje1Label;
     private Label nombrePersonaje2Label, vidaPersonaje2Label;
     private final Game juego;
@@ -55,8 +52,8 @@ public class Partida implements Screen {
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
     private boolean victoria = false;
-    private boolean partidaIniciada = false; 
-    
+    private boolean partidaIniciada = false;
+
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
         this.musicaPartida = musica;
@@ -65,10 +62,10 @@ public class Partida implements Screen {
         this.batch = new SpriteBatch();
         this.stage = new Stage(new ScreenViewport(), this.batch);
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
-        
+
         this.nivelActual = this.niveles[this.indiceNivelActual];
     }
-    
+
     public boolean detectarColisionNivel(Rectangle hitbox) {
         if (this.nivelActual != null) {
             return this.nivelActual.detectarColision(hitbox);
@@ -77,19 +74,21 @@ public class Partida implements Screen {
     }
 
     private void inicializarNivel() {
+        if (this.nivelActual == null) return;
+
         this.nivelActual.restaurarEstadoCajas();
-        this.nivelActual.crearEnemigos(); 
-        
-        this.personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
-        this.personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
-        
+        this.nivelActual.crearEnemigos();
+
+        if (personaje1 != null) personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
+        if (personaje2 != null) personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
+
         this.stage.clear();
-        this.stage.addActor(this.personaje1);
-        this.stage.addActor(this.personaje2);
+        if (personaje1 != null) this.stage.addActor(this.personaje1);
+        if (personaje2 != null) this.stage.addActor(this.personaje2);
         for (Enemigo enemigo : this.nivelActual.getEnemigos()) {
             this.stage.addActor(enemigo);
         }
-        
+
         this.victoria = false;
         this.gameOver1 = false;
         this.gameOver2 = false;
@@ -98,67 +97,43 @@ public class Partida implements Screen {
     @Override
     public void show() {
         if (!this.partidaIniciada) {
-            if (!this.jugador1.getPartidaEmpezada()) {
-                this.jugador1.generarPersonajeAleatorio();
-            }
-            if (!this.jugador2.getPartidaEmpezada()) {
-                this.jugador2.generarPersonajeAleatorio();
-            }
+            if (!this.jugador1.getPartidaEmpezada()) this.jugador1.generarPersonajeAleatorio();
+            if (!this.jugador2.getPartidaEmpezada()) this.jugador2.generarPersonajeAleatorio();
+
             this.inputController = new InputController();
             this.partidaIniciada = true;
-            
+
             this.personaje1 = this.jugador1.getPersonajeElegido();
             this.personaje2 = this.jugador2.getPersonajeElegido();
-            
-            inicializarNivel(); 
+
+            inicializarNivel();
         }
-        this.personaje1 = this.jugador1.getPersonajeElegido();
-        this.personaje2 = this.jugador2.getPersonajeElegido();
-        
-        inicializarHUD(); 
+
+        inicializarHUD();
         Gdx.input.setInputProcessor(this.inputController);
     }
 
-
     @Override
     public void render(float delta) {
-        
-        if(this.personaje1.getVida() > 0){
-            this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
-            this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
-            this.personaje1.setEstaSaltando(this.inputController.getSaltar1());
-            if(this.inputController.getAtacar1()) {
-                this.personaje1.iniciarAtaque(this.musicaPartida.getVolumen());
-                this.inputController.setAtacarFalso1();
-            }
-            if(this.inputController.getOpciones1()) abrirOpciones();this.inputController.setOpcionesFalso1();
-        }
 
-        if(this.personaje2.getVida() > 0){
-            this.personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
-            this.personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
-            this.personaje2.setEstaSaltando(this.inputController.getSaltar2());
-            if(this.inputController.getAtacar2()) {
-                this.personaje2.iniciarAtaque(this.musicaPartida.getVolumen());
-                this.inputController.setAtacarFalso2();
-            }
-            if(this.inputController.getOpciones2()) abrirOpciones();this.inputController.setOpcionesFalso2();
-        }
-        
+        actualizarInputs(delta);
+
         actualizarPersonaje(this.jugador1, this.personaje1, delta, true);
         actualizarPersonaje(this.jugador2, this.personaje2, delta, false);
-        
-        if(this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
+
+        if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.victoria = true;
             this.indiceNivelActual++;
-            this.nivelActual = this.niveles[indiceNivelActual];
-            inicializarNivel();
+            if (indiceNivelActual < niveles.length) {
+                this.nivelActual = this.niveles[indiceNivelActual];
+                inicializarNivel();
+            }
         }
-        
+
         this.nivelActual.actualizarCamara(this.camara, this.personaje1, this.personaje2);
         actualizarHUD();
-        nivelActual.limpiarEnemigosMuertos(); 
-        
+        nivelActual.limpiarEnemigosMuertos();
+
         this.nivelActual.getMapRenderer().setView(this.camara);
         this.nivelActual.getMapRenderer().render();
 
@@ -166,62 +141,85 @@ public class Partida implements Screen {
         stageCam.position.set(this.camara.position.x, this.camara.position.y, this.camara.position.z);
         stageCam.zoom = this.camara.zoom;
         stageCam.update();
-        
+
         this.batch.setProjectionMatrix(this.camara.combined);
 
-        if(!this.gameOver1 || !this.gameOver2) {
-            for (Enemigo enemigo : this.nivelActual.getEnemigos()) { 
-                 if (enemigo.getVida() > 0) {
-                     for (Proyectil b : enemigo.getBalas()) {
-                          this.stage.addActor(b);
-                     }
-                     enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this);
-                 }
+        if (!this.gameOver1 || !this.gameOver2) {
+            for (Enemigo enemigo : this.nivelActual.getEnemigos()) {
+                if (enemigo.getVida() > 0) {
+                    // Añadir proyectiles de manera segura
+                    for (Proyectil b : enemigo.getBalas()) {
+                        if (!stage.getActors().contains(b, true)) {
+                            stage.addActor(b);
+                        }
+                    }
+                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this);
+                }
             }
         }
-        
-        this.stage.act(delta);
-        this.stage.draw(); 
 
+        this.stage.act(delta);
+        this.stage.draw();
         this.stageHUD.act(delta);
         this.stageHUD.draw();
     }
-    
- // juego/Partida.java - Método actualizado
 
+    private void actualizarInputs(float delta) {
+        if (personaje1.getVida() > 0) {
+            personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
+            personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
+            personaje1.setEstaSaltando(this.inputController.getSaltar1());
+            if (this.inputController.getAtacar1()) {
+                personaje1.iniciarAtaque(this.musicaPartida.getVolumen());
+                this.inputController.setAtacarFalso1();
+            }
+            if (this.inputController.getOpciones1()) {
+                abrirOpciones();
+                this.inputController.setOpcionesFalso1();
+            }
+        }
+
+        if (personaje2.getVida() > 0) {
+            personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
+            personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
+            personaje2.setEstaSaltando(this.inputController.getSaltar2());
+            if (this.inputController.getAtacar2()) {
+                personaje2.iniciarAtaque(this.musicaPartida.getVolumen());
+                this.inputController.setAtacarFalso2();
+            }
+            if (this.inputController.getOpciones2()) {
+                abrirOpciones();
+                this.inputController.setOpcionesFalso2();
+            }
+        }
+    }
+
+    // ----------------------
+    // Método actualizarPersonaje (seguro)
+    // ----------------------
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
         if (personaje.getVida() <= 0) {
-            if ((esJugador1 && ! this.gameOver1) || (!esJugador1 && ! this.gameOver2)) {
-                if (esJugador1) this.gameOver1 = true;
-                else this.gameOver2 = true;
-                if(this.gameOver1 == true && this.gameOver2 == true) {
+            if ((esJugador1 && !gameOver1) || (!esJugador1 && !gameOver2)) {
+                if (esJugador1) gameOver1 = true;
+                else gameOver2 = true;
+                if (gameOver1 && gameOver2) {
                     this.musicaPartida.cambiarMusica("derrota");
                     personaje.morir(this.stageHUD);
                 }
             }
             return;
         }
-        
-        if (personaje.getEstaAtacando()) {
-            Iterator<Enemigo> iter = this.nivelActual.getEnemigos().iterator(); 
-            while(iter.hasNext()) {
-                 // ... (Tu lógica de colisión Melee y Distancia) ...
-            }
-        }
-        
-        boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, personaje.getWidth(), personaje.getHeight()));
 
+        // Gravedad
+        boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, personaje.getWidth(), personaje.getHeight()));
         personaje.guardarPosicionAnterior();
-        personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa()); 
+        personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa());
 
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
-        
-        Personaje otroPersonaje = esJugador1 ? this.personaje2 : this.personaje1;
-        boolean otroVivo = otroPersonaje.getVida() > 0;
-        
-        if (otroVivo) {
-            // Usamos los centros para calcular la distancia de separación
+
+        Personaje otroPersonaje = esJugador1 ? personaje2 : personaje1;
+        if (otroPersonaje != null && otroPersonaje.getVida() > 0) {
             float centroPersonajeX = nuevaX + personaje.getWidth() / 2f;
             float centroOtroX = otroPersonaje.getX() + otroPersonaje.getWidth() / 2f;
             float distanciaX = Math.abs(centroPersonajeX - centroOtroX);
@@ -230,57 +228,43 @@ public class Partida implements Screen {
             float centroOtroY = otroPersonaje.getY() + otroPersonaje.getHeight() / 2f;
             float distanciaY = Math.abs(centroPersonajeY - centroOtroY);
 
-            // Comprobación Horizontal
-            if (distanciaX > this.MAX_DISTANCIA_X) {
-                // Frena el movimiento en la posición horizontal anterior (efecto choque)
-                nuevaX = personaje.getX();
-            }
-
-            // Comprobación Vertical
-            if (distanciaY > this.MAX_DISTANCIA_Y) {
-                // Frena el movimiento en la posición vertical anterior (efecto choque)
-                nuevaY = personaje.getY();
-            }
+            if (distanciaX > MAX_DISTANCIA_X) nuevaX = personaje.getX();
+            if (distanciaY > MAX_DISTANCIA_Y) nuevaY = personaje.getY();
         }
-        // ----------------------------------------------------------------------
-        // FIN: LÓGICA DE RESTRICCIÓN DE CÁMARA
-        // ----------------------------------------------------------------------
-        
+
         if (esJugador1) {
-            this.nuevaX1 = nuevaX;
-            this.nuevaY1 = nuevaY;
+            nuevaX1 = nuevaX;
+            nuevaY1 = nuevaY;
         } else {
-            this.nuevaX2 = nuevaX;
-            this.nuevaY2 = nuevaY;
+            nuevaX2 = nuevaX;
+            nuevaY2 = nuevaY;
         }
 
-        if (nuevaY < -190) {
-            personaje.reducirVida();
-        }
-        
-        Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());
-        hitboxTentativaX.setPosition(nuevaX, personaje.getY());
-        boolean colisionX = detectarColisionNivel(hitboxTentativaX);
+        if (nuevaY < -190) personaje.reducirVida();
 
-        Rectangle hitboxTentativaY = new Rectangle(personaje.getHitbox());
-        hitboxTentativaY.setPosition(personaje.getX(), nuevaY);
-        boolean colisionY = detectarColisionNivel(hitboxTentativaY);
+        // Colisiones con nivel
+        Rectangle hitboxX = new Rectangle(personaje.getHitbox());
+        hitboxX.setPosition(nuevaX, personaje.getY());
+        boolean colX = detectarColisionNivel(hitboxX);
 
-        if (colisionY) {
+        Rectangle hitboxY = new Rectangle(personaje.getHitbox());
+        hitboxY.setPosition(personaje.getX(), nuevaY);
+        boolean colY = detectarColisionNivel(hitboxY);
+
+        if (colY) {
             personaje.frenarCaida();
             personaje.setY(personaje.getPrevY());
         }
 
-        if (!colisionX || !colisionY) {
-            float finalX = !colisionX ? nuevaX : personaje.getX();
-            float finalY = !colisionY ? nuevaY : personaje.getY();
-            personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
-        }
-        
-        personaje.atacar(delta, this); 
-        detectarYEliminarTile(personaje, jugador, esJugador1);
+        float finalX = !colX ? nuevaX : personaje.getX();
+        float finalY = !colY ? nuevaY : personaje.getY();
+        personaje.aplicarMovimiento(finalX, finalY, delta, nivelActual.getAnchoMapa(), nivelActual.getAlturaMapa());
 
-        for (Enemigo e : this.nivelActual.getEnemigos()) {
+        // Ataques
+        personaje.atacar(delta, this);
+
+        // Colisiones con proyectiles enemigos
+        for (Enemigo e : nivelActual.getEnemigos()) {
             Iterator<Proyectil> it = e.getBalas().iterator();
             while (it.hasNext()) {
                 Proyectil b = it.next();
@@ -291,96 +275,88 @@ public class Partida implements Screen {
                 }
             }
         }
+
+        detectarYEliminarTile(personaje, jugador, esJugador1);
     }
+
+    // ----------------------
+    // HUD y auxiliares
+    // ----------------------
+    private void inicializarHUD() {
+        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        this.nombrePersonaje2Label = new Label("Nombre: " + this.personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+        this.vidaPersonaje2Label = new Label("Vida: " + this.personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+
+        Table table1 = new Table(); Table table2 = new Table();
+        table1.left().top(); table2.right().top();
+        table1.add(nombrePersonaje1Label).size(350, 50).padBottom(5).row();
+        table1.add(vidaPersonaje1Label).size(350, 50);
+        table2.add(nombrePersonaje2Label).size(350, 50).padBottom(5).row();
+        table2.add(vidaPersonaje2Label).size(350, 50);
+
+        Container<Table> cont1 = new Container<>(table1);
+        Container<Table> cont2 = new Container<>(table2);
+        cont1.setSize(400, 130); cont2.setSize(400, 130);
+        cont1.setBackground(skin.getDrawable("default-round")); cont2.setBackground(skin.getDrawable("default-round"));
+        cont1.setPosition(0, Gdx.graphics.getHeight() - cont1.getHeight());
+        cont2.setPosition(Gdx.graphics.getWidth() - cont2.getWidth(), Gdx.graphics.getHeight() - cont2.getHeight());
+        stageHUD.addActor(cont1); stageHUD.addActor(cont2);
+    }
+
+    private void actualizarHUD() {
+        nombrePersonaje1Label.setText("Nombre: " + personaje1.getNombre());
+        vidaPersonaje1Label.setText("Vida: " + personaje1.getVida());
+        nombrePersonaje2Label.setText("Nombre: " + personaje2.getNombre());
+        vidaPersonaje2Label.setText("Vida: " + personaje2.getVida());
+    }
+
     private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
-        boolean cajaRota = this.nivelActual.detectarColision(personaje.getHitbox());
-        
-        if (cajaRota) {
-            
-            if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
-                this.personaje1.setPosicion(this.personaje2.getX(), this.personaje2.getY());
-                this.personaje1.aumentarVida();
-                this.gameOver1 = false;
-            } else if (this.personaje2.getVida() <= 0 && this.personaje1.getVida() > 0) {
-                this.personaje2.setPosicion(this.personaje1.getX(), this.personaje1.getY());
-                this.personaje2.aumentarVida();
-                this.gameOver2 = false;
+        boolean cajaRota = nivelActual.detectarColision(personaje.getHitbox());
+        if (!cajaRota) return;
+
+        if (personaje1.getVida() <= 0 && personaje2.getVida() > 0) {
+            personaje1.setPosicion(personaje2.getX(), personaje2.getY());
+            personaje1.aumentarVida();
+            gameOver1 = false;
+        } else if (personaje2.getVida() <= 0 && personaje1.getVida() > 0) {
+            personaje2.setPosicion(personaje1.getX(), personaje1.getY());
+            personaje2.aumentarVida();
+            gameOver2 = false;
+        } else {
+            Personaje nuevo = jugador.cambiarPersonaje(
+                    esJugador1 ? nuevaX1 : nuevaX2,
+                    esJugador1 ? nuevaY1 : nuevaY2
+            );
+            if (esJugador1) {
+                stage.getActors().removeValue(personaje1, true);
+                personaje1 = nuevo;
+                stage.addActor(personaje1);
             } else {
-                Personaje nuevoPersonaje = jugador.cambiarPersonaje(
-                    esJugador1 ? this.nuevaX1 : this.nuevaX2,
-                    esJugador1 ? this.nuevaY1 : this.nuevaY2
-                );
-                
-                if (esJugador1) {
-                    this.stage.getActors().removeValue(this.personaje1, true);
-                    this.personaje1 = nuevoPersonaje;
-                    this.stage.addActor(this.personaje1);
-                } else {
-                    this.stage.getActors().removeValue(this.personaje2, true);
-                    this.personaje2 = nuevoPersonaje;
-                    this.stage.addActor(this.personaje2);
-                }
+                stage.getActors().removeValue(personaje2, true);
+                personaje2 = nuevo;
+                stage.addActor(personaje2);
             }
-            actualizarHUD();
         }
+        actualizarHUD();
     }
 
-        private void actualizarHUD() {
-            this.nombrePersonaje1Label.setText("Nombre: " + this.personaje1.getNombre());
-            this.vidaPersonaje1Label.setText("Vida: " + this.personaje1.getVida());
-
-            this.nombrePersonaje2Label.setText("Nombre: " + this.personaje2.getNombre());
-            this.vidaPersonaje2Label.setText("Vida: " + this.personaje2.getVida());
-        
- }
-        private void inicializarHUD() {
-            this.skin = new Skin(Gdx.files.internal("uiskin.json")); 
-            this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-            this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-
-            this.nombrePersonaje2Label = new Label("Nombre: " + this.personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-            this.vidaPersonaje2Label = new Label("Vida: " + this.personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-            Table table1 = new Table();
-            Table table2 = new Table();
-            table1.left().top();
-            table2.right().top();
-            table1.add(this.nombrePersonaje1Label).size(350, 50).padBottom(5).row();
-            table1.add(this.vidaPersonaje1Label).size(350, 50);
-            table2.add(this.nombrePersonaje2Label).size(350, 50).padBottom(5).row();
-            table2.add(this.vidaPersonaje2Label).size(350, 50);
-
-            Container<Table> contenedor1 = new Container<>(table1);
-            Container<Table> contenedor2 = new Container<>(table2);
-            contenedor1.setSize(400, 130);
-            contenedor2.setSize(400, 130);
-            contenedor1.setBackground(this.skin.getDrawable("default-round"));
-            contenedor2.setBackground(this.skin.getDrawable("default-round"));
-            contenedor1.setPosition(0, Gdx.graphics.getHeight() - contenedor1.getHeight());
-            contenedor2.setPosition(Gdx.graphics.getWidth() - contenedor2.getWidth(), Gdx.graphics.getHeight() - contenedor2.getHeight());
-
-            this.stageHUD.addActor(contenedor1);
-            this.stageHUD.addActor(contenedor2);
-        }
-
-
-        public void abrirOpciones() {
-            this.juego.setScreen(new Opciones(this.juego, this, this.musicaPartida));
-        }
-
+    public void abrirOpciones() {
+        this.juego.setScreen(new Opciones(this.juego, this, this.musicaPartida));
+    }
 
     @Override
     public void dispose() {
-        for (NivelBase nivel : this.niveles) {
-            nivel.dispose();
-        }
+        for (NivelBase nivel : this.niveles) nivel.dispose();
         this.batch.dispose();
         this.stage.dispose();
         this.stageHUD.dispose();
-        if (this.skin != null) this.skin.dispose(); 
+        if (skin != null) skin.dispose();
     }
 
-	@Override public void resize(int width, int height) {}
-	@Override public void pause() {}
-	@Override public void resume() {}
-	@Override public void hide() {}
+    @Override public void resize(int width, int height) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
 }

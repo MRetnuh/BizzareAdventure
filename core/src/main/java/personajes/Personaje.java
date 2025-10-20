@@ -124,25 +124,60 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (this.estaAtacando) {
-            frame = this.mirandoDerecha
-                    ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
-                    : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
-        } else if (this.estaMoviendose) {
-            frame = this.mirandoDerecha
-                    ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
-                    : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
-        } else {
+        // Seleccionar frame con guardas y logs
+        try {
+            if (this.estaAtacando) {
+                if (this.animAtaqueDerecha == null || this.animAtaqueIzquierda == null) {
+                    Gdx.app.error("DEBUG_DRAW", "animAtaqueDerecha/Izquierda NULL al iniciar ataque!");
+                } else {
+                    frame = this.mirandoDerecha
+                            ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
+                            : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
+                }
+            } else if (this.estaMoviendose) {
+                if (this.animDerecha == null || this.animIzquierda == null) {
+                    Gdx.app.error("DEBUG_DRAW", "animDerecha/Izquierda NULL al moverse!");
+                } else {
+                    frame = this.mirandoDerecha
+                            ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
+                            : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
+                }
+            } else {
+                frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
+            }
+        } catch (Exception e) {
+            Gdx.app.error("DEBUG_DRAW", "Excepción al obtener keyFrame: ", e);
             frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
-        batch.draw(frame, getX(), getY());
+        if (frame == null) {
+            Gdx.app.error("DEBUG_DRAW", "Frame es NULL justo antes de dibujar. Uso frame de backup.");
+            frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
+        }
 
+        // Antes de dibujar, comprobá si la textura asociada está disponible
+        try {
+            batch.draw(frame, getX(), getY());
+        } catch (Throwable t) {
+            // Capturamos cualquier excepción nativa que se propague como Error/Throwable
+            Gdx.app.error("DEBUG_DRAW", "Error al dibujar frame (posible textura disposed o corrupta).", t);
+            // Evitamos crash nativo siguiente quitando el draw
+        }
+
+        // dibujar proyectiles (siempre con defensas)
         for (Proyectil p : balas) {
-            if (p.isActivo())
-                p.draw(batch, parentAlpha);
+            if (p.isActivo()) {
+                try {
+                    p.draw(batch, parentAlpha);
+                } catch (Throwable t) {
+                    Gdx.app.error("DEBUG_DRAW", "Error al dibujar proyectil", t);
+                    // removemos o desactivamos para evitar repetir crash
+                    p.desactivar();
+                }
+            }
         }
     }
+
 
     @Override
     public void act(float delta) {
@@ -223,13 +258,15 @@ public abstract class Personaje extends Actor {
 
     public void iniciarAtaque(float volumen) {
         if (!this.estaAtacando) {
+            // log con estado de animaciones y regiones antes de atacar
+            Gdx.app.log("DEBUG_ATQ", "Iniciando ataque. animAtaqueDerecha=" + (animAtaqueDerecha != null)
+                    + " animAtaqueIzquierda=" + (animAtaqueIzquierda != null)
+                    + " quietaDerecha=" + (quietaDerecha != null)
+                    + " quietaIzquierda=" + (quietaIzquierda != null));
             this.estaAtacando = true;
             this.tiempoAtaque  = 0f;
             EfectoSonido.reproducir(this.nombreAtaque, volumen);
-            
-
         }
-
     }
 
     public void aplicarMovimiento(float nuevoX, float nuevoY, float delta, int mapWidth, int mapHeight) {
