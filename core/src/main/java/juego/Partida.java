@@ -52,7 +52,7 @@ public class Partida implements Screen {
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
     private boolean victoria = false;
-    private boolean partidaIniciada = false;
+    private boolean nivelIniciado  = false;
 
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
@@ -79,8 +79,16 @@ public class Partida implements Screen {
         this.nivelActual.restaurarEstadoCajas();
         this.nivelActual.crearEnemigos();
 
-        if (personaje1 != null) personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
-        if (personaje2 != null) personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
+        if (personaje1 != null) {
+        	personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
+        	 this.jugador1.generarPersonajeAleatorio();
+        	 this.personaje1 = this.jugador1.getPersonajeElegido();
+        }
+        if (personaje2 != null) {
+        	personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
+        	this.jugador2.generarPersonajeAleatorio();
+       	 	this.personaje2 = this.jugador2.getPersonajeElegido();
+        }
 
         this.stage.clear();
         if (personaje1 != null) this.stage.addActor(this.personaje1);
@@ -96,12 +104,12 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
-        if (!this.partidaIniciada) {
+        if (!this.nivelIniciado) {
             if (!this.jugador1.getPartidaEmpezada()) this.jugador1.generarPersonajeAleatorio();
             if (!this.jugador2.getPartidaEmpezada()) this.jugador2.generarPersonajeAleatorio();
 
             this.inputController = new InputController();
-            this.partidaIniciada = true;
+            this.nivelIniciado = true;
 
             this.personaje1 = this.jugador1.getPersonajeElegido();
             this.personaje2 = this.jugador2.getPersonajeElegido();
@@ -126,6 +134,7 @@ public class Partida implements Screen {
             this.indiceNivelActual++;
             if (indiceNivelActual < niveles.length) {
                 this.nivelActual = this.niveles[indiceNivelActual];
+                
                 inicializarNivel();
             }
         }
