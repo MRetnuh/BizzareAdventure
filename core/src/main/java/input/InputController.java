@@ -40,6 +40,10 @@ public class InputController implements InputProcessor {
                 this.izquierda1 = false;
                 this.derecha1 = false;
                 this.atacar1 = false;
+                this.saltar2 = false;
+                this.izquierda2 = false;
+                this.derecha2 = false;
+                this.atacar2 = false;
                 break;
             case (Input.Keys.K):
                 this.atacar1 = true;
@@ -57,6 +61,10 @@ public class InputController implements InputProcessor {
                 this.atacar2 = true;
                 break;
             case (Input.Keys.O):
+            	this.saltar1 = false;
+            	this.izquierda1 = false;
+            	this.derecha1 = false;
+            	this.atacar1 = false;
                 this.opciones2 = true;
                 this.saltar2 = false;
                 this.izquierda2 = false;
