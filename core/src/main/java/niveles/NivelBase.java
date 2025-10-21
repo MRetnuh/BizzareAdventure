@@ -114,55 +114,58 @@ public abstract class NivelBase {
                 }
             }
         }
-        
         for (MapObject object : this.mapa.getLayers().get("interactivos").getObjects()) {
-             String clase = object.getProperties().get("type", String.class);
-             if (clase == null || !clase.equals("Tierra")) continue;
+            String clase = object.getProperties().get("type", String.class);
+            if (clase == null || !clase.equals("Tierra")) continue;
 
-             Rectangle rectMapa = null;
+            Rectangle rectMapa = null;
 
-             if (object instanceof RectangleMapObject) {
-                 rectMapa = ((RectangleMapObject) object).getRectangle();
-                 if (!hitbox.overlaps(rectMapa)) continue;
-             } else if (object instanceof PolygonMapObject) {
-                 PolygonMapObject polygonObject = (PolygonMapObject) object;
-                 Polygon polygon = polygonObject.getPolygon();
-                 float x = polygonObject.getProperties().get("x", Float.class);
-                 float y = polygonObject.getProperties().get("y", Float.class);
-                 Polygon poligonoTransformado = new Polygon(polygon.getVertices());
-                 poligonoTransformado.setPosition(x, y);
-                 if (!Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) continue;
-                 rectMapa = poligonoTransformado.getBoundingRectangle();
-             }
+            if (object instanceof RectangleMapObject) {
+                rectMapa = ((RectangleMapObject) object).getRectangle();
+                if (!hitbox.overlaps(rectMapa)) continue;
+            } else if (object instanceof PolygonMapObject) {
+                PolygonMapObject polygonObject = (PolygonMapObject) object;
+                Polygon polygon = polygonObject.getPolygon();
+                float x = polygonObject.getProperties().get("x", Float.class);
+                float y = polygonObject.getProperties().get("y", Float.class);
+                Polygon poligonoTransformado = new Polygon(polygon.getVertices());
+                poligonoTransformado.setPosition(x, y);
+                if (!Intersector.overlapConvexPolygons(hitboxPoligono, poligonoTransformado)) continue;
 
-             TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
-             if (tileLayer != null) {
-                 int startX = (int) (rectMapa.x / tileLayer.getTileWidth());
-                 int endX = (int) ((rectMapa.x + rectMapa.width) / tileLayer.getTileWidth());
-                 int startY = (int) (rectMapa.y / tileLayer.getTileHeight());
-                 int endY = (int) ((rectMapa.y + rectMapa.height) / tileLayer.getTileHeight());
+                rectMapa = poligonoTransformado.getBoundingRectangle();
+            }
 
-                 boolean tieneTile = false;
-                 for (int x = startX; x <= endX; x++) {
-                     for (int y = startY; y <= endY; y++) {
-                         TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
-                         if (cell != null && cell.getTile() != null) {
-                             int tileId = cell.getTile().getId();
-                             if (tileId != this.ID_TILE_TRANSPARENTE) {
-                                 tieneTile = true;
-                                 break;
-                             }
-                         }
-                     }
-                     if (tieneTile) break;
-                 }
+            TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
+            if (tileLayer != null) {
+                int startX = (int) (rectMapa.x / tileLayer.getTileWidth());
+                int endX = (int) ((rectMapa.x + rectMapa.width) / tileLayer.getTileWidth());
+                int startY = (int) (rectMapa.y / tileLayer.getTileHeight());
+                int endY = (int) ((rectMapa.y + rectMapa.height) / tileLayer.getTileHeight());
 
-                 if (!tieneTile) continue;
-             }
-             return true;
-         }
-         return false;
+                boolean tieneTile = false;
+                for (int x = startX; x <= endX; x++) {
+                    for (int y = startY; y <= endY; y++) {
+                        TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+                        if (cell != null && cell.getTile() != null) {
+                            int tileId = cell.getTile().getId();
+                            if (tileId != this.ID_TILE_TRANSPARENTE) {
+                                tieneTile = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (tieneTile) break;
+                }
+
+                if (!tieneTile) continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
+
 
     private Polygon convertirEnPoligono(Rectangle rect) {
         Polygon poly = new Polygon(new float[]{

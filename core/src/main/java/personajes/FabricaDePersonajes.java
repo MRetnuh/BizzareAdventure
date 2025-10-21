@@ -23,15 +23,7 @@ public enum FabricaDePersonajes {
             "imagenes/personajes/akame/ataque/akame_izquierda_atacando_",
             "imagenes/personajes/leone/leone_derecha_(detenida).png",
             "imagenes/personajes/leone/leone_izquierda_(detenida).png", 4, 6
-    ),
-	
-	HORNET("Hornet", 250, "EspadaCorte", 1, TipoAtaque.MELEE, 
-			"imagenes/personajes/hornet/hornet_derecha_moviendose_",
-            "imagenes/personajes/hornet/hornet_izquierda_moviendose_",
-            "imagenes/personajes/akame/ataque/akame_derecha_atacando_",
-            "imagenes/personajes/akame/ataque/akame_izquierda_atacando_",
-            "imagenes/personajes/hornet/hornet_derecha_(detenida).png",
-            "imagenes/personajes/hornet/hornet_izquierda_(detenida).png", 8, 6);
+    );
 
     private final String nombre;
     private final int velocidad;

@@ -229,7 +229,7 @@ public class Partida implements Screen {
                 }
             }
                 else if (personaje.getTipoAtaque().getTipo().equals("Distancia")) {
-                    Iterator<Proyectil> it = personaje.getBalas().iterator(); // 🔹 AHORA usa las balas del personaje
+                    Iterator<Proyectil> it = personaje.getBalas().iterator(); 
                     while (it.hasNext()) {
                         Proyectil b = it.next();
                         if (b.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
@@ -247,7 +247,7 @@ public class Partida implements Screen {
         }
 
 
-        boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, personaje.getWidth(), personaje.getHeight()));
+        boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
         personaje.guardarPosicionAnterior();
         personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa());
 
@@ -279,22 +279,24 @@ public class Partida implements Screen {
         if (nuevaY < -190) personaje.reducirVida();
 
         // Colisiones con nivel
-        Rectangle hitboxX = new Rectangle(personaje.getHitbox());
-        hitboxX.setPosition(nuevaX, personaje.getY());
-        boolean colX = detectarColisionNivel(hitboxX);
+        Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());
+        hitboxTentativaX.setPosition(nuevaX, personaje.getY());
+        boolean colisionX =  this.nivelActual.detectarColision(hitboxTentativaX);
 
-        Rectangle hitboxY = new Rectangle(personaje.getHitbox());
-        hitboxY.setPosition(personaje.getX(), nuevaY);
-        boolean colY = detectarColisionNivel(hitboxY);
+        Rectangle hitboxTentativaY = new Rectangle(personaje.getHitbox());
+        hitboxTentativaY.setPosition(personaje.getX(), nuevaY);
+        boolean colisionY = this.nivelActual.detectarColision(hitboxTentativaY);
 
-        if (colY) {
+        if (colisionY) {
             personaje.frenarCaida();
             personaje.setY(personaje.getPrevY());
         }
 
-        float finalX = !colX ? nuevaX : personaje.getX();
-        float finalY = !colY ? nuevaY : personaje.getY();
-        personaje.aplicarMovimiento(finalX, finalY, delta, nivelActual.getAnchoMapa(), nivelActual.getAlturaMapa());
+        if (!colisionX || !colisionY) {
+            float finalX = !colisionX ? nuevaX : personaje.getX();
+            float finalY = !colisionY ? nuevaY : personaje.getY();
+            personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
+        }
 
         personaje.atacar(delta, this.nivelActual);
 
