@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 
+import jugadores.Jugador;
 import personajes.Enemigo;
 import personajes.Personaje;
 
@@ -91,6 +92,85 @@ public abstract class NivelBase {
         camara.position.set(centroX, centroY, 0);
         camara.update();
     }
+    
+ public boolean destruirCajaEnHitbox(Rectangle hitbox) {
+     TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
+     if (tileLayer == null) return false;
+
+     float tileWidth = tileLayer.getTileWidth(); // 32.0f
+     float tileHeight = tileLayer.getTileHeight(); // 32.0f
+     
+     // Conjunto para rastrear las cajas 2x2 ya procesadas en este ataque.
+     // Almacena la coordenada de origen (ej: "2_4").
+     Set<String> cajasProcesadas = new HashSet<>(); 
+     boolean seDestruyoAlgunaCaja = false;
+
+     // 1. Encontrar el rango de TILES que toca el hitbox (detección)
+     final float EPSILON = 0.0001f; 
+     int startX = (int) Math.floor(hitbox.x / tileWidth);
+     int startY = (int) Math.floor(hitbox.y / tileHeight);
+     int endX = (int) Math.floor((hitbox.x + hitbox.width - EPSILON) / tileWidth);
+     int endY = (int) Math.floor((hitbox.y + hitbox.height - EPSILON) / tileHeight);
+
+     // Bucle de detección
+     for (int mapX = startX; mapX <= endX; mapX++) {
+         for (int mapY = startY; mapY <= endY; mapY++) {
+             TiledMapTileLayer.Cell cell = tileLayer.getCell(mapX, mapY);
+
+             if (cell != null && cell.getTile() != null && cell.getTile().getId() != this.ID_TILE_TRANSPARENTE) {
+                 
+                 // 2. Colisión detectada con un tile destructible.
+                 
+                 // Determinar la esquina inferior izquierda (origen) de la caja 2x2.
+                 int origenX = (mapX / 2) * 2;
+                 int origenY = (mapY / 2) * 2;
+                 String keyOrigen = origenX + "_" + origenY;
+
+                 // 3. Verificar si esta caja ya fue procesada en este ataque.
+                 if (!cajasProcesadas.contains(keyOrigen)) {
+                     
+                     // Marcar como procesada inmediatamente.
+                     cajasProcesadas.add(keyOrigen); 
+                     
+                     // 4. Intentar destruir la matriz completa de 2x2 tiles.
+                     boolean destruccionExitosa = destruirMatrizCaja(tileLayer, origenX, origenY);
+
+                     if (destruccionExitosa) {
+                         seDestruyoAlgunaCaja = true;
+                         // NO HACER 'return true;' AQUÍ. Continuar el bucle para permitir que 
+                         // un ataque grande que toca dos cajas 2x2 distintas funcione correctamente.
+                         // Solo devolvemos true al final si algo se destruyó.
+                     }
+                 }
+             }
+         }
+     }
+     // Retornamos si AL MENOS una caja fue destruida. Esto cuenta como un solo evento de ataque exitoso
+     // para la lógica de juego (resurrección/cambio de personaje) en Partida.
+     return seDestruyoAlgunaCaja;
+ }
+
+ // La función destruirMatrizCaja sigue siendo la misma:
+ private boolean destruirMatrizCaja(TiledMapTileLayer tileLayer, int origenX, int origenY) {
+     boolean destruida = false;
+     for (int dx = 0; dx < 2; dx++) {
+         for (int dy = 0; dy < 2; dy++) {
+             int tileX = origenX + dx;
+             int tileY = origenY + dy;
+
+             if (tileX < tileLayer.getWidth() && tileY < tileLayer.getHeight()) {
+                 TiledMapTileLayer.Cell cell = tileLayer.getCell(tileX, tileY);
+                 if (cell != null && cell.getTile() != null && cell.getTile().getId() != this.ID_TILE_TRANSPARENTE) {
+                     
+                     this.cajasDestruidas.add(tileX + "_" + tileY);
+                     cell.setTile(this.mapa.getTileSets().getTile(this.ID_TILE_TRANSPARENTE));
+                     destruida = true;
+                 }
+             }
+         }
+     }
+     return destruida;
+ }
     
     public boolean detectarColision(Rectangle hitbox) {
         Polygon hitboxPoligono = convertirEnPoligono(hitbox);

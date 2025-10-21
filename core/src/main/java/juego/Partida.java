@@ -6,6 +6,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -53,7 +54,8 @@ public class Partida implements Screen {
     private float nuevaX2, nuevaY2;
     private boolean victoria = false;
     private boolean nivelIniciado  = false;
-
+    public final int ID_TILE_TRANSPARENTE = 0;
+    
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
         this.musicaPartida = musica;
@@ -346,35 +348,44 @@ public class Partida implements Screen {
     }
 
     private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
-        boolean cajaRota = nivelActual.detectarColision(personaje.getHitbox());
-        if (!cajaRota) return;
-
-        if (personaje1.getVida() <= 0 && personaje2.getVida() > 0) {
-            personaje1.setPosicion(personaje2.getX(), personaje2.getY());
-            personaje1.aumentarVida();
-            gameOver1 = false;
-        } else if (personaje2.getVida() <= 0 && personaje1.getVida() > 0) {
-            personaje2.setPosicion(personaje1.getX(), personaje1.getY());
-            personaje2.aumentarVida();
-            gameOver2 = false;
-        } else {
-            Personaje nuevo = jugador.cambiarPersonaje(
-                    esJugador1 ? nuevaX1 : nuevaX2,
-                    esJugador1 ? nuevaY1 : nuevaY2
-            );
-            if (esJugador1) {
-                stage.getActors().removeValue(personaje1, true);
-                personaje1 = nuevo;
-                stage.addActor(personaje1);
-            } else {
-                stage.getActors().removeValue(personaje2, true);
-                personaje2 = nuevo;
-                stage.addActor(personaje2);
-            }
+        if (!personaje.getEstaAtacando()) {
+            return;
         }
-        actualizarHUD();
-    }
 
+        boolean cajaRota = this.nivelActual.destruirCajaEnHitbox(personaje.getHitbox()); 
+
+        if (cajaRota) {
+            if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
+                this.personaje1.setPosicion(this.personaje2.getX(), this.personaje2.getY());
+                this.personaje1.aumentarVida();
+                this.gameOver1 = false;
+            } else if (this.personaje2.getVida() <= 0 && this.personaje1.getVida() > 0) {
+                // Resucitar P2 cerca de P1
+                this.personaje2.setPosicion(this.personaje1.getX(), this.personaje1.getY());
+                this.personaje2.aumentarVida();
+                this.gameOver2 = false;
+            } else {
+                // Lógica de cambio de personaje
+                Personaje nuevoPersonaje = jugador.cambiarPersonaje(
+                    esJugador1 ? this.nuevaX1 : this.nuevaX2,
+                    esJugador1 ? this.nuevaY1 : this.nuevaY2
+                );
+                
+                if (esJugador1) {
+                    this.stage.getActors().removeValue(this.personaje1, true);
+                    this.personaje1 = nuevoPersonaje;
+                    this.stage.addActor(this.personaje1);
+                } else {
+                    this.stage.getActors().removeValue(this.personaje2, true);
+                    this.personaje2 = nuevoPersonaje;
+                    this.stage.addActor(this.personaje2);
+                }
+            }
+            
+            // Actualizar la interfaz de usuario
+            actualizarHUD();
+        }
+    }
     public void abrirOpciones() {
         this.juego.setScreen(new Opciones(this.juego, this, this.musicaPartida));
     }
