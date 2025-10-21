@@ -21,9 +21,10 @@ public class Nivel1 extends NivelBase {
     public void crearEnemigos() {
         this.enemigos.clear(); 
 
-        String[] idsEnemigos = {"enemigo1"};
+        String[] idsEnemigos = {"enemigo1", "enemigo2"};
         float[][] posiciones = {
-            {600, 200}};
+        		  {600, 928},
+                  {800, 928}};
 
         for (int i = 0; i < idsEnemigos.length; i++) {
             String id = idsEnemigos[i];

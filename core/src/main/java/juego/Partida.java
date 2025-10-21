@@ -194,9 +194,6 @@ public class Partida implements Screen {
         }
     }
 
-    // ----------------------
-    // Método actualizarPersonaje (seguro)
-    // ----------------------
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
         if (personaje.getVida() <= 0) {
             if ((esJugador1 && !gameOver1) || (!esJugador1 && !gameOver2)) {
@@ -210,7 +207,6 @@ public class Partida implements Screen {
             return;
         }
 
-        // Gravedad
         boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, personaje.getWidth(), personaje.getHeight()));
         personaje.guardarPosicionAnterior();
         personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa());
@@ -278,10 +274,7 @@ public class Partida implements Screen {
 
         detectarYEliminarTile(personaje, jugador, esJugador1);
     }
-
-    // ----------------------
-    // HUD y auxiliares
-    // ----------------------
+    
     private void inicializarHUD() {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
         this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));

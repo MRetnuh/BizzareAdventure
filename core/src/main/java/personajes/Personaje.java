@@ -124,65 +124,34 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        // Seleccionar frame con guardas y logs
-        try {
-            if (this.estaAtacando) {
-                if (this.animAtaqueDerecha == null || this.animAtaqueIzquierda == null) {
-                    Gdx.app.error("DEBUG_DRAW", "animAtaqueDerecha/Izquierda NULL al iniciar ataque!");
-                } else {
-                    frame = this.mirandoDerecha
-                            ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
-                            : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
-                }
-            } else if (this.estaMoviendose) {
-                if (this.animDerecha == null || this.animIzquierda == null) {
-                    Gdx.app.error("DEBUG_DRAW", "animDerecha/Izquierda NULL al moverse!");
-                } else {
-                    frame = this.mirandoDerecha
-                            ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
-                            : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
-                }
-            } else {
-                frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
-            }
-        } catch (Exception e) {
-            Gdx.app.error("DEBUG_DRAW", "Excepción al obtener keyFrame: ", e);
+        // 🔹 Elegir frame según el estado
+        if (this.estaAtacando) {
+            frame = this.mirandoDerecha
+                    ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
+                    : this.animAtaqueIzquierda.getKeyFrame(this.tiempoAtaque, false);
+        } else if (this.estaMoviendose) {
+            frame = this.mirandoDerecha
+                    ? this.animDerecha.getKeyFrame(this.estadoTiempo, true)
+                    : this.animIzquierda.getKeyFrame(this.estadoTiempo, true);
+        } else {
             frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
-        if (frame == null) {
-            Gdx.app.error("DEBUG_DRAW", "Frame es NULL justo antes de dibujar. Uso frame de backup.");
-            frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
-        }
+        // 🔹 Dibujar al personaje
+        batch.draw(frame, getX(), getY());
 
-        // Antes de dibujar, comprobá si la textura asociada está disponible
-        try {
-            batch.draw(frame, getX(), getY());
-        } catch (Throwable t) {
-            // Capturamos cualquier excepción nativa que se propague como Error/Throwable
-            Gdx.app.error("DEBUG_DRAW", "Error al dibujar frame (posible textura disposed o corrupta).", t);
-            // Evitamos crash nativo siguiente quitando el draw
-        }
-
-        // dibujar proyectiles (siempre con defensas)
+        // 🔹 Dibujar las balas SIEMPRE
         for (Proyectil p : balas) {
-            if (p.isActivo()) {
-                try {
-                    p.draw(batch, parentAlpha);
-                } catch (Throwable t) {
-                    Gdx.app.error("DEBUG_DRAW", "Error al dibujar proyectil", t);
-                    // removemos o desactivamos para evitar repetir crash
-                    p.desactivar();
-                }
-            }
+            if (p.isActivo())
+                p.draw(batch, parentAlpha);
         }
     }
-
 
     @Override
     public void act(float delta) {
         super.act(delta);
 
+        // 🔹 Actualizar balas
         Iterator<Proyectil> it = balas.iterator();
         while (it.hasNext()) {
             Proyectil p = it.next();
@@ -190,6 +159,7 @@ public abstract class Personaje extends Actor {
             if (!p.isActivo()) it.remove();
         }
 
+        // 🔹 Controlar animaciones de ataque o movimiento
         if (this.estaAtacando) {
             this.tiempoAtaque += delta;
 
@@ -202,6 +172,8 @@ public abstract class Personaje extends Actor {
             this.estadoTiempo += delta;
         }
     }
+
+
 
 
     public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
