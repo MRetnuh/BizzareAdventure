@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 import audios.EfectoSonido;
 import proyectiles.Proyectil;
-import juego.Partida;
+import niveles.NivelBase;
 
 public class Enemigo extends Personaje {
 
@@ -51,7 +51,7 @@ public class Enemigo extends Personaje {
                 "imagenes/personajes/enemigo/enemigo_quieto_izquierda.png")));
     }
 
-    public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, Partida partida)
+    public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, NivelBase nivel)
     {
         seleccionarObjetivo(jugador1, jugador2);
 
@@ -68,13 +68,13 @@ public class Enemigo extends Personaje {
             }
         } else {
             this.estaMoviendose = true;
-            patrullar(delta, partida);
+            patrullar(delta, nivel);
         }
 
         Iterator<Proyectil> it = this.balas.iterator();
         while (it.hasNext()) {
             Proyectil b = it.next();
-            b.mover(delta, partida);
+            b.mover(delta, nivel);
             if (!b.isActivo()) it.remove();
         }
     }
@@ -102,7 +102,7 @@ public class Enemigo extends Personaje {
     }
 
     // 🔹 Patrullaje con colisión del mapa
-    private void patrullar(float delta, Partida partida) {
+    private void patrullar(float delta, NivelBase nivel) {
         float nuevaX = super.getX() + (this.moviendoDerecha ? getVelocidad() : -getVelocidad()) * delta;
         Rectangle hitbox = new Rectangle(nuevaX, super.getY(), getWidth(), getHeight());
 

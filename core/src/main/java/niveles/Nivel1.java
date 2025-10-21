@@ -23,11 +23,11 @@ public class Nivel1 extends NivelBase {
 
         String[] idsEnemigos = {"enemigo1"};
         float[][] posiciones = {
-        		  {600, 2000}};
+        		  {600, 928}};
 
         for (int i = 0; i < idsEnemigos.length; i++) {
             String id = idsEnemigos[i];
-            if (!NivelBase.enemigosMuertosGlobal.contains(id)) { 
+            if (!super.enemigosMuertos.contains(id)) { 
                 this.enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
             }
         }

@@ -31,7 +31,7 @@ public abstract class NivelBase {
     public final int ID_TILE_TRANSPARENTE = 0;
     protected List<Enemigo> enemigos = new ArrayList<>();
     public Set<String> cajasDestruidas = new HashSet<>();
-    protected static Set<String> enemigosMuertosGlobal = new HashSet<>(); 
+    protected static Set<String> enemigosMuertos = new HashSet<>(); 
     
     protected float inicioX1, inicioY1;
     protected float inicioX2, inicioY2;
@@ -202,5 +202,9 @@ public abstract class NivelBase {
     }
     public void limpiarEnemigosMuertos() {
         this.enemigos.removeIf(e -> e.getVida() <= 0);
+    }
+    
+    public void agregarEnemigosMuertos(Enemigo enemigo) {
+    	this.enemigosMuertos.add(enemigo.getNombre());
     }
 }

@@ -30,7 +30,7 @@ public class Nivel2 extends NivelBase {
 
         for (int i = 0; i < idsEnemigos.length; i++) {
             String id = idsEnemigos[i];
-            if (!NivelBase.enemigosMuertosGlobal.contains(id)) { 
+            if (!NivelBase.enemigosMuertos.contains(id)) { 
                 this.enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
             }
         }

@@ -66,7 +66,7 @@ public class Partida implements Screen {
         this.nivelActual = this.niveles[this.indiceNivelActual];
     }
 
-    public boolean detectarColisionNivel(Rectangle hitbox) {
+    private boolean detectarColisionNivel(Rectangle hitbox) {
         if (this.nivelActual != null) {
             return this.nivelActual.detectarColision(hitbox);
         }
@@ -156,13 +156,12 @@ public class Partida implements Screen {
         if (!this.gameOver1 || !this.gameOver2) {
             for (Enemigo enemigo : this.nivelActual.getEnemigos()) {
                 if (enemigo.getVida() > 0) {
-                    // Añadir proyectiles de manera segura
                     for (Proyectil b : enemigo.getBalas()) {
                         if (!stage.getActors().contains(b, true)) {
                             stage.addActor(b);
                         }
                     }
-                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this);
+                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this.nivelActual);
                 }
             }
         }
@@ -215,6 +214,38 @@ public class Partida implements Screen {
             }
             return;
         }
+        
+        if (personaje.getEstaAtacando()) {
+            Iterator<Enemigo> iter = this.nivelActual.getEnemigos().iterator();
+            while(iter.hasNext()) {
+                Enemigo e = iter.next();
+                if(personaje.getTipoAtaque().getTipo().equals("Melee")) {
+                if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
+                    e.reducirVida();
+                    e.remove();
+                    if (e.getVida() <= 0) {
+                        this.nivelActual.agregarEnemigosMuertos(e);
+                    }
+                }
+            }
+                else if (personaje.getTipoAtaque().getTipo().equals("Distancia")) {
+                    Iterator<Proyectil> it = personaje.getBalas().iterator(); // 🔹 AHORA usa las balas del personaje
+                    while (it.hasNext()) {
+                        Proyectil b = it.next();
+                        if (b.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
+                            e.reducirVida();
+                            b.desactivar(); 
+                            it.remove();
+                            if (e.getVida() <= 0) {
+                            	this.nivelActual.agregarEnemigosMuertos(e);
+                                e.remove();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, personaje.getWidth(), personaje.getHeight()));
         personaje.guardarPosicionAnterior();
@@ -265,10 +296,8 @@ public class Partida implements Screen {
         float finalY = !colY ? nuevaY : personaje.getY();
         personaje.aplicarMovimiento(finalX, finalY, delta, nivelActual.getAnchoMapa(), nivelActual.getAlturaMapa());
 
-        // Ataques
-        personaje.atacar(delta, this);
+        personaje.atacar(delta, this.nivelActual);
 
-        // Colisiones con proyectiles enemigos
         for (Enemigo e : nivelActual.getEnemigos()) {
             Iterator<Proyectil> it = e.getBalas().iterator();
             while (it.hasNext()) {

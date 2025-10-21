@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 
 import audios.EfectoSonido;
 import juego.Partida;
+import niveles.NivelBase;
 import proyectiles.Proyectil;
 
 import java.util.ArrayList;
@@ -55,9 +56,10 @@ public abstract class Personaje extends Actor {
     protected ArrayList<Proyectil> balas = new ArrayList<>();
     private float tiempoDisparo = 0f;
     private final float cooldownDisparo = 0.5f;
-    private Partida partida;
 	private boolean disparoRealizado = false;
-    
+    private NivelBase nivel;
+	
+	
     public Personaje(String nombre, int velocidad, String nombreAtaque, int vida, TipoAtaque tipoAtaque) {//-> pasale el stage aca
         this.nombre = nombre;
         this.velocidad = velocidad;
@@ -124,7 +126,6 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        // 🔹 Elegir frame según el estado
         if (this.estaAtacando) {
             frame = this.mirandoDerecha
                     ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
@@ -137,10 +138,8 @@ public abstract class Personaje extends Actor {
             frame = this.mirandoDerecha ? this.quietaDerecha : this.quietaIzquierda;
         }
 
-        // 🔹 Dibujar al personaje
         batch.draw(frame, getX(), getY());
 
-        // 🔹 Dibujar las balas SIEMPRE
         for (Proyectil p : balas) {
             if (p.isActivo())
                 p.draw(batch, parentAlpha);
@@ -151,15 +150,13 @@ public abstract class Personaje extends Actor {
     public void act(float delta) {
         super.act(delta);
 
-        // 🔹 Actualizar balas
         Iterator<Proyectil> it = balas.iterator();
         while (it.hasNext()) {
             Proyectil p = it.next();
-            p.mover(delta, partida);
+            p.mover(delta, nivel);
             if (!p.isActivo()) it.remove();
         }
 
-        // 🔹 Controlar animaciones de ataque o movimiento
         if (this.estaAtacando) {
             this.tiempoAtaque += delta;
 
@@ -186,7 +183,7 @@ public abstract class Personaje extends Actor {
     }
 
 
-    public void atacar(float delta, Partida partida) {
+    public void atacar(float delta, NivelBase nivel) {
         if (this.tipoAtaque.getTipo().equals("Melee")) {
             if (this.estaAtacando) {
                 this.tiempoAtaque += delta;
@@ -213,14 +210,14 @@ public abstract class Personaje extends Actor {
                     (!this.mirandoDerecha && this.animAtaqueIzquierda.isAnimationFinished(this.tiempoAtaque))) {
                     this.estaAtacando = false;
                     this.tiempoAtaque = 0f;
-                    disparoRealizado = false; // 🔹 Rehabilitamos el siguiente disparo
+                    disparoRealizado = false;
                 }
             }
 
             Iterator<Proyectil> it = this.balas.iterator();
             while (it.hasNext()) {
                 Proyectil b = it.next();
-                b.mover(delta, partida);
+                b.mover(delta, nivel);
                 if (!b.isActivo()) it.remove();
             }
         }
@@ -230,11 +227,6 @@ public abstract class Personaje extends Actor {
 
     public void iniciarAtaque(float volumen) {
         if (!this.estaAtacando) {
-            // log con estado de animaciones y regiones antes de atacar
-            Gdx.app.log("DEBUG_ATQ", "Iniciando ataque. animAtaqueDerecha=" + (animAtaqueDerecha != null)
-                    + " animAtaqueIzquierda=" + (animAtaqueIzquierda != null)
-                    + " quietaDerecha=" + (quietaDerecha != null)
-                    + " quietaIzquierda=" + (quietaIzquierda != null));
             this.estaAtacando = true;
             this.tiempoAtaque  = 0f;
             EfectoSonido.reproducir(this.nombreAtaque, volumen);

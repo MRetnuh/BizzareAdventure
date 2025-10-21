@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import juego.Partida;
+import niveles.NivelBase;
 
 public class Proyectil extends Actor {
     private float velocidad;
@@ -20,35 +21,13 @@ public class Proyectil extends Actor {
     public Proyectil(float inicialX, float inicialY, boolean haciaDerecha, String ruta) {
         super.setX(inicialX);
         super.setY(inicialY);
+
         this.setWidth(this.WIDTH);
         this.setHeight(this.HEIGHT);
+
         this.haciaDerecha = haciaDerecha;
         this.velocidad = 400;
-
-        try {
-            FileHandle archivo = Gdx.files.internal(ruta);
-
-            if (!archivo.exists()) {
-                Gdx.app.error("DEBUG_PROY", "Archivo no encontrado: " + ruta + " -> usando textura roja por defecto");
-                this.textura = crearTexturaError();
-            } else {
-                Gdx.app.log("DEBUG_PROY", "Cargando textura: " + ruta);
-                this.textura = new Texture(archivo);
-                Gdx.app.log("DEBUG_PROY", "Textura cargada OK: " + ruta);
-            }
-        } catch (Exception e) {
-            Gdx.app.error("DEBUG_PROY", "Error cargando textura: " + ruta + " -> usando textura de error", e);
-            this.textura = crearTexturaError();
-        }
-    }
-
-    private Texture crearTexturaError() {
-        Pixmap pixmap = new Pixmap(WIDTH, HEIGHT, Pixmap.Format.RGBA8888);
-        pixmap.setColor(1, 0, 0, 1); // Rojo intenso
-        pixmap.fill();
-        Texture tex = new Texture(pixmap);
-        pixmap.dispose();
-        return tex;
+        this.textura = new Texture(Gdx.files.internal(ruta));
     }
 
     @Override
@@ -65,10 +44,8 @@ public class Proyectil extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (this.activa && this.textura != null) {
+        if (this.activa) {
             batch.draw(this.textura, super.getX(), super.getY(), super.getWidth(), super.getHeight());
-        } else if (this.textura == null) {
-            Gdx.app.error("DEBUG_PROY", "Intento de dibujar proyectil con textura nula");
         }
     }
 
@@ -81,7 +58,7 @@ public class Proyectil extends Actor {
         this.remove();
     }
 
-    public void mover(float delta, Partida partida) {
+    public void mover(float delta, NivelBase nivel) {
         if (!activa) return;
     }
 
