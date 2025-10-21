@@ -351,8 +351,18 @@ public class Partida implements Screen {
         if (!personaje.getEstaAtacando()) {
             return;
         }
+        Rectangle hitboxOriginal = personaje.getHitbox(); 
 
-        boolean cajaRota = this.nivelActual.destruirCajaEnHitbox(personaje.getHitbox()); 
+        final float ALTURA_REDUCIDA = 10.0f;
+        
+        Rectangle hitboxReducida = new Rectangle(
+            hitboxOriginal.x, 
+            hitboxOriginal.y + (hitboxOriginal.height - ALTURA_REDUCIDA), 
+            hitboxOriginal.width, 
+            ALTURA_REDUCIDA
+        );
+        
+        boolean cajaRota = this.nivelActual.destruirCajaEnHitbox(hitboxReducida);
 
         if (cajaRota) {
             if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
@@ -365,7 +375,6 @@ public class Partida implements Screen {
                 this.personaje2.aumentarVida();
                 this.gameOver2 = false;
             } else {
-                // Lógica de cambio de personaje
                 Personaje nuevoPersonaje = jugador.cambiarPersonaje(
                     esJugador1 ? this.nuevaX1 : this.nuevaX2,
                     esJugador1 ? this.nuevaY1 : this.nuevaY2
