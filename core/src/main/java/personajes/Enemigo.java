@@ -106,6 +106,11 @@ public class Enemigo extends Personaje {
         float nuevaX = super.getX() + (this.moviendoDerecha ? getVelocidad() : -getVelocidad()) * delta;
         Rectangle hitbox = new Rectangle(nuevaX, super.getY(), getWidth(), getHeight());
 
+        if (!nivel.detectarColision(hitbox)) {
+            super.aplicarMovimiento(nuevaX, super.getY(), delta, 10000, 1000);
+        } else {
+            this.moviendoDerecha = !this.moviendoDerecha; // Cambia de dirección si choca
+        }
 
         if (super.getX() > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;
         if (super.getX() < this.puntoInicialX - this.rangoMovimiento) this.moviendoDerecha = true;
