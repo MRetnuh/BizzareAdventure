@@ -1,4 +1,4 @@
-package juego;
+package pantallas;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
@@ -22,6 +22,7 @@ import estilos.EstiloTexto;
 
 
 import io.github.some.Principal;
+import juego.Partida;
 
 public class Menu implements Screen {
 	private Musica musicaMenu;

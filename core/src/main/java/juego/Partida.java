@@ -22,6 +22,7 @@ import jugadores.Jugador;
 import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
+import pantallas.Opciones;
 import personajes.Enemigo;
 import personajes.Personaje;
 import proyectiles.Proyectil;
@@ -368,7 +369,6 @@ public class Partida implements Screen {
                 this.personaje1.aumentarVida();
                 this.gameOver1 = false;
             } else if (this.personaje2.getVida() <= 0 && this.personaje1.getVida() > 0) {
-                // Resucitar P2 cerca de P1
                 this.personaje2.setPosicion(this.personaje1.getX(), this.personaje1.getY());
                 this.personaje2.aumentarVida();
                 this.gameOver2 = false;

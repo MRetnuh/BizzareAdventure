@@ -1,4 +1,4 @@
-package juego;
+package pantallas;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
@@ -15,14 +15,14 @@ import audios.Musica;
 import estilos.EstiloTexto;
 import io.github.some.Principal;
 
-public class Configuracion implements Screen {
+public class ConfiguracionVolumen implements Screen {
 	private Screen screenAnterior;
     private final Game JUEGO;
     private Stage stage;
     private Skin skin;
     private Musica musicaConfig;
     
-    public Configuracion(Game juego, Screen screenAnterior, Musica musica) {
+    public ConfiguracionVolumen(Game juego, Screen screenAnterior, Musica musica) {
     	this.screenAnterior = screenAnterior;
         this.JUEGO = juego;
         this.musicaConfig = musica;

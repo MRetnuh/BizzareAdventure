@@ -3,7 +3,7 @@ package io.github.some;
 import com.badlogic.gdx.Game;
 
 import audios.Musica;
-import juego.Menu;
+import pantallas.Menu;
 
 public class Principal extends Game {
 

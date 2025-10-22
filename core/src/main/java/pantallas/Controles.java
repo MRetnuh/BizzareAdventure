@@ -1,4 +1,4 @@
-package juego;
+package pantallas;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;

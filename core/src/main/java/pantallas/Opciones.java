@@ -1,4 +1,4 @@
-package juego;
+package pantallas;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
@@ -17,8 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import juego.Controles;
 
 import audios.Musica;
 import estilos.EstiloTexto;
@@ -54,7 +52,7 @@ public class Opciones implements Screen {
         sonidoBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Configuracion(JUEGO, screenAnterior, musicaOpciones));
+                JUEGO.setScreen(new ConfiguracionVolumen(JUEGO, screenAnterior, musicaOpciones));
             }
         });
         
