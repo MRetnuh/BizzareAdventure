@@ -72,7 +72,7 @@ public class Enemigo extends Personaje {
         Iterator<Proyectil> it = this.balas.iterator();
         while (it.hasNext()) {
             Proyectil b = it.next();
-            b.mover(delta, nivel);
+            b.mover(delta, nivel, this);
             if (!b.isActivo()) it.remove();
         }
     }

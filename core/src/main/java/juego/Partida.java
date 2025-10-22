@@ -181,7 +181,7 @@ public class Partida implements Screen {
             personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
             personaje1.setEstaSaltando(this.inputController.getSaltar1());
             if (this.inputController.getAtacar1()) {
-                personaje1.iniciarAtaque(this.musicaPartida.getVolumen());
+                personaje1.iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
                 this.inputController.setAtacarFalso1();
             }
             if (this.inputController.getOpciones1()) {
@@ -195,7 +195,7 @@ public class Partida implements Screen {
             personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
             personaje2.setEstaSaltando(this.inputController.getSaltar2());
             if (this.inputController.getAtacar2()) {
-                personaje2.iniciarAtaque(this.musicaPartida.getVolumen());
+                personaje2.iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
                 this.inputController.setAtacarFalso2();
             }
             if (this.inputController.getOpciones2()) {
@@ -238,7 +238,6 @@ public class Partida implements Screen {
                         if (b.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                             e.reducirVida();
                             b.desactivar(); 
-                            it.remove();
                             if (e.getVida() <= 0) {
                             	this.nivelActual.agregarEnemigosMuertos(e);
                                 e.remove();
@@ -300,21 +299,20 @@ public class Partida implements Screen {
             personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
         }
 
-        personaje.atacar(delta, this.nivelActual);
+        personaje.atacar(delta);
 
         for (Enemigo e : nivelActual.getEnemigos()) {
             Iterator<Proyectil> it = e.getBalas().iterator();
             while (it.hasNext()) {
                 Proyectil b = it.next();
                 if (b.getHitbox().overlaps(personaje.getHitbox())) {
-                		if(personaje.getEstaAtacando()) {
+                		if(personaje.getEstaAtacando() && personaje.getTipoAtaque().getTipo().equals("Melee")) {
                 			EfectoSonido.reproducir("parry", this.musicaPartida.getVolumen());
                 			b.desactivar();
                 		}
                 		else {
                     personaje.reducirVida();
                     b.desactivar();
-                    it.remove();
                 		}
                 }
             }

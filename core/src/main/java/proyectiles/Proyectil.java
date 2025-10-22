@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import juego.Partida;
 import niveles.NivelBase;
+import personajes.Personaje;
 
 public class Proyectil extends Actor {
     private float velocidad;
@@ -56,11 +57,11 @@ public class Proyectil extends Actor {
         this.remove();
     }
 
-    public void mover(float delta, NivelBase nivel) {
+    public void mover(float delta, NivelBase nivel, Personaje personaje) {
         if (!activa) return;
 
-        act(delta); // usa tu propio movimiento
-        if (nivel != null && nivel.detectarColision(getHitbox()) || getX() >= 2000) {
+        act(delta); 
+        if (nivel != null && nivel.detectarColision(getHitbox()) || getX() >= personaje.getX() + 600 || getX() <= personaje.getX() - 600) {
             desactivar();
         }
     }

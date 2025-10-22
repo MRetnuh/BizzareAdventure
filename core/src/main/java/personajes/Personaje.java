@@ -153,7 +153,7 @@ public abstract class Personaje extends Actor {
         Iterator<Proyectil> it = balas.iterator();
         while (it.hasNext()) {
             Proyectil p = it.next();
-            p.mover(delta, nivel);
+            p.mover(delta, nivel, this);
             if (!p.isActivo()) it.remove();
         }
 
@@ -183,7 +183,7 @@ public abstract class Personaje extends Actor {
     }
 
 
-    public void atacar(float delta, NivelBase nivel) {
+    public void atacar(float delta) {
         if (this.tipoAtaque.getTipo().equals("Melee")) {
             if (this.estaAtacando) {
                 this.tiempoAtaque += delta;
@@ -194,16 +194,6 @@ public abstract class Personaje extends Actor {
             }
         } 
         else { 
-            if (this.estaAtacando && !disparoRealizado) {
-                String ruta = mirandoDerecha
-                    ? "imagenes/personajes/enemigo/ataque/Bala_Derecha.png"
-                    : "imagenes/personajes/enemigo/ataque/Bala_Izquierda.png";
-
-                Proyectil nuevaBala = new Proyectil(getX(), getY() + 16, this.mirandoDerecha, ruta);
-                this.balas.add(nuevaBala);
-
-                disparoRealizado = true;
-            }
             if (this.estaAtacando) {
                 this.tiempoAtaque += delta;
                 if ((this.mirandoDerecha && this.animAtaqueDerecha.isAnimationFinished(this.tiempoAtaque)) ||
@@ -213,23 +203,36 @@ public abstract class Personaje extends Actor {
                     disparoRealizado = false;
                 }
             }
-
-            Iterator<Proyectil> it = this.balas.iterator();
-            while (it.hasNext()) {
-                Proyectil b = it.next();
-                b.mover(delta, nivel);
-                if (!b.isActivo()) it.remove();
-            }
+            
+           
+            
         }
     }
 
 
 
-    public void iniciarAtaque(float volumen) {
+    public void iniciarAtaque(float volumen, float delta, NivelBase nivel) {
+    	this.nivel = nivel;
         if (!this.estaAtacando) {
             this.estaAtacando = true;
-            this.tiempoAtaque  = 0f;
+            this.tiempoAtaque = 0f;
+
+            if (this.tipoAtaque.getTipo().equals("Distancia")) {
+            	this.tiempoAtaque += 0.5;
+                String ruta = mirandoDerecha
+                    ? "imagenes/personajes/enemigo/ataque/Bala_Derecha.png" 
+                    : "imagenes/personajes/enemigo/ataque/Bala_Izquierda.png"; 
+                
+                Proyectil nuevaBala = new Proyectil(getX(), getY() + 16, this.mirandoDerecha, ruta);
+                this.balas.add(nuevaBala);
+            }
             EfectoSonido.reproducir(this.nombreAtaque, volumen);
+            Iterator<Proyectil> it = this.balas.iterator();
+            while (it.hasNext()) {
+                Proyectil b = it.next();
+                b.mover(delta, nivel, this);
+                if (!b.isActivo()) it.remove();
+            }
         }
     }
 
