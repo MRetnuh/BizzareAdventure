@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import audios.EfectoSonido;
 import audios.Musica;
 import estilos.EstiloTexto;
 import input.InputController;
@@ -306,9 +307,15 @@ public class Partida implements Screen {
             while (it.hasNext()) {
                 Proyectil b = it.next();
                 if (b.getHitbox().overlaps(personaje.getHitbox())) {
+                		if(personaje.getEstaAtacando()) {
+                			EfectoSonido.reproducir("parry", this.musicaPartida.getVolumen());
+                			b.desactivar();
+                		}
+                		else {
                     personaje.reducirVida();
                     b.desactivar();
                     it.remove();
+                		}
                 }
             }
         }

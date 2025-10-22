@@ -63,46 +63,33 @@ public abstract class NivelBase {
         boolean vivo1 = p1.getVida() > 0;
         boolean vivo2 = p2.getVida() > 0;
 
-        if (vivo1 || vivo2) {
-            if (vivo1 && vivo2) {
-                centroX = (p1.getX() + p2.getX()) / 2f + p1.getWidth() / 2f;
-                centroY = (p1.getY() + p2.getY()) / 2f + p1.getHeight() / 2f;
-            } else if (vivo1) {
-                centroX = p1.getX() + p1.getWidth() / 2f;
-                centroY = p1.getY() + p1.getHeight() / 2f;
-            } else {
-                centroX = p2.getX() + p2.getWidth() / 2f;
-                centroY = p2.getY() + p2.getHeight() / 2f;
-            }
+        if (vivo1 && vivo2) {
+            centroX = (p1.getX() + p2.getX()) / 2f + p1.getWidth() / 2f;
+            centroY = (p1.getY() + p2.getY()) / 2f + p1.getHeight() / 2f;
+        } else if (vivo1) {
+            centroX = p1.getX() + p1.getWidth() / 2f;
+            centroY = p1.getY() + p1.getHeight() / 2f;
+        } else if (vivo2) {
+            centroX = p2.getX() + p2.getWidth() / 2f;
+            centroY = p2.getY() + p2.getHeight() / 2f;
         } else {
             return;
         }
 
-
         float halfWidth = camara.viewportWidth / 2f;
         float halfHeight = camara.viewportHeight / 2f;
 
-        float targetX = MathUtils.clamp(centroX, halfWidth, this.anchoMapa - halfWidth);
-        float targetY = MathUtils.clamp(centroY, halfHeight, this.alturaMapa - halfHeight);
+        centroX = MathUtils.clamp(centroX, halfWidth, this.anchoMapa - halfWidth);
+        centroY = MathUtils.clamp(centroY, halfHeight, this.alturaMapa - halfHeight);
 
         if (this.anchoMapa < camara.viewportWidth) {
-            targetX = this.anchoMapa / 2f;
+            centroX = this.anchoMapa / 2f;
         }
         if (this.alturaMapa < camara.viewportHeight) {
-            targetY = this.alturaMapa / 2f;
+            centroY = this.alturaMapa / 2f;
         }
 
-        final float LERP_FACTOR = 0.1f;
-
-        float newX = MathUtils.lerp(camara.position.x, targetX, LERP_FACTOR);
-
-        float newY = MathUtils.lerp(camara.position.y, targetY, LERP_FACTOR);
-
-        camara.position.set(newX, newY, 0);
-
-        camara.position.x = Math.round(camara.position.x);
-        camara.position.y = Math.round(camara.position.y);
-
+        camara.position.set(centroX, centroY, 0);
         camara.update();
     }
     
