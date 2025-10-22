@@ -54,7 +54,6 @@ public class Partida implements Screen {
     private float nuevaX2, nuevaY2;
     private boolean victoria = false;
     private boolean nivelIniciado  = false;
-    public final int ID_TILE_TRANSPARENTE = 0;
     
     public Partida(Game juego, Musica musica) {
         this.juego = juego;
@@ -280,7 +279,6 @@ public class Partida implements Screen {
 
         if (nuevaY < -190) personaje.reducirVida();
 
-        // Colisiones con nivel
         Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());
         hitboxTentativaX.setPosition(nuevaX, personaje.getY());
         boolean colisionX =  this.nivelActual.detectarColision(hitboxTentativaX);
@@ -390,8 +388,6 @@ public class Partida implements Screen {
                     this.stage.addActor(this.personaje2);
                 }
             }
-            
-            // Actualizar la interfaz de usuario
             actualizarHUD();
         }
     }

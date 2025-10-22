@@ -101,7 +101,6 @@ public class Enemigo extends Personaje {
             return distanciaX < 0 && Math.abs(distanciaX) <= this.rangoVision;
     }
 
-    // 🔹 Patrullaje con colisión del mapa
     private void patrullar(float delta, NivelBase nivel) {
         float nuevaX = super.getX() + (this.moviendoDerecha ? getVelocidad() : -getVelocidad()) * delta;
         Rectangle hitbox = new Rectangle(nuevaX, super.getY(), getWidth(), getHeight());
@@ -109,14 +108,13 @@ public class Enemigo extends Personaje {
         if (!nivel.detectarColision(hitbox)) {
             super.aplicarMovimiento(nuevaX, super.getY(), delta, 10000, 1000);
         } else {
-            this.moviendoDerecha = !this.moviendoDerecha; // Cambia de dirección si choca
+            this.moviendoDerecha = !this.moviendoDerecha;
         }
 
         if (super.getX() > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;
         if (super.getX() < this.puntoInicialX - this.rangoMovimiento) this.moviendoDerecha = true;
     }
 
-    // 🔹 Disparo hacia el jugador
     private void dispararHaciaObjetivo(float volumen) {
         if (this.objetivoActual == null) return;
 

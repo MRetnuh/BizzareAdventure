@@ -63,41 +63,45 @@ public abstract class NivelBase {
         boolean vivo1 = p1.getVida() > 0;
         boolean vivo2 = p2.getVida() > 0;
 
-        if (vivo1 && vivo2) {
-            centroX = (p1.getX() + p2.getX()) / 2f + p1.getWidth() / 2f;
-            centroY = (p1.getY() + p2.getY()) / 2f + p1.getHeight() / 2f;
-        } else if (vivo1) {
-            centroX = p1.getX() + p1.getWidth() / 2f;
-            centroY = p1.getY() + p1.getHeight() / 2f;
-        } else if (vivo2) {
-            centroX = p2.getX() + p2.getWidth() / 2f;
-            centroY = p2.getY() + p2.getHeight() / 2f;
+        if (vivo1 || vivo2) {
+            if (vivo1 && vivo2) {
+                centroX = (p1.getX() + p2.getX()) / 2f + p1.getWidth() / 2f;
+                centroY = (p1.getY() + p2.getY()) / 2f + p1.getHeight() / 2f;
+            } else if (vivo1) {
+                centroX = p1.getX() + p1.getWidth() / 2f;
+                centroY = p1.getY() + p1.getHeight() / 2f;
+            } else {
+                centroX = p2.getX() + p2.getWidth() / 2f;
+                centroY = p2.getY() + p2.getHeight() / 2f;
+            }
         } else {
             return;
         }
 
+
         float halfWidth = camara.viewportWidth / 2f;
         float halfHeight = camara.viewportHeight / 2f;
 
-        centroX = MathUtils.clamp(centroX, halfWidth, this.anchoMapa - halfWidth);
-        centroY = MathUtils.clamp(centroY, halfHeight, this.alturaMapa - halfHeight);
+        float targetX = MathUtils.clamp(centroX, halfWidth, this.anchoMapa - halfWidth);
+        float targetY = MathUtils.clamp(centroY, halfHeight, this.alturaMapa - halfHeight);
 
         if (this.anchoMapa < camara.viewportWidth) {
-            centroX = this.anchoMapa / 2f;
+            targetX = this.anchoMapa / 2f;
         }
         if (this.alturaMapa < camara.viewportHeight) {
-            centroY = this.alturaMapa / 2f;
+            targetY = this.alturaMapa / 2f;
         }
 
-        // Establecer posición central antes del redondeo
-        camara.position.set(centroX, centroY, 0);
+        final float LERP_FACTOR = 0.1f;
 
-        // --- INICIO DE LA CORRECCIÓN PIXEL-PERFECT ---
-        // Redondeamos la posición a píxeles enteros para evitar el escalado sub-píxel
-        // que causa la borrosidad en los sprites de pixel art.
+        float newX = MathUtils.lerp(camara.position.x, targetX, LERP_FACTOR);
+
+        float newY = MathUtils.lerp(camara.position.y, targetY, LERP_FACTOR);
+
+        camara.position.set(newX, newY, 0);
+
         camara.position.x = Math.round(camara.position.x);
         camara.position.y = Math.round(camara.position.y);
-        // --- FIN DE LA CORRECCIÓN PIXEL-PERFECT ---
 
         camara.update();
     }
@@ -106,60 +110,44 @@ public abstract class NivelBase {
      TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
      if (tileLayer == null) return false;
 
-     float tileWidth = tileLayer.getTileWidth(); // 32.0f
-     float tileHeight = tileLayer.getTileHeight(); // 32.0f
-     
-     // Conjunto para rastrear las cajas 2x2 ya procesadas en este ataque.
-     // Almacena la coordenada de origen (ej: "2_4").
+     float tileWidth = tileLayer.getTileWidth();
+     float tileHeight = tileLayer.getTileHeight();
+
      Set<String> cajasProcesadas = new HashSet<>(); 
      boolean seDestruyoAlgunaCaja = false;
 
-     // 1. Encontrar el rango de TILES que toca el hitbox (detección)
      final float EPSILON = 0.0001f; 
      int startX = (int) Math.floor(hitbox.x / tileWidth);
      int startY = (int) Math.floor(hitbox.y / tileHeight);
      int endX = (int) Math.floor((hitbox.x + hitbox.width - EPSILON) / tileWidth);
      int endY = (int) Math.floor((hitbox.y + hitbox.height - EPSILON) / tileHeight);
 
-     // Bucle de detección
      for (int mapX = startX; mapX <= endX; mapX++) {
          for (int mapY = startY; mapY <= endY; mapY++) {
              TiledMapTileLayer.Cell cell = tileLayer.getCell(mapX, mapY);
 
              if (cell != null && cell.getTile() != null && cell.getTile().getId() != this.ID_TILE_TRANSPARENTE) {
-                 
-                 // 2. Colisión detectada con un tile destructible.
-                 
-                 // Determinar la esquina inferior izquierda (origen) de la caja 2x2.
+
                  int origenX = (mapX / 2) * 2;
                  int origenY = (mapY / 2) * 2;
                  String keyOrigen = origenX + "_" + origenY;
 
-                 // 3. Verificar si esta caja ya fue procesada en este ataque.
                  if (!cajasProcesadas.contains(keyOrigen)) {
-                     
-                     // Marcar como procesada inmediatamente.
+
                      cajasProcesadas.add(keyOrigen); 
-                     
-                     // 4. Intentar destruir la matriz completa de 2x2 tiles.
+
                      boolean destruccionExitosa = destruirMatrizCaja(tileLayer, origenX, origenY);
 
                      if (destruccionExitosa) {
                          seDestruyoAlgunaCaja = true;
-                         // NO HACER 'return true;' AQUÍ. Continuar el bucle para permitir que 
-                         // un ataque grande que toca dos cajas 2x2 distintas funcione correctamente.
-                         // Solo devolvemos true al final si algo se destruyó.
                      }
                  }
              }
          }
      }
-     // Retornamos si AL MENOS una caja fue destruida. Esto cuenta como un solo evento de ataque exitoso
-     // para la lógica de juego (resurrección/cambio de personaje) en Partida.
      return seDestruyoAlgunaCaja;
  }
 
- // La función destruirMatrizCaja sigue siendo la misma:
  private boolean destruirMatrizCaja(TiledMapTileLayer tileLayer, int origenX, int origenY) {
      boolean destruida = false;
      for (int dx = 0; dx < 2; dx++) {
