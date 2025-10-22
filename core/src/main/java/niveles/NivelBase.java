@@ -89,7 +89,16 @@ public abstract class NivelBase {
             centroY = this.alturaMapa / 2f;
         }
 
+        // Establecer posición central antes del redondeo
         camara.position.set(centroX, centroY, 0);
+
+        // --- INICIO DE LA CORRECCIÓN PIXEL-PERFECT ---
+        // Redondeamos la posición a píxeles enteros para evitar el escalado sub-píxel
+        // que causa la borrosidad en los sprites de pixel art.
+        camara.position.x = Math.round(camara.position.x);
+        camara.position.y = Math.round(camara.position.y);
+        // --- FIN DE LA CORRECCIÓN PIXEL-PERFECT ---
+
         camara.update();
     }
     
