@@ -1,8 +1,6 @@
 package proyectiles;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
@@ -60,16 +58,14 @@ public class Proyectil extends Actor {
 
     public void mover(float delta, NivelBase nivel) {
         if (!activa) return;
+
+        act(delta); // usa tu propio movimiento
+        if (nivel != null && nivel.detectarColision(getHitbox()) || getX() >= 2000) {
+            desactivar();
+        }
     }
 
     public boolean isActivo() {
         return activa;
-    }
-
-    public void dispose() {
-        if (this.textura != null) {
-            this.textura.dispose();
-            this.textura = null;
-        }
     }
 }
