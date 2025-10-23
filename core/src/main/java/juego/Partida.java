@@ -217,21 +217,21 @@ public class Partida implements Screen {
             }
             return;
         }
-        
-        if (personaje.getEstaAtacando()) {
+
             Iterator<Enemigo> iter = this.nivelActual.getEnemigos().iterator();
             while(iter.hasNext()) {
                 Enemigo e = iter.next();
-                if(personaje.getTipoAtaque().getTipo().equals("Melee")) {
-                if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
-                    e.reducirVida();
-                    e.remove();
-                    if (e.getVida() <= 0) {
-                        this.nivelActual.agregarEnemigosMuertos(e);
+                if(personaje.getTipoAtaque().getTipo().equals("Melee") && personaje.getEstaAtacando()) {
+                    if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
+                        e.reducirVida();
+                        e.remove();
+                        if (e.getVida() <= 0) {
+                            this.nivelActual.agregarEnemigosMuertos(e);
+                        }
+
                     }
                 }
-            }
-                else if (personaje.getTipoAtaque().getTipo().equals("Distancia")) {
+                 if (personaje.getTipoAtaque().getTipo().equals("Distancia")) {
                     Iterator<Proyectil> it = personaje.getBalas().iterator(); 
                     while (it.hasNext()) {
                         Proyectil b = it.next();
@@ -245,7 +245,7 @@ public class Partida implements Screen {
                         }
                     }
                 }
-            }
+
         }
 
 
