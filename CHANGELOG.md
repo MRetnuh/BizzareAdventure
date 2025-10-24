@@ -1,3 +1,7 @@
+## [9.5.5] - 2025-10-24
+### Modificado
+- Se corrigio la destruccion de la caja.
+
 ## [9.5.4] - 2025-10-23
 ### Modificado
 - Se mejoro y corrigio el comportamiento de los enemigos. Ademas, se soluciono un error en las balas que disparaba el jugador

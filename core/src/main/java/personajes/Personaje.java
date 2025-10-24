@@ -327,6 +327,10 @@ public abstract class Personaje extends Actor {
         super.setY(prevY); 
     }
     
+    public boolean getEstaSaltando() {
+    	return this.estaSaltando;
+    }
+    
     public void setPosicion(float x, float y) {
         super.setX(x);
         super.setY(y);

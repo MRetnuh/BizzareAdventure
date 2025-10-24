@@ -355,9 +355,18 @@ public class Partida implements Screen {
             return;
         }
         Rectangle hitboxOriginal = personaje.getHitbox(); 
-
-        final float ALTURA_REDUCIDA = 10.0f;
+        boolean cajaRota;
         
+        if(personaje.getEstaSaltando()) {
+        	 Rectangle hitboxAumentada = new Rectangle(
+        	            hitboxOriginal.x, 
+        	            hitboxOriginal.y - (hitboxOriginal.height - 12.0f), 
+        	            hitboxOriginal.width, 
+        	            20.0f);
+        	 cajaRota = this.nivelActual.destruirCajaEnHitbox(hitboxAumentada);
+        }
+        
+        final float ALTURA_REDUCIDA = 10.0f;
         Rectangle hitboxReducida = new Rectangle(
             hitboxOriginal.x, 
             hitboxOriginal.y + (hitboxOriginal.height - ALTURA_REDUCIDA), 
@@ -365,7 +374,8 @@ public class Partida implements Screen {
             ALTURA_REDUCIDA
         );
         
-        boolean cajaRota = this.nivelActual.destruirCajaEnHitbox(hitboxReducida);
+        cajaRota = this.nivelActual.destruirCajaEnHitbox(hitboxReducida);
+        
 
         if (cajaRota) {
             if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
