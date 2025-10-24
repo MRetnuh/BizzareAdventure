@@ -35,7 +35,7 @@ public class Menu implements Screen {
     public Menu(Game juego) {
         this.stage = new Stage();
         this.JUEGO = juego;
-        this.musicaMenu = new Musica("primeraisla");
+        this.musicaMenu = new Musica("Menu");
         this.musicaMenu.show(this.stage);
     }
 
@@ -61,7 +61,7 @@ public class Menu implements Screen {
         jugarBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	musicaMenu.cambiarMusica("Balatro");
+            	musicaMenu.cambiarMusica("PrimerNivel");
                 JUEGO.setScreen(new Partida(JUEGO, musicaMenu));
             }
         });

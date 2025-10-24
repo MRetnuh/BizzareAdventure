@@ -148,7 +148,7 @@ public class Enemigo extends Personaje {
     
     private void disparar(String ruta, float volumen) {
         this.balas.add(new Proyectil(getX(), getY() + 16, this.moviendoDerecha, ruta));
-        EfectoSonido.reproducir("disparo", volumen);
+        EfectoSonido.reproducir("Disparo", volumen);
     }
 
     private float getVelocidad() {

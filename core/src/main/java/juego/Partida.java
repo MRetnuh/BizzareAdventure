@@ -210,7 +210,7 @@ public class Partida implements Screen {
                 if (esJugador1) this.gameOver1 = true;
                 else this.gameOver2 = true;
                 if (this.gameOver1 && this.gameOver2) {
-                    this.musicaPartida.cambiarMusica("derrota");
+                    this.musicaPartida.cambiarMusica("Derrota");
                     personaje.morir(this.stageHUD);
                 }
             }
@@ -306,7 +306,7 @@ public class Partida implements Screen {
                 Proyectil b = it.next();
                 if (b.getHitbox().overlaps(personaje.getHitbox())) {
                 		if(personaje.getEstaAtacando() && personaje.getTipoAtaque().getTipo().equals("Melee")) {
-                			EfectoSonido.reproducir("parry", this.musicaPartida.getVolumen());
+                			EfectoSonido.reproducir("Parry", this.musicaPartida.getVolumen());
                 			b.desactivar();
                 		}
                 		else {
