@@ -1,28 +1,21 @@
-package personajes;
+package enemigos;
 
 import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 import audios.EfectoSonido;
 import proyectiles.Proyectil;
 import niveles.NivelBase;
+import personajes.Personaje;
+import personajes.TipoAtaque;
 
-public class Enemigo extends Personaje {
+public class EnemigoTirador extends EnemigoBase {
 
-    private float rangoMovimiento = 200;
-    private float rangoVision = 250;
-    private float puntoInicialX;
-    private Personaje objetivoActual = null;
-    private float tiempoSinVerJugador = 0f;
-    private final float TIEMPOPARAOLVIDAR = 1.0f; 
-    private final float TOLERANCIAVERTICAL = 100f; 
-
-    public Enemigo(String nombre, float x, float y) {
+    public EnemigoTirador(String nombre, float x, float y) {
         super(nombre, 100, "ataqueEnemigo", 1, TipoAtaque.DISTANCIA);
         setPosition(x, y);
         this.puntoInicialX = x;
@@ -49,10 +42,10 @@ public class Enemigo extends Personaje {
         super.quietaIzquierda = new TextureRegion(new Texture(Gdx.files.internal(
                 "imagenes/personajes/enemigo/enemigo_quieto_izquierda.png")));
     }
-
-    public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, NivelBase nivel)
-    {
-        seleccionarObjetivo(jugador1, jugador2);
+    
+    @Override
+    public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, NivelBase nivel){
+        super.seleccionarObjetivo(jugador1, jugador2);
 
         if (this.objetivoActual != null) {
             super.estaMoviendose = false;
@@ -69,7 +62,7 @@ public class Enemigo extends Personaje {
         } else {
             super.estaMoviendose = true;
             this.rangoVision = 250;
-            patrullar(delta, nivel);
+            super.patrullar(delta, nivel);
         }
 
         Iterator<Proyectil> it = this.balas.iterator();
@@ -78,56 +71,6 @@ public class Enemigo extends Personaje {
             b.mover(delta, nivel, this);
             if (!b.isActivo()) it.remove();
         }
-    }
-
-    private void seleccionarObjetivo(Personaje j1, Personaje j2) {
-        Personaje nuevoObjetivo = null;
-
-        boolean j1Vivo = j1 != null && j1.getVida() > 0;
-        boolean j2Vivo = j2 != null && j2.getVida() > 0;
-
-        if (this.objetivoActual != null) {
-            if (this.objetivoActual.getVida() > 0 && detectarRangoConTolerancia(this.objetivoActual)) {
-                this.tiempoSinVerJugador = 0;
-                return;
-            } else {
-            	
-                this.tiempoSinVerJugador += Gdx.graphics.getDeltaTime();
-                if (this.tiempoSinVerJugador >= this.TIEMPOPARAOLVIDAR) {
-                    this.objetivoActual = null;
-                    this.tiempoSinVerJugador = 0;
-                }
-                return;
-            }
-        }
-        
-        if (j1Vivo && detectarRangoConTolerancia(j1)) nuevoObjetivo = j1;
-        else if (j2Vivo && detectarRangoConTolerancia(j2)) nuevoObjetivo = j2;
-
-        this.objetivoActual = nuevoObjetivo;
-    }
-
-
-    private boolean detectarRangoConTolerancia(Personaje jugador) {
-        float distanciaX = Math.abs(jugador.getX() - super.getX());
-        float distanciaY = Math.abs(jugador.getY() - super.getY());
-
-        return distanciaX <= this.rangoVision && distanciaY <= this.TOLERANCIAVERTICAL;
-    }
-
-
-    private void patrullar(float delta, NivelBase nivel) {
-        float nuevaX = super.getX() + (this.moviendoDerecha ? getVelocidad() : -getVelocidad()) * delta;
-        Rectangle hitbox = new Rectangle(nuevaX, super.getY(), getWidth(), getHeight());
-
-        if (!nivel.detectarColision(hitbox)) {
-            super.aplicarMovimiento(nuevaX, super.getY(), delta, 10000, 1000);
-        } else {
-            this.moviendoDerecha = !this.moviendoDerecha;
-        }
-
-        if (super.getX() > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;
-        if (super.getX() < this.puntoInicialX - this.rangoMovimiento) this.moviendoDerecha = true;
     }
 
     private void dispararHaciaObjetivo(float volumen) {
@@ -151,7 +94,9 @@ public class Enemigo extends Personaje {
         EfectoSonido.reproducir("Disparo", volumen);
     }
 
-    private float getVelocidad() {
+    @Override
+	public float getVelocidad() {
         return 80;
     }
+
 }

@@ -20,8 +20,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 
+import enemigos.EnemigoTirador;
+import enemigos.EnemigoBase;
 import jugadores.Jugador;
-import personajes.Enemigo;
 import personajes.Personaje;
 
 public abstract class NivelBase {
@@ -30,7 +31,7 @@ public abstract class NivelBase {
     protected int anchoMapa;
     protected int alturaMapa;
     public final int ID_TILE_TRANSPARENTE = 0;
-    protected List<Enemigo> enemigos = new ArrayList<>();
+    protected List<EnemigoBase> enemigos = new ArrayList<>();
     public Set<String> cajasDestruidas = new HashSet<>();
     protected static Set<String> enemigosMuertos = new HashSet<>(); 
     
@@ -255,7 +256,7 @@ public abstract class NivelBase {
     
     public TiledMap getMapa() { return this.mapa; }
     public OrthogonalTiledMapRenderer getMapRenderer() { return this.mapRenderer; }
-    public List<Enemigo> getEnemigos() { return this.enemigos; }
+    public List<EnemigoBase> getEnemigos() { return this.enemigos; }
     public int getAnchoMapa() { return this.anchoMapa; }
     public int getAlturaMapa() { return this.alturaMapa; }
     public float getInicioX1() { return inicioX1; }
@@ -271,7 +272,7 @@ public abstract class NivelBase {
         this.enemigos.removeIf(e -> e.getVida() <= 0);
     }
     
-    public void agregarEnemigosMuertos(Enemigo enemigo) {
+    public void agregarEnemigosMuertos(EnemigoBase enemigo) {
     	this.enemigosMuertos.add(enemigo.getNombre());
     }
 }

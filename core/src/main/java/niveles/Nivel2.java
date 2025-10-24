@@ -1,6 +1,6 @@
 package niveles;
 
-import personajes.Enemigo;
+import enemigos.EnemigoTirador;
 import personajes.Personaje;
 
 public class Nivel2 extends NivelBase {
@@ -31,7 +31,7 @@ public class Nivel2 extends NivelBase {
         for (int i = 0; i < idsEnemigos.length; i++) {
             String id = idsEnemigos[i];
             if (!NivelBase.enemigosMuertos.contains(id)) { 
-                this.enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
+                this.enemigos.add(new EnemigoTirador(id, posiciones[i][0], posiciones[i][1]));
             }
         }
     }

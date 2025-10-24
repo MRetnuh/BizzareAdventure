@@ -1,6 +1,9 @@
-## [9.5.5] - 2025-10-24
+## [9.6.4] - 2025-10-24
 ### Modificado
 - Se corrigio la destruccion de la caja.
+
+### Añadido
+- Se agrego otro tipo de enemigo que persigue al jugador.
 
 ## [9.5.4] - 2025-10-23
 ### Modificado

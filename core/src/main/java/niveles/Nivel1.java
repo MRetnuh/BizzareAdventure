@@ -1,6 +1,8 @@
 package niveles;
 
-import personajes.Enemigo;
+import enemigos.EnemigoTirador;
+import enemigos.EnemigoBase;
+import enemigos.EnemigoPerseguidor;
 import personajes.Personaje;
 
 public class Nivel1 extends NivelBase {
@@ -21,19 +23,33 @@ public class Nivel1 extends NivelBase {
     public void crearEnemigos() {
         this.enemigos.clear(); 
 
-        String[] idsEnemigos = {"enemigo1", "enemigo2", "enemigo3"};
-        float[][] posiciones = {
-                {600, 928},
-                {800, 928},
-                {1000, 928}};
+        // Cada enemigo tiene: ID, tipo, X, Y
+        Object[][] enemigosDatos = {
+            {"enemigo1", "rango", 600f, 928f},
+            {"enemigo2", "rango", 800f, 928f},
+            {"enemigo3", "perseguidor", 2000f, 928f}
+        };
 
-        for (int i = 0; i < idsEnemigos.length; i++) {
-            String id = idsEnemigos[i];
-            if (!super.enemigosMuertos.contains(id)) { 
-                this.enemigos.add(new Enemigo(id, posiciones[i][0], posiciones[i][1]));
+        for (Object[] datos : enemigosDatos) {
+            String id = (String) datos[0];
+            String tipo = (String) datos[1];
+            float x = (float) datos[2];
+            float y = (float) datos[3];
+
+            if (!super.enemigosMuertos.contains(id)) {
+                EnemigoBase enemigo;
+
+                if (tipo.equals("perseguidor")) {
+                    enemigo = new EnemigoPerseguidor(id, x, y);
+                } else {
+                    enemigo = new EnemigoTirador(id, x, y);
+                }
+
+                this.enemigos.add(enemigo);
             }
         }
     }
+
 
     @Override
     public boolean comprobarVictoria(float nuevaX1, float nuevaY1, float nuevaX2, float nuevaY2) {

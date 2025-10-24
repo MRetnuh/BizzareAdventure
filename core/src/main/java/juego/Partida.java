@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import audios.EfectoSonido;
 import audios.Musica;
+import enemigos.EnemigoTirador;
+import enemigos.EnemigoBase;
 import estilos.EstiloTexto;
 import input.InputController;
 import jugadores.Jugador;
@@ -24,7 +26,6 @@ import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
 import pantallas.Opciones;
-import personajes.Enemigo;
 import personajes.Personaje;
 import proyectiles.Proyectil;
 
@@ -95,7 +96,7 @@ public class Partida implements Screen {
         this.stage.clear();
         if (this.personaje1 != null) this.stage.addActor(this.personaje1);
         if (this.personaje2 != null) this.stage.addActor(this.personaje2);
-        for (Enemigo enemigo : this.nivelActual.getEnemigos()) {
+        for (EnemigoBase enemigo : this.nivelActual.getEnemigos()) {
             this.stage.addActor(enemigo);
         }
 
@@ -156,7 +157,7 @@ public class Partida implements Screen {
         this.batch.setProjectionMatrix(this.camara.combined);
 
         if (!this.gameOver1 || !this.gameOver2) {
-            for (Enemigo enemigo : this.nivelActual.getEnemigos()) {
+            for (EnemigoBase enemigo : this.nivelActual.getEnemigos()) {
                 if (enemigo.getVida() > 0) {
                     for (Proyectil b : enemigo.getBalas()) {
                         if (!this.stage.getActors().contains(b, true)) {
@@ -217,9 +218,9 @@ public class Partida implements Screen {
             return;
         }
 
-            Iterator<Enemigo> iter = this.nivelActual.getEnemigos().iterator();
+            Iterator<EnemigoBase> iter = this.nivelActual.getEnemigos().iterator();
             while(iter.hasNext()) {
-                Enemigo e = iter.next();
+                EnemigoBase e = iter.next();
                 if(personaje.getTipoAtaque().getTipo().equals("Melee") && personaje.getEstaAtacando()) {
                     if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                         e.reducirVida();
@@ -300,7 +301,11 @@ public class Partida implements Screen {
 
         personaje.atacar(delta);
 
-        for (Enemigo e : this.nivelActual.getEnemigos()) {
+        for (EnemigoBase e : this.nivelActual.getEnemigos()) {
+        	if(e.getTipoAtaque().getTipo().equals("Melee") && e.getHitbox().overlaps(personaje.getHitbox())) {
+        		personaje.reducirVida();
+        	}
+        	
             Iterator<Proyectil> it = e.getBalas().iterator();
             while (it.hasNext()) {
                 Proyectil b = it.next();
