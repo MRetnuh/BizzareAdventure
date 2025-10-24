@@ -38,7 +38,7 @@ public abstract class NivelBase {
     protected float inicioX2, inicioY2;
     protected String nombreMapa;
     
-    public NivelBase(String nombreMapa) {
+    public NivelBase(String nombreNivel, String nombreMapa) {
         this.nombreMapa = nombreMapa;
         cargarMapa();
         definirPosicionesIniciales(); 

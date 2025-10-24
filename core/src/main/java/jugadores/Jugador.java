@@ -13,31 +13,31 @@ public class Jugador {
     private FabricaDePersonajes elegido;
 
     public void generarPersonajeAleatorio() {
-        indicePersonaje = r.nextInt(personajesDisponibles.length);
-        elegido = personajesDisponibles[indicePersonaje];
-        personajeElegido = elegido.crear();
-        partidaEmpezada = true;
+        this.indicePersonaje = r.nextInt(this.personajesDisponibles.length);
+        this.elegido = this.personajesDisponibles[this.indicePersonaje];
+        this.personajeElegido = this.elegido.crear();
+        this.partidaEmpezada = true;
     }
 
     public Personaje cambiarPersonaje(float x, float y) {
         int nuevoIndice;
         do {
-            nuevoIndice = r.nextInt(personajesDisponibles.length);
-        } while (nuevoIndice == indicePersonaje);
+            nuevoIndice = this.r.nextInt(this.personajesDisponibles.length);
+        } while (nuevoIndice == this.indicePersonaje);
 
-        indicePersonaje = nuevoIndice;
-        elegido = personajesDisponibles[indicePersonaje];
-        personajeElegido = elegido.crear();
-        personajeElegido.cargarUbicaciones(x, y);
-        personajeElegido.aumentarVida();
-        return personajeElegido;
+        this.indicePersonaje = nuevoIndice;
+        this.elegido = this.personajesDisponibles[this.indicePersonaje];
+        this.personajeElegido = this.elegido.crear();
+        this.personajeElegido.cargarUbicaciones(x, y);
+        this.personajeElegido.aumentarVida();
+        return this.personajeElegido;
     }
 
     public Personaje getPersonajeElegido() {
-        return personajeElegido;
+        return this.personajeElegido;
     }
 
     public boolean getPartidaEmpezada() {
-        return partidaEmpezada;
+        return this.partidaEmpezada;
     }
 }

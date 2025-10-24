@@ -88,4 +88,5 @@ musica/derrota.mp3
 musica/primeraisla.mp3
 sonidos/EspadaCorte.mp3
 sonidos/disparo.mp3
+sonidos/parry.mp3
 terreno.tsx

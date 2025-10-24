@@ -35,31 +35,32 @@ public abstract class Personaje extends Actor {
     private int habilidadEspecial = 1;
     private String nombreAtaque;
     private boolean estaAtacando = false;
-    protected boolean mirandoDerecha = true;
-    protected boolean estaMoviendose = false;
     private boolean estaSaltando = false;
-    protected boolean moviendoDerecha = false;
     private boolean moviendoIzquierda = false;
     private final float GRAVEDAD = -500;
     private float prevX, prevY;
     private float estadoTiempo = 0f;
     private float velocidadCaida = 0;
-    protected Animation<TextureRegion> animDerecha;
+    private float tiempoAtaque = 0f;
+    private TipoAtaque tipoAtaque;
+	private boolean disparoRealizado = false;
+    private NivelBase nivel;
+    
+	protected TextureRegion frame;
+	protected Animation<TextureRegion> animDerecha;
     protected Animation<TextureRegion> animIzquierda;
     protected Animation<TextureRegion> animAtaqueDerecha;
     protected Animation<TextureRegion> animAtaqueIzquierda;
     protected TextureRegion quietaDerecha;
     protected TextureRegion quietaIzquierda;
-    private float tiempoAtaque = 0f;
-    protected TextureRegion frame;
-    private TipoAtaque tipoAtaque;
-    protected ArrayList<Proyectil> balas = new ArrayList<>();
-    private float tiempoDisparo = 0f;
-    private final float cooldownDisparo = 0.5f;
-	private boolean disparoRealizado = false;
-    private NivelBase nivel;
-	
-	
+	protected boolean mirandoDerecha = true;
+    protected boolean estaMoviendose = false;
+	protected boolean moviendoDerecha = false;
+	protected ArrayList<Proyectil> balas = new ArrayList<>();
+    protected float tiempoDisparo = 0f;
+    protected final float COOLDOWNDISPARO = 1.0f;
+    
+    
     public Personaje(String nombre, int velocidad, String nombreAtaque, int vida, TipoAtaque tipoAtaque) {//-> pasale el stage aca
         this.nombre = nombre;
         this.velocidad = velocidad;
@@ -262,6 +263,38 @@ public abstract class Personaje extends Actor {
     public void reducirVida() {
         this.vida--;
     }
+   
+    public void aumentarVida() {
+        this.vida++;
+    }
+    
+    public boolean getEstaAtacando() {
+        return this.estaAtacando;
+    }
+    
+    public void setEstaAtacando(boolean atacando) {
+        this.estaAtacando = atacando;
+    }
+
+    public void setMoviendoDerecha(boolean moviendo) {
+        this.moviendoDerecha = moviendo;
+    }
+
+    public void setMoviendoIzquierda(boolean moviendo) {
+        this.moviendoIzquierda = moviendo;
+    }
+
+    public void setEstaSaltando(boolean moviendo) {
+        this.estaSaltando = moviendo;
+    }
+    
+    public TipoAtaque getTipoAtaque() {
+    	return this.tipoAtaque;
+    }
+    
+    public ArrayList<Proyectil> getBalas() {
+        return this.balas;
+    }
     public String getNombre() {
         return this.nombre;
     }
@@ -289,41 +322,13 @@ public abstract class Personaje extends Actor {
     public float getPrevY() {
         return this.prevY;
     }
+    
     public void setY(float prevY) {
         super.setY(prevY); 
     }
+    
     public void setPosicion(float x, float y) {
         super.setX(x);
         super.setY(y);
     }
-    public void aumentarVida() {
-        this.vida++;
-    }
-    public boolean getEstaAtacando() {
-        return this.estaAtacando;
-    }
-    public void setEstaAtacando(boolean atacando) {
-        this.estaAtacando = atacando;
-    }
-
-    public void setMoviendoDerecha(boolean moviendo) {
-        this.moviendoDerecha = moviendo;
-    }
-
-    public void setMoviendoIzquierda(boolean moviendo) {
-        this.moviendoIzquierda = moviendo;
-    }
-
-    public void setEstaSaltando(boolean moviendo) {
-        this.estaSaltando = moviendo;
-    }
-    
-    public TipoAtaque getTipoAtaque() {
-    	return this.tipoAtaque;
-    }
-    
-    public ArrayList<Proyectil> getBalas() {
-        return this.balas;
-    }
-
 }

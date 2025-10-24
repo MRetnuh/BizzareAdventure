@@ -17,13 +17,10 @@ public class Enemigo extends Personaje {
     private float rangoMovimiento = 200;
     private float rangoVision = 250;
     private float puntoInicialX;
-    private float tiempoDisparo = 0;
-    private final float cooldownDisparo = 1.0f;
     private Personaje objetivoActual = null;
     private float tiempoSinVerJugador = 0f;
-    private final float tiempoParaOlvidar = 1.0f; // segundos que tarda en "olvidar"
-    private final float toleranciaVertical = 100f; // rango vertical aceptable
-
+    private final float TIEMPOPARAOLVIDAR = 1.0f; 
+    private final float TOLERANCIAVERTICAL = 100f; 
 
     public Enemigo(String nombre, float x, float y) {
         super(nombre, 100, "ataqueEnemigo", 1, TipoAtaque.DISTANCIA);
@@ -58,19 +55,19 @@ public class Enemigo extends Personaje {
         seleccionarObjetivo(jugador1, jugador2);
 
         if (this.objetivoActual != null) {
-            this.estaMoviendose = false;
-            this.tiempoDisparo += delta;
+            super.estaMoviendose = false;
+            super.tiempoDisparo += delta;
             this.rangoVision = 500;
 
             this.mirandoDerecha = this.objetivoActual.getX() > super.getX();
             super.frame = this.mirandoDerecha ? super.quietaDerecha : super.quietaIzquierda;
 
-            if (this.tiempoDisparo >= this.cooldownDisparo) {
+            if (super.tiempoDisparo >= super.COOLDOWNDISPARO) {
                 dispararHaciaObjetivo(volumen);
-                this.tiempoDisparo = 0;
+                super.tiempoDisparo = 0;
             }
         } else {
-            this.estaMoviendose = true;
+            super.estaMoviendose = true;
             this.rangoVision = 250;
             patrullar(delta, nivel);
         }
@@ -90,22 +87,20 @@ public class Enemigo extends Personaje {
         boolean j2Vivo = j2 != null && j2.getVida() > 0;
 
         if (this.objetivoActual != null) {
-            // Si sigue vivo y más o menos en rango, continuar
             if (this.objetivoActual.getVida() > 0 && detectarRangoConTolerancia(this.objetivoActual)) {
-                tiempoSinVerJugador = 0;
+                this.tiempoSinVerJugador = 0;
                 return;
             } else {
-                // Incrementar tiempo sin verlo
-                tiempoSinVerJugador += Gdx.graphics.getDeltaTime();
-                if (tiempoSinVerJugador >= tiempoParaOlvidar) {
+            	
+                this.tiempoSinVerJugador += Gdx.graphics.getDeltaTime();
+                if (this.tiempoSinVerJugador >= this.TIEMPOPARAOLVIDAR) {
                     this.objetivoActual = null;
-                    tiempoSinVerJugador = 0;
+                    this.tiempoSinVerJugador = 0;
                 }
                 return;
             }
         }
-
-        // Buscar nuevo objetivo si no hay ninguno
+        
         if (j1Vivo && detectarRangoConTolerancia(j1)) nuevoObjetivo = j1;
         else if (j2Vivo && detectarRangoConTolerancia(j2)) nuevoObjetivo = j2;
 
@@ -117,7 +112,7 @@ public class Enemigo extends Personaje {
         float distanciaX = Math.abs(jugador.getX() - super.getX());
         float distanciaY = Math.abs(jugador.getY() - super.getY());
 
-        return distanciaX <= this.rangoVision && distanciaY <= toleranciaVertical;
+        return distanciaX <= this.rangoVision && distanciaY <= this.TOLERANCIAVERTICAL;
     }
 
 

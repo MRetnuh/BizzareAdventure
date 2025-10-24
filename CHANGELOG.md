@@ -1,3 +1,31 @@
+## [9.5.4] - 2025-10-23
+### Modificado
+- Se mejoro y corrigio el comportamiento de los enemigos. Ademas, se soluciono un error en las balas que disparaba el jugador
+
+## [9.4.4] - 2025-10-22
+### Añadido
+- Se añadió la mecanica de parry (repeler un ataque enemigo en el momento justo)
+
+### Modificado
+- Se mejoro la camara de modo que al morir un jugador, la calidad de renderizacion del otro personaje no decaiga
+- Se arregló la mecanica de balas tras algunos errores que surgieron previamente. Ademas, se corrigio la velocidad en la que salian las balas
+- Se realizo una mejora en la organizacion de clases y paquetes (especificamente en las que son de pantallas de menu)
+
+
+## [8.4.4] - 2025-10-21
+### Modificado
+- Se volvio a implementar la desaparicion de enemigos al ser asesinados tras unos errores que surgieron previamente
+- Se mejoro el codigo de destruccion de caja, ahora solo desapareciendo una y no todas las del mapa al golpear una.
+
+## [8.4.3] - 2025-10-20
+### Modificado
+- Se realizaron arreglos en el codigo de atacar ya que antes sucedia que la memoria se llenaba
+
+## [8.3.3] - 2025-10-19
+### Modificado
+- Se corrigieron algunos errores relacionados con la camara que surgieron con la implementacion de niveles.
+- Se corrigio un error al abrir opciones que provocaba que el otro jugador siguiera moviendose
+
 ## [8.3.2] - 2025-10-14
 ### Añadido
 - Ahora hay cambio de niveles a llegar a un punto de cada mapa.
@@ -45,6 +73,7 @@ responsabilidad.
 - Agregado de volumen para el disparo del enemigo.
 - Cambio al funcionamiento del spawn de enemigos y su cantidad
 - 
+
 ## [6.9.3] - 2025-09-05
 ### Añadido
 - El jugador puede matar al enemigo.

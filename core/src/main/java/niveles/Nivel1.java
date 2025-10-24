@@ -6,7 +6,7 @@ import personajes.Personaje;
 public class Nivel1 extends NivelBase {
 
     public Nivel1() {
-        super("mapacorregido.tmx");
+        super("Nivel 1", "mapacorregido.tmx");
     }
 
     @Override
