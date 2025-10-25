@@ -16,9 +16,9 @@ import personajes.TipoAtaque;
 public class EnemigoTirador extends EnemigoBase {
 
     public EnemigoTirador(String nombre, float x, float y) {
-        super(nombre, 100, "ataqueEnemigo", 1, TipoAtaque.DISTANCIA);
+        super(nombre, 100, "Disparo", 1, TipoAtaque.DISTANCIA);
         setPosition(x, y);
-        this.puntoInicialX = x;
+        super.puntoInicialX = x;
     }
 
     @Override
@@ -47,13 +47,13 @@ public class EnemigoTirador extends EnemigoBase {
     public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, NivelBase nivel){
         super.seleccionarObjetivo(jugador1, jugador2);
 
-        if (this.objetivoActual != null) {
+        if (super.objetivoActual != null) {
             super.estaMoviendose = false;
             super.tiempoDisparo += delta;
             this.rangoVision = 500;
 
-            this.mirandoDerecha = this.objetivoActual.getX() > super.getX();
-            super.frame = this.mirandoDerecha ? super.quietaDerecha : super.quietaIzquierda;
+            super.mirandoDerecha = super.objetivoActual.getX() > super.getX();
+            super.frame = super.mirandoDerecha ? super.quietaDerecha : super.quietaIzquierda;
 
             if (super.tiempoDisparo >= super.COOLDOWNDISPARO) {
                 dispararHaciaObjetivo(volumen);
@@ -61,11 +61,11 @@ public class EnemigoTirador extends EnemigoBase {
             }
         } else {
             super.estaMoviendose = true;
-            this.rangoVision = 250;
+            super.rangoVision = 250;
             super.patrullar(delta, nivel);
         }
 
-        Iterator<Proyectil> it = this.balas.iterator();
+        Iterator<Proyectil> it = super.balas.iterator();
         while (it.hasNext()) {
             Proyectil b = it.next();
             b.mover(delta, nivel, this);
@@ -74,13 +74,13 @@ public class EnemigoTirador extends EnemigoBase {
     }
 
     private void dispararHaciaObjetivo(float volumen) {
-        if (this.objetivoActual == null) return;
-        if (this.objetivoActual.getVida() <= 0) {
-            this.objetivoActual = null;
+        if (super.objetivoActual == null) return;
+        if (super.objetivoActual.getVida() <= 0) {
+            super.objetivoActual = null;
             return;
         }
-        boolean objetivoALaDerecha = this.objetivoActual.getX() > super.getX();
-        this.moviendoDerecha = objetivoALaDerecha;
+        boolean objetivoALaDerecha = super.objetivoActual.getX() > super.getX();
+        super.moviendoDerecha = objetivoALaDerecha;
 
         String ruta = objetivoALaDerecha ?
                 "imagenes/personajes/enemigo/ataque/Bala_Derecha.png" :
@@ -90,13 +90,8 @@ public class EnemigoTirador extends EnemigoBase {
     }
     
     private void disparar(String ruta, float volumen) {
-        this.balas.add(new Proyectil(getX(), getY() + 16, this.moviendoDerecha, ruta));
-        EfectoSonido.reproducir("Disparo", volumen);
-    }
-
-    @Override
-	public float getVelocidad() {
-        return 80;
+        super.balas.add(new Proyectil(getX(), getY() + 16, super.moviendoDerecha, ruta));
+        EfectoSonido.reproducir(super.nombreAtaque, volumen);
     }
 
 }

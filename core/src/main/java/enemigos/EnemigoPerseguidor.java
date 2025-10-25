@@ -15,8 +15,9 @@ public class EnemigoPerseguidor extends EnemigoBase {
 	
 
     public EnemigoPerseguidor(String nombre, float x, float y) {
-        super(nombre, 90, "EspadaCorte", 1, TipoAtaque.MELEE);
+        super(nombre, 400, "EspadaCorte", 1, TipoAtaque.MELEE);
         setPosition(x, y);
+        super.puntoInicialX = x;
     }
 
     @Override
@@ -43,17 +44,17 @@ public class EnemigoPerseguidor extends EnemigoBase {
     @Override
     public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, NivelBase nivel){
         seleccionarObjetivo(jugador1, jugador2);
-        if (objetivoActual == null) super.patrullar(delta, nivel);
+        if (super.objetivoActual == null) super.patrullar(delta, nivel);
         else {
         perseguir(delta, nivel);
         }
     }
 
     private void perseguir(float delta, NivelBase nivel) {
-        if (objetivoActual == null) return;
+        if (super.objetivoActual == null) return;
 
-        float direccion = objetivoActual.getX() > getX() ? 1 : -1;
-        float nuevaX = getX() + direccion * getVelocidad() * delta;
+        float direccion = super.objetivoActual.getX() > getX() ? 1 : -1;
+        float nuevaX = getX() + direccion * super.velocidad * delta;
 
         Rectangle hitbox = new Rectangle(nuevaX, getY(), getWidth(), getHeight());
 
@@ -61,14 +62,8 @@ public class EnemigoPerseguidor extends EnemigoBase {
             aplicarMovimiento(nuevaX, getY(), delta, 10000, 1000);
         }
 
-        mirandoDerecha = direccion > 0;
-        estaMoviendose = true;
+        super.mirandoDerecha = direccion > 0;
+        super.estaMoviendose = true;
     }
 
-   
-
-	@Override
-	public float getVelocidad() {
-		return 400;
-	}
 }

@@ -3,6 +3,7 @@ package niveles;
 import enemigos.EnemigoTirador;
 import enemigos.EnemigoBase;
 import enemigos.EnemigoPerseguidor;
+import enemigos.EnemigoPesado;
 import personajes.Personaje;
 
 public class Nivel1 extends NivelBase {
@@ -27,7 +28,8 @@ public class Nivel1 extends NivelBase {
         Object[][] enemigosDatos = {
             {"enemigo1", "rango", 600f, 928f},
             {"enemigo2", "rango", 800f, 928f},
-            {"enemigo3", "perseguidor", 2000f, 928f}
+            {"enemigo3", "perseguidor", 2000f, 928f},
+            {"enemigo4", "pesado", 3430f, 2000f}
         };
 
         for (Object[] datos : enemigosDatos) {
@@ -37,12 +39,14 @@ public class Nivel1 extends NivelBase {
             float y = (float) datos[3];
 
             if (!super.enemigosMuertos.contains(id)) {
-                EnemigoBase enemigo;
+                EnemigoBase enemigo = null;
 
                 if (tipo.equals("perseguidor")) {
                     enemigo = new EnemigoPerseguidor(id, x, y);
-                } else {
+                } else if(tipo.equals("rango")) {
                     enemigo = new EnemigoTirador(id, x, y);
+                } else {
+                	enemigo = new EnemigoPesado(id, x, y);
                 }
 
                 this.enemigos.add(enemigo);

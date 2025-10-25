@@ -61,7 +61,7 @@ public abstract class EnemigoBase extends Personaje{
 	
 	
 	protected void patrullar(float delta, NivelBase nivel) {
-		 float nuevaX = super.getX() + (this.moviendoDerecha ? getVelocidad() : -getVelocidad()) * delta;
+		 float nuevaX = super.getX() + (this.moviendoDerecha ? super.velocidad : -super.velocidad) * delta;
 	        Rectangle hitbox = new Rectangle(nuevaX, super.getY(), getWidth(), getHeight());
 
 	        if (!nivel.detectarColision(hitbox)) {
@@ -73,8 +73,6 @@ public abstract class EnemigoBase extends Personaje{
 	        if (super.getX() > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;
 	        if (super.getX() < this.puntoInicialX - this.rangoMovimiento) this.moviendoDerecha = true;
 	    }
-
-	public abstract float getVelocidad();
 }
 
 

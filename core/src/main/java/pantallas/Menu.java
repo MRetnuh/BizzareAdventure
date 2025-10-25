@@ -44,15 +44,12 @@ public class Menu implements Screen {
 
         Gdx.input.setInputProcessor(this.stage);
     
-        this.fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/portada.png"));
+        this.fondoTextura = new Texture(Gdx.files.internal("imagenes/fondos/Portada.jpg"));
         this.fondoImagen = new Image(this.fondoTextura);
         this.fondoImagen.setFillParent(true);
         this.stage.addActor(fondoImagen);
 
-        this.skin = new Skin(Gdx.files.internal("uiskin.json")); //-> Hace falta? //kevin (el follador de hornet) Investiga para que mierda sirve el skin
-        
-        Label titulo = new Label("Akame Bizzare Adventure", EstiloTexto.ponerEstiloLabel(60, Color.PURPLE));
-        titulo.setAlignment(Align.center);
+        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
    
         TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton opcionesBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
@@ -87,7 +84,6 @@ public class Menu implements Screen {
         table.setFillParent(true);
         table.center();
         table.defaults().center();
-        table.add(titulo).padBottom(30).row();
         table.add(jugarBtn).size(200, 50).padBottom(20).row();
         table.add(opcionesBtn).size(200, 50).padBottom(20).row();
         table.add(salirBtn).size(200, 50);

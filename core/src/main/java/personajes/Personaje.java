@@ -26,14 +26,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class Personaje extends Actor {
-    private float velocidad;
+    protected float velocidad;
     private String nombre;
     private int vida;
     private Texture texturaDerrota;
     private Image imagenDerrota;
     private Stage stage;
     private int habilidadEspecial = 1;
-    private String nombreAtaque;
     private boolean estaAtacando = false;
     private boolean estaSaltando = false;
     private boolean moviendoIzquierda = false;
@@ -46,6 +45,7 @@ public abstract class Personaje extends Actor {
 	private boolean disparoRealizado = false;
     private NivelBase nivel;
     
+    protected String nombreAtaque;
 	protected TextureRegion frame;
 	protected Animation<TextureRegion> animDerecha;
     protected Animation<TextureRegion> animIzquierda;

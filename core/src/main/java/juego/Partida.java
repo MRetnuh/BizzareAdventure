@@ -131,7 +131,10 @@ public class Partida implements Screen {
 
         actualizarPersonaje(this.jugador1, this.personaje1, delta, true);
         actualizarPersonaje(this.jugador2, this.personaje2, delta, false);
-
+        System.out.println(personaje1.getX());
+        System.out.println(personaje1.getY());
+        System.out.println(personaje2.getX());
+        System.out.println(personaje2.getY());
         if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.victoria = true;
             this.indiceNivelActual++;
@@ -224,9 +227,9 @@ public class Partida implements Screen {
                 if(personaje.getTipoAtaque().getTipo().equals("Melee") && personaje.getEstaAtacando()) {
                     if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                         e.reducirVida();
-                        e.remove();
                         if (e.getVida() <= 0) {
                             this.nivelActual.agregarEnemigosMuertos(e);
+                            e.remove();
                         }
 
                     }
