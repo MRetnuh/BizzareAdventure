@@ -6,13 +6,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import audios.Musica;
 import estilos.EstiloTexto;
+import estilos.ListenerBotonTexto;
 import io.github.some.Principal;
 
 public class ConfiguracionVolumen implements Screen {
@@ -50,13 +54,13 @@ public class ConfiguracionVolumen implements Screen {
         });
 
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(this.skin, 48, Color.RED));
-        volverBtn.addListener(event -> {
-            if (Gdx.input.isTouched()) {
-            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior, this.musicaConfig));
+        volverBtn.addListener(new ListenerBotonTexto("Volver", new Runnable() {
+            @Override
+            public void run() {
+            	JUEGO.setScreen(new Opciones(JUEGO, screenAnterior, musicaConfig));
             }
-            return true;
-        });
-
+        }));
+        
         Table tabla = new Table();
         tabla.setFillParent(true);
         tabla.center();

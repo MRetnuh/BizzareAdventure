@@ -24,12 +24,11 @@ public class Nivel1 extends NivelBase {
     public void crearEnemigos() {
         this.enemigos.clear(); 
 
-        // Cada enemigo tiene: ID, tipo, X, Y
         Object[][] enemigosDatos = {
             {"enemigo1", "rango", 600f, 928f},
             {"enemigo2", "rango", 800f, 928f},
             {"enemigo3", "perseguidor", 2000f, 928f},
-            {"enemigo4", "pesado", 3430f, 2000f}
+            {"enemigo4", "pesado", 700f, 928f}
         };
 
         for (Object[] datos : enemigosDatos) {

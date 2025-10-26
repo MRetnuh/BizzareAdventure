@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import audios.Musica;
 import estilos.EstiloTexto;
+import estilos.ListenerBotonTexto;
 import io.github.some.Principal;
 
 public class Opciones implements Screen {
@@ -49,27 +50,27 @@ public class Opciones implements Screen {
         TextButton sonidoBtn = new TextButton("Sonido", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin,48, Color.PURPLE));
         
-        sonidoBtn.addListener(new ChangeListener() {
+        sonidoBtn.addListener(new ListenerBotonTexto("Sonido", new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void run() {
                 JUEGO.setScreen(new ConfiguracionVolumen(JUEGO, screenAnterior, musicaOpciones));
             }
-        });
+        }));
         
-        controlesBtn.addListener(new ChangeListener() {
+        controlesBtn.addListener(new ListenerBotonTexto("Controles", new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(new Controles(JUEGO, screenAnterior, musicaOpciones));
+            public void run() {
+            	  JUEGO.setScreen(new Controles(JUEGO, screenAnterior, musicaOpciones));
             }
-        });
+        }));
         
-        volverBtn.addListener(new ChangeListener() {
+     
+        volverBtn.addListener(new ListenerBotonTexto("Volver", new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                JUEGO.setScreen(screenAnterior);
+            public void run() {
+            	  JUEGO.setScreen(screenAnterior);
             }
-        });
-        
+        }));
         
         Table table = new Table();
         table.setFillParent(true);

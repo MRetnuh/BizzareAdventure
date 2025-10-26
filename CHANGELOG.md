@@ -1,3 +1,10 @@
+## [9.6.5] - 2025-10-26
+### Modificado
+- Mejora visual en los botones, de modo que ya no estan adentro de una caja y ademas, si el mouse esta encima de ellos, cambia de color junto a su texto
+
+### Añadido
+- Un nuevo tipo de enemigo que es parecido al tirador pero es mas duro y resistente.
+
 ## [9.6.4] - 2025-10-24
 ### Modificado
 - Se corrigio la destruccion de la caja.

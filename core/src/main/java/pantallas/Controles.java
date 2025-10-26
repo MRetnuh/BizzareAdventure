@@ -6,17 +6,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import audios.Musica;
 import estilos.EstiloTexto;
+import estilos.ListenerBotonTexto;
 import io.github.some.Principal;
 
 public class Controles implements Screen {
@@ -49,19 +53,19 @@ public class Controles implements Screen {
         Label w = new Label("W: Saltar", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
         Label a = new Label("A: Moverse a la izquierda", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
         Label d = new Label("D: Moverse a la derecha", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
-        Label s = new Label("S: Agacharse", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
 
         Label m = new Label("M: Atacar", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
 
         Label p = new Label("P: Pausar / Opciones", EstiloTexto.ponerEstiloLabel(48, Color.LIGHT_GRAY));
 
         TextButton volverBtn = new TextButton("Volver", EstiloTexto.ponerEstiloBoton(skin, 48, Color.RED));
-        volverBtn.addListener(event -> {
-            if (Gdx.input.isTouched()) {
-            	this.JUEGO.setScreen(new Opciones(this.JUEGO, this.screenAnterior, this.musicaControles));
+        
+        volverBtn.addListener(new ListenerBotonTexto("Volver", new Runnable() {
+            @Override
+            public void run() {
+            	JUEGO.setScreen(new Opciones(JUEGO, screenAnterior, musicaControles));
             }
-            return true;
-        });
+        }));
 
         Table tabla = new Table();
         tabla.setFillParent(true);
@@ -73,7 +77,6 @@ public class Controles implements Screen {
         tabla.add(w).left().padBottom(5).row();
         tabla.add(a).left().padBottom(5).row();
         tabla.add(d).left().padBottom(5).row();
-        tabla.add(s).left().padBottom(25).row();
 
         tabla.add(combateTitulo).left().padBottom(10).row();
         tabla.add(m).left().padBottom(25).row();

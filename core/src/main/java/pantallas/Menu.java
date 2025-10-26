@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,8 +21,7 @@ import com.badlogic.gdx.utils.Align;
 
 import audios.Musica;
 import estilos.EstiloTexto;
-
-
+import estilos.ListenerBotonTexto;
 import io.github.some.Principal;
 import juego.Partida;
 
@@ -51,42 +52,44 @@ public class Menu implements Screen {
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
    
-        TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
-        TextButton opcionesBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
-        TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 48, Color.PURPLE));
+        TextButton jugarBtn = new TextButton("Jugar", EstiloTexto.ponerEstiloBoton(skin, 70, Color.PURPLE));
+        TextButton opcionesBtn = new TextButton("Opciones", EstiloTexto.ponerEstiloBoton(skin, 70, Color.PURPLE));
+        TextButton salirBtn = new TextButton("Salir", EstiloTexto.ponerEstiloBoton(skin, 70, Color.PURPLE));
 
-        jugarBtn.addListener(new ChangeListener() {
+        jugarBtn.addListener(new ListenerBotonTexto("Jugar", new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-            	musicaMenu.cambiarMusica("PrimerNivel");
+            public void run() {
+                musicaMenu.cambiarMusica("PrimerNivel");
                 JUEGO.setScreen(new Partida(JUEGO, musicaMenu));
             }
-        });
-        
+        }));
 
-        opcionesBtn.addListener(new ChangeListener() {
+        // 2. Botón Opciones
+        opcionesBtn.addListener(new ListenerBotonTexto("Opciones", new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void run() {
                 JUEGO.setScreen(new Opciones(JUEGO, Menu.this, musicaMenu));
             }
-        });
+        }));
 
 
-        salirBtn.addListener(new ChangeListener() {
+        // 3. Botón Salir
+        salirBtn.addListener(new ListenerBotonTexto("Salir", new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void run() {
                 Gdx.app.exit();
             }
-        });
+        }));
 
       
         Table table = new Table();
         table.setFillParent(true);
         table.center();
+        table.padTop(250);
         table.defaults().center();
-        table.add(jugarBtn).size(200, 50).padBottom(20).row();
-        table.add(opcionesBtn).size(200, 50).padBottom(20).row();
-        table.add(salirBtn).size(200, 50);
+        table.add(jugarBtn).padBottom(25).row();
+        table.add(opcionesBtn).padBottom(25).row();
+        table.add(salirBtn);
 
         this.stage.addActor(table);
     }

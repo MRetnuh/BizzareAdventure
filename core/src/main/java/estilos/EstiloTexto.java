@@ -29,8 +29,7 @@ public class EstiloTexto {
         BitmapFont fuente = generarFuente(tamaño);
         TextButton.TextButtonStyle estilo = new TextButton.TextButtonStyle();
         estilo.fontColor = color;
-        estilo.up = skin.getDrawable("default-round"); 
-        estilo.down = skin.getDrawable("default-round-down");
+        estilo.overFontColor = Color.CYAN;
         estilo.font = fuente;
         return estilo;
     }
