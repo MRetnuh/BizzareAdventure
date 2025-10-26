@@ -34,11 +34,12 @@ public class Opciones implements Screen {
         this.JUEGO = juego;
         this.musicaOpciones = musica;
         this.screenAnterior = screenAnterior;
+        this.stage = new Stage();
     }
     
     @Override
     public void show() {
-    	this.stage = new Stage(new ScreenViewport());
+    	
         Gdx.input.setInputProcessor(this.stage);
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -72,16 +73,16 @@ public class Opciones implements Screen {
             }
         }));
         
-        Table table = new Table();
-        table.setFillParent(true);
-        table.center();
-        table.defaults().center();
-        table.add(titulo).padBottom(30).row();
-        table.add(sonidoBtn).size(215, 50).padBottom(20).row();
-        table.add(controlesBtn).size(215, 50).padBottom(20).row();
-        table.add(volverBtn).size(215, 50);
+        Table tabla = new Table();
+        tabla.setFillParent(true);
+        tabla.center();
+        tabla.defaults().center();
+        tabla.add(titulo).padBottom(30).row();
+        tabla.add(sonidoBtn).padBottom(20).row();
+        tabla.add(controlesBtn).padBottom(20).row();
+        tabla.add(volverBtn);
 
-        this.stage.addActor(table);
+        this.stage.addActor(tabla);
     }
 
     @Override

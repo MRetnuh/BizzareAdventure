@@ -84,7 +84,7 @@ public class Controles implements Screen {
         tabla.add(opcionesTitulo).left().padBottom(10).row();
         tabla.add(p).left().padBottom(40).row();
 
-        tabla.add(volverBtn).center().size(200, 60);
+        tabla.add(volverBtn).center();
 
         this.stage.addActor(tabla);
         this.stage.addActor(tabla);

@@ -82,16 +82,16 @@ public class Menu implements Screen {
         }));
 
       
-        Table table = new Table();
-        table.setFillParent(true);
-        table.center();
-        table.padTop(250);
-        table.defaults().center();
-        table.add(jugarBtn).padBottom(25).row();
-        table.add(opcionesBtn).padBottom(25).row();
-        table.add(salirBtn);
+        Table tabla = new Table();
+        tabla.setFillParent(true);
+        tabla.center();
+        tabla.padTop(250);
+        tabla.defaults().center();
+        tabla.add(jugarBtn).padBottom(25).row();
+        tabla.add(opcionesBtn).padBottom(25).row();
+        tabla.add(salirBtn);
 
-        this.stage.addActor(table);
+        this.stage.addActor(tabla);
     }
 
     @Override

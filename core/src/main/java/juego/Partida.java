@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import audios.EfectoSonido;
@@ -25,6 +26,7 @@ import jugadores.Jugador;
 import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
+import pantallas.NivelSuperado;
 import pantallas.Opciones;
 import personajes.Personaje;
 import proyectiles.Proyectil;
@@ -138,10 +140,16 @@ public class Partida implements Screen {
         if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.victoria = true;
             this.indiceNivelActual++;
-            if (this.indiceNivelActual < this.niveles.length) {
+            NivelSuperado nivelSuperado = new NivelSuperado(this.nivelActual.getNombreNivel(), this.JUEGO, this.niveles[this.indiceNivelActual].getNombreNivel());
+             if (this.indiceNivelActual < this.niveles.length) {
                 this.nivelActual = this.niveles[indiceNivelActual];
-                
-                inicializarNivel();
+                JUEGO.setScreen(nivelSuperado);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                	 inicializarNivel();
+                }
+            }, 5);
             }
         }
 

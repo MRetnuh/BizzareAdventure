@@ -26,21 +26,24 @@ import jugadores.Jugador;
 import personajes.Personaje;
 
 public abstract class NivelBase {
-    public TiledMap mapa;
-    protected OrthogonalTiledMapRenderer mapRenderer;
-    protected int anchoMapa;
-    protected int alturaMapa;
-    public final int ID_TILE_TRANSPARENTE = 0;
-    protected List<EnemigoBase> enemigos = new ArrayList<>();
-    public Set<String> cajasDestruidas = new HashSet<>();
+	private String nombreMapa;
+    private String nombreNivel;
+    private TiledMap mapa;
+    private OrthogonalTiledMapRenderer mapRenderer;
+    private int anchoMapa;
+    private int alturaMapa;
+    private final int ID_TILE_TRANSPARENTE = 0;
+    private Set<String> cajasDestruidas = new HashSet<>();
+   
     protected static Set<String> enemigosMuertos = new HashSet<>(); 
-    
+    protected List<EnemigoBase> enemigos = new ArrayList<>();
     protected float inicioX1, inicioY1;
     protected float inicioX2, inicioY2;
-    protected String nombreMapa;
+    
     
     public NivelBase(String nombreNivel, String nombreMapa) {
         this.nombreMapa = nombreMapa;
+        this.nombreNivel = nombreNivel;
         cargarMapa();
         definirPosicionesIniciales(); 
     }
@@ -254,15 +257,7 @@ public abstract class NivelBase {
         }
     }
     
-    public TiledMap getMapa() { return this.mapa; }
-    public OrthogonalTiledMapRenderer getMapRenderer() { return this.mapRenderer; }
-    public List<EnemigoBase> getEnemigos() { return this.enemigos; }
-    public int getAnchoMapa() { return this.anchoMapa; }
-    public int getAlturaMapa() { return this.alturaMapa; }
-    public float getInicioX1() { return inicioX1; }
-    public float getInicioY1() { return inicioY1; }
-    public float getInicioX2() { return inicioX2; }
-    public float getInicioY2() { return inicioY2; }
+  
 
     public void dispose() {
         if (this.mapa != null) this.mapa.dispose();
@@ -274,5 +269,16 @@ public abstract class NivelBase {
     
     public void agregarEnemigosMuertos(EnemigoBase enemigo) {
     	this.enemigosMuertos.add(enemigo.getNombre());
-    }
+    }  
+    
+    public TiledMap getMapa() { return this.mapa; }
+    public OrthogonalTiledMapRenderer getMapRenderer() { return this.mapRenderer; }
+    public List<EnemigoBase> getEnemigos() { return this.enemigos; }
+    public int getAnchoMapa() { return this.anchoMapa; }
+    public int getAlturaMapa() { return this.alturaMapa; }
+    public float getInicioX1() { return this.inicioX1; }
+    public float getInicioY1() { return this.inicioY1; }
+    public float getInicioX2() { return this.inicioX2; }
+    public float getInicioY2() { return this.inicioY2; }
+    public String getNombreNivel()  { return this.nombreNivel; }
 }

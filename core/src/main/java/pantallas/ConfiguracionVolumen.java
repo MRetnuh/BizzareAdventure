@@ -30,11 +30,12 @@ public class ConfiguracionVolumen implements Screen {
     	this.screenAnterior = screenAnterior;
         this.JUEGO = juego;
         this.musicaConfig = musica;
+        this.stage = new Stage();
     }
 
     @Override
     public void show() {
-    	this.stage = new Stage(new ScreenViewport());
+    	
         Gdx.input.setInputProcessor(this.stage);
 
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -68,7 +69,7 @@ public class ConfiguracionVolumen implements Screen {
         tabla.add(titulo).padBottom(30).row();
         tabla.add(volumenLabel).padBottom(10).row();
         tabla.add(volumenSlider).width(300).padBottom(30).row();
-        tabla.add(volverBtn).size(200, 50);
+        tabla.add(volverBtn);
 
         this.stage.addActor(tabla);
     }
