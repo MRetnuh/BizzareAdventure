@@ -56,7 +56,6 @@ public class Partida implements Screen {
     private boolean gameOver2 = false;
     private float nuevaX1, nuevaY1;
     private float nuevaX2, nuevaY2;
-    private boolean victoria = false;
     private boolean nivelIniciado  = false;
     
     public Partida(Game juego, Musica musica) {
@@ -102,7 +101,6 @@ public class Partida implements Screen {
             this.stage.addActor(enemigo);
         }
 
-        this.victoria = false;
         this.gameOver1 = false;
         this.gameOver2 = false;
     }
@@ -138,18 +136,11 @@ public class Partida implements Screen {
         System.out.println(personaje2.getX());
         System.out.println(personaje2.getY());
         if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
-            this.victoria = true;
             this.indiceNivelActual++;
-            NivelSuperado nivelSuperado = new NivelSuperado(this.nivelActual.getNombreNivel(), this.JUEGO, this.niveles[this.indiceNivelActual].getNombreNivel());
-             if (this.indiceNivelActual < this.niveles.length) {
-                this.nivelActual = this.niveles[indiceNivelActual];
+            NivelSuperado nivelSuperado = new NivelSuperado(this.nivelActual.getNombreNivel(),this.JUEGO,
+            this.niveles[this.indiceNivelActual].getNombreNivel(),this);
+            if (this.indiceNivelActual < this.niveles.length) {
                 JUEGO.setScreen(nivelSuperado);
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                	 inicializarNivel();
-                }
-            }, 5);
             }
         }
 
@@ -185,6 +176,23 @@ public class Partida implements Screen {
         this.stageHUD.act(delta);
         this.stageHUD.draw();
     }
+    
+    
+    public void inicializarSiguienteNivel() {
+        if (this.indiceNivelActual < this.niveles.length) {
+            this.nivelActual = this.niveles[this.indiceNivelActual];
+            inicializarNivel();
+
+            // 🔹 Detener movimientos residuales
+            if (this.inputController != null) this.inputController.resetearInputs();
+            if (this.personaje1 != null) this.personaje1.detenerMovimiento();
+            if (this.personaje2 != null) this.personaje2.detenerMovimiento();
+
+            // 🔹 Asegurar que los inputs se reasignen al controlador actual
+            Gdx.input.setInputProcessor(this.inputController);
+        }
+    }
+
 
     private void actualizarInputs(float delta) {
         if (this.personaje1.getVida() > 0) {

@@ -268,6 +268,13 @@ public abstract class Personaje extends Actor {
         this.vida++;
     }
     
+    public void detenerMovimiento() {
+        setMoviendoDerecha(false);
+        setMoviendoIzquierda(false);
+        setEstaSaltando(false);
+        setEstaAtacando(false);
+    }
+    
     public boolean getEstaAtacando() {
         return this.estaAtacando;
     }

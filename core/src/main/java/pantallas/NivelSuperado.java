@@ -10,30 +10,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 
 import audios.Musica;
 import estilos.EstiloTexto;
+import juego.Partida;
 
 public class NivelSuperado implements Screen {
-private String nivelSuperado;	
-private String siguienteNivel;
-private Screen screenAnterior;
-private final Game JUEGO;
-private Stage stage;
-private Skin skin;
-private Musica musicaOpciones;	
 
-	public NivelSuperado(String nivelSuperado, Game juego, String siguienteNivel) {
-		this.nivelSuperado = nivelSuperado;
-		this.JUEGO = juego;
-		this.siguienteNivel = siguienteNivel;
-		this.stage = new Stage();
-	}
-	
-	@Override
-		public void show() {
-		Gdx.input.setInputProcessor(this.stage);
+    private String nivelSuperado;	
+    private String siguienteNivel;
+    private final Game JUEGO;
+    private final Partida partida; // 🔹 referencia a la partida
+    private Stage stage;
+    private Skin skin;
+    private Musica musicaOpciones;	
 
+    public NivelSuperado(String nivelSuperado, Game juego, String siguienteNivel, Partida partida) {
+        this.nivelSuperado = nivelSuperado;
+        this.JUEGO = juego;
+        this.siguienteNivel = siguienteNivel;
+        this.partida = partida;
+        this.stage = new Stage();
+    }
+    
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(this.stage);
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Label titulo = new Label(this.nivelSuperado, EstiloTexto.ponerEstiloLabel(60, Color.WHITE));
@@ -52,28 +55,38 @@ private Musica musicaOpciones;
         tabla.add(subTitulo2);
         
         this.stage.addActor(tabla);
-		}
-	
-	 @Override
-	    public void render(float delta) {
-		  Gdx.gl.glClearColor(0, 0, 0, 1);
-	        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	        this.stage.act(delta);
-	        this.stage.draw();
-	    }
 
-	    @Override public void resize(int width, int height) {}
-	    @Override public void pause() {}
-	    @Override public void resume() {}
-	    @Override public void hide() {}
+        // 🔹 Esperar 5 segundos y luego pasar al siguiente nivel
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                pasarASiguienteNivel();
+            }
+        }, 5);
+    }
+    
+    // 🔹 Método que vuelve a la partida con el siguiente nivel ya cargado
+    private void pasarASiguienteNivel() {
+        this.partida.inicializarSiguienteNivel();
+        this.JUEGO.setScreen(this.partida);
+    }
 
-	    @Override
-	    public void dispose() {
-	    	this.stage.dispose();
-	    	this.skin.dispose();
-	    }
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        this.stage.act(delta);
+        this.stage.draw();
+    }
 
-		
-	}
+    @Override public void resize(int width, int height) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
 
-
+    @Override
+    public void dispose() {
+        this.stage.dispose();
+        if (this.skin != null) this.skin.dispose();
+    }
+}

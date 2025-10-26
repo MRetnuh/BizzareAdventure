@@ -113,6 +113,22 @@ public class InputController implements InputProcessor {
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
+	
+	public void resetearInputs() {
+	    derecha1 = false;
+	    izquierda1 = false;
+	    saltar1 = false;
+	    atacar1 = false;
+	    opciones1 = false;
+
+	    derecha2 = false;
+	    izquierda2 = false;
+	    saltar2 = false;
+	    atacar2 = false;
+	    opciones2 = false;
+	}
+
+	
     public boolean getSaltar1() {
         return this.saltar1;
     }
