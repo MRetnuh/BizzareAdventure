@@ -24,6 +24,7 @@ import enemigos.EnemigoBase;
 import estilos.EstiloTexto;
 import input.InputController;
 import jugadores.Jugador;
+import mecanicas.GestorCamara;
 import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
@@ -66,8 +67,8 @@ public class Partida implements Screen {
         this.batch = new SpriteBatch();
         this.stage = new Stage(new ScreenViewport(), this.batch);
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
-        inicializarJugadores();
         this.nivelActual = this.niveles[this.indiceNivelActual];
+        inicializarJugadores();
     }
 
     private boolean detectarColisionNivel(Rectangle hitbox) {
@@ -126,6 +127,8 @@ public class Partida implements Screen {
 
         actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), delta, true);
         actualizarPersonaje(this.JUGADORES[this.JUGADOR2], this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), delta, false);
+        GestorCamara.actualizar(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), 
+        this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
         System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX());
         System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
         System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX());
@@ -139,7 +142,6 @@ public class Partida implements Screen {
             }
         }
 
-        this.nivelActual.actualizarCamara(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), this.JUGADORES[this.JUGADOR2].getPersonajeElegido());
         actualizarHUD();
         this.nivelActual.limpiarEnemigosMuertos();
 
@@ -270,7 +272,7 @@ public class Partida implements Screen {
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
 
-        Personaje otroPersonaje = esJugador1 ? this.JUGADORES[this.JUGADOR2].getPersonajeElegido() : this.JUGADORES[this.JUGADOR2].getPersonajeElegido();
+        Personaje otroPersonaje = esJugador1 ? this.JUGADORES[this.JUGADOR2].getPersonajeElegido() : this.JUGADORES[this.JUGADOR1].getPersonajeElegido();
         if (otroPersonaje != null && otroPersonaje.getVida() > 0) {
             float centroPersonajeX = nuevaX + personaje.getWidth() / 2f;
             float centroOtroX = otroPersonaje.getX() + otroPersonaje.getWidth() / 2f;

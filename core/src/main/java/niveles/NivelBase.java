@@ -60,43 +60,6 @@ public abstract class NivelBase {
         this.alturaMapa = mapa.getProperties().get("height", Integer.class) * this.mapa.getProperties().get("tileheight", Integer.class);
     }
 
-    public void actualizarCamara(OrthographicCamera camara, Personaje p1, Personaje p2) {
-        float centroX;
-        float centroY;
-
-        boolean vivo1 = p1.getVida() > 0;
-        boolean vivo2 = p2.getVida() > 0;
-
-        if (vivo1 && vivo2) {
-            centroX = (p1.getX() + p2.getX()) / 2f + p1.getWidth() / 2f;
-            centroY = (p1.getY() + p2.getY()) / 2f + p1.getHeight() / 2f;
-        } else if (vivo1) {
-            centroX = p1.getX() + p1.getWidth() / 2f;
-            centroY = p1.getY() + p1.getHeight() / 2f;
-        } else if (vivo2) {
-            centroX = p2.getX() + p2.getWidth() / 2f;
-            centroY = p2.getY() + p2.getHeight() / 2f;
-        } else {
-            return;
-        }
-
-        float halfWidth = camara.viewportWidth / 2f;
-        float halfHeight = camara.viewportHeight / 2f;
-
-        centroX = MathUtils.clamp(centroX, halfWidth, this.anchoMapa - halfWidth);
-        centroY = MathUtils.clamp(centroY, halfHeight, this.alturaMapa - halfHeight);
-
-        if (this.anchoMapa < camara.viewportWidth) {
-            centroX = this.anchoMapa / 2f;
-        }
-        if (this.alturaMapa < camara.viewportHeight) {
-            centroY = this.alturaMapa / 2f;
-        }
-
-        camara.position.set(centroX, centroY, 0);
-        camara.update();
-    }
-    
  public boolean destruirCajaEnHitbox(Rectangle hitbox) {
      TiledMapTileLayer tileLayer = (TiledMapTileLayer) this.mapa.getLayers().get("cajasInteractivas");
      if (tileLayer == null) return false;
