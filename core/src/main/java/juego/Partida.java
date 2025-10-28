@@ -45,8 +45,6 @@ public class Partida implements Screen {
     private OrthographicCamera camara;
     private SpriteBatch batch;
     private InputController inputController;
-    private Personaje personaje1;
-    private Personaje personaje2;
     private NivelBase[] niveles = {new Nivel1(), new Nivel2()};
     private NivelBase nivelActual;
     private int indiceNivelActual = 0;
@@ -67,7 +65,7 @@ public class Partida implements Screen {
         this.batch = new SpriteBatch();
         this.stage = new Stage(new ScreenViewport(), this.batch);
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
-
+        inicializarJugadores();
         this.nivelActual = this.niveles[this.indiceNivelActual];
     }
 
@@ -84,20 +82,18 @@ public class Partida implements Screen {
         this.nivelActual.restaurarEstadoCajas();
         this.nivelActual.crearEnemigos();
   
-        if (this.personaje1 != null) {
-        	this.personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
-        	 this.JUGADORES[this.JUGADOR1].generarPersonajeAleatorio();
-        	 this.personaje1 =  this.JUGADORES[this.JUGADOR1].getPersonajeElegido();
+        if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido() != null) {
+        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
+        	this.JUGADORES[this.JUGADOR1].generarPersonajeAleatorio();
         }
-        if (this.personaje2 != null) {
-        	this.personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
+        if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido() != null) {
+        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
         	this.JUGADORES[this.JUGADOR2].generarPersonajeAleatorio();
-       	 	this.personaje2 = this.JUGADORES[this.JUGADOR2].getPersonajeElegido();
         }
 
         this.stage.clear();
-        if (this.personaje1 != null) this.stage.addActor(this.personaje1);
-        if (this.personaje2 != null) this.stage.addActor(this.personaje2);
+        if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido() != null) this.stage.addActor(this.JUGADORES[this.JUGADOR1].getPersonajeElegido());
+        if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido() != null) this.stage.addActor(this.JUGADORES[this.JUGADOR2].getPersonajeElegido());
         for (EnemigoBase enemigo : this.nivelActual.getEnemigos()) {
             this.stage.addActor(enemigo);
         }
@@ -108,16 +104,12 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
-    	inicializarJugadores();
         if (!this.nivelIniciado) {
             if (!this.JUGADORES[this.JUGADOR1].getPartidaEmpezada()) this.JUGADORES[this.JUGADOR1].generarPersonajeAleatorio();
             if (!this.JUGADORES[this.JUGADOR2].getPartidaEmpezada()) this.JUGADORES[this.JUGADOR2].generarPersonajeAleatorio();
 
             this.inputController = new InputController();
             this.nivelIniciado = true;
-
-            this.personaje1 = this.JUGADORES[this.JUGADOR1].getPersonajeElegido();
-            this.personaje2 = this.JUGADORES[this.JUGADOR2].getPersonajeElegido();
 
             inicializarNivel();
         }
@@ -131,12 +123,12 @@ public class Partida implements Screen {
 
         actualizarInputs(delta);
 
-        actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.personaje1, delta, true);
-        actualizarPersonaje(this.JUGADORES[this.JUGADOR2], this.personaje2, delta, false);
-        System.out.println(personaje1.getX());
-        System.out.println(personaje1.getY());
-        System.out.println(personaje2.getX());
-        System.out.println(personaje2.getY());
+        actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), delta, true);
+        actualizarPersonaje(this.JUGADORES[this.JUGADOR2], this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), delta, false);
+        System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX());
+        System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
+        System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX());
+        System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
         if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.indiceNivelActual++;
             NivelSuperado nivelSuperado = new NivelSuperado(this.nivelActual.getNombreNivel(),this.JUEGO,
@@ -146,7 +138,7 @@ public class Partida implements Screen {
             }
         }
 
-        this.nivelActual.actualizarCamara(this.camara, this.personaje1, this.personaje2);
+        this.nivelActual.actualizarCamara(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), this.JUGADORES[this.JUGADOR2].getPersonajeElegido());
         actualizarHUD();
         this.nivelActual.limpiarEnemigosMuertos();
 
@@ -168,7 +160,8 @@ public class Partida implements Screen {
                             this.stage.addActor(b);
                         }
                     }
-                    enemigo.actualizarIA(delta, this.personaje1, this.personaje2, this.musicaPartida.getVolumen(), this.nivelActual);
+                    enemigo.actualizarIA(delta, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), 
+                    this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.musicaPartida.getVolumen(), this.nivelActual);
                 }
             }
         }
@@ -187,8 +180,8 @@ public class Partida implements Screen {
 
             // 🔹 Detener movimientos residuales
             if (this.inputController != null) this.inputController.resetearInputs();
-            if (this.personaje1 != null) this.personaje1.detenerMovimiento();
-            if (this.personaje2 != null) this.personaje2.detenerMovimiento();
+            if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido() != null) this.JUGADORES[this.JUGADOR1].getPersonajeElegido().detenerMovimiento();
+            if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido() != null) this.JUGADORES[this.JUGADOR2].getPersonajeElegido().detenerMovimiento();
 
             Gdx.input.setInputProcessor(this.inputController);
         }
@@ -196,12 +189,12 @@ public class Partida implements Screen {
 
 
     private void actualizarInputs(float delta) {
-        if (this.personaje1.getVida() > 0) {
-            this.personaje1.setMoviendoDerecha(this.inputController.getDerecha1());
-            this.personaje1.setMoviendoIzquierda(this.inputController.getIzquierda1());
-            this.personaje1.setEstaSaltando(this.inputController.getSaltar1());
+        if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida() > 0) {
+        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setMoviendoDerecha(this.inputController.getDerecha1());
+        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setMoviendoIzquierda(this.inputController.getIzquierda1());
+        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setEstaSaltando(this.inputController.getSaltar1());
             if (this.inputController.getAtacar1()) {
-                this.personaje1.iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
+            	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
                 this.inputController.setAtacarFalso1();
             }
             if (this.inputController.getOpciones1()) {
@@ -210,12 +203,12 @@ public class Partida implements Screen {
             }
         }
 
-        if (this.personaje2.getVida() > 0) {
-            this.personaje2.setMoviendoDerecha(this.inputController.getDerecha2());
-            this.personaje2.setMoviendoIzquierda(this.inputController.getIzquierda2());
-            this.personaje2.setEstaSaltando(this.inputController.getSaltar2());
+        if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida() > 0) {
+        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setMoviendoDerecha(this.inputController.getDerecha2());
+        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setMoviendoIzquierda(this.inputController.getIzquierda2());
+        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setEstaSaltando(this.inputController.getSaltar2());
             if (this.inputController.getAtacar2()) {
-                this.personaje2.iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
+            	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
                 this.inputController.setAtacarFalso2();
             }
             if (this.inputController.getOpciones2()) {
@@ -276,7 +269,7 @@ public class Partida implements Screen {
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
 
-        Personaje otroPersonaje = esJugador1 ? this.personaje2 : this.personaje1;
+        Personaje otroPersonaje = esJugador1 ? this.JUGADORES[this.JUGADOR2].getPersonajeElegido() : this.JUGADORES[this.JUGADOR2].getPersonajeElegido();
         if (otroPersonaje != null && otroPersonaje.getVida() > 0) {
             float centroPersonajeX = nuevaX + personaje.getWidth() / 2f;
             float centroOtroX = otroPersonaje.getX() + otroPersonaje.getWidth() / 2f;
@@ -347,10 +340,10 @@ public class Partida implements Screen {
     
     private void inicializarHUD() {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
-        this.nombrePersonaje1Label = new Label("Nombre: " + this.personaje1.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        this.vidaPersonaje1Label = new Label("Vida: " + this.personaje1.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        this.nombrePersonaje2Label = new Label("Nombre: " + this.personaje2.getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-        this.vidaPersonaje2Label = new Label("Vida: " + this.personaje2.getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+        this.nombrePersonaje1Label = new Label("Nombre: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        this.vidaPersonaje1Label = new Label("Vida: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
+        this.nombrePersonaje2Label = new Label("Nombre: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
+        this.vidaPersonaje2Label = new Label("Vida: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
 
         Table table1 = new Table(); Table table2 = new Table();
         table1.left().top(); table2.right().top();
@@ -369,10 +362,10 @@ public class Partida implements Screen {
     }
 
     private void actualizarHUD() {
-        this.nombrePersonaje1Label.setText("Nombre: " + this.personaje1.getNombre());
-        this.vidaPersonaje1Label.setText("Vida: " + this.personaje1.getVida());
-        this.nombrePersonaje2Label.setText("Nombre: " + this.personaje2.getNombre());
-        this.vidaPersonaje2Label.setText("Vida: " + this.personaje2.getVida());
+        this.nombrePersonaje1Label.setText("Nombre: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getNombre());
+        this.vidaPersonaje1Label.setText("Vida: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida());
+        this.nombrePersonaje2Label.setText("Nombre: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getNombre());
+        this.vidaPersonaje2Label.setText("Vida: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida());
     }
 
     private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
@@ -403,30 +396,19 @@ public class Partida implements Screen {
         
 
         if (cajaRota) {
-            if (this.personaje1.getVida() <= 0 && this.personaje2.getVida() > 0) {
-                this.personaje1.setPosicion(this.personaje2.getX(), this.personaje2.getY());
-                this.personaje1.aumentarVida();
+            if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida() <= 0 && this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida() > 0) {
+            	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setPosicion(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX(), this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
+            	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().aumentarVida();
                 this.gameOver1 = false;
-            } else if (this.personaje2.getVida() <= 0 && this.personaje1.getVida() > 0) {
-                this.personaje2.setPosicion(this.personaje1.getX(), this.personaje1.getY());
-                this.personaje2.aumentarVida();
+            } else if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida() <= 0 && this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida() > 0) {
+            	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setPosicion(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX(), this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
+            	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().aumentarVida();
                 this.gameOver2 = false;
             } else {
-                Personaje nuevoPersonaje = jugador.cambiarPersonaje(
-                    esJugador1 ? this.nuevaX1 : this.nuevaX2,
-                    esJugador1 ? this.nuevaY1 : this.nuevaY2
-                );
-                
-                if (esJugador1) {
-                    this.stage.getActors().removeValue(this.personaje1, true);
-                    this.personaje1 = nuevoPersonaje;
-                    this.stage.addActor(this.personaje1);
-                } else {
-                    this.stage.getActors().removeValue(this.personaje2, true);
-                    this.personaje2 = nuevoPersonaje;
-                    this.stage.addActor(this.personaje2);
-                }
-            }
+                  this.stage.getActors().removeValue(jugador.getPersonajeElegido(), true);
+                  this.stage.addActor(jugador.cambiarPersonaje(esJugador1 ? this.nuevaX1 : this.nuevaX2,
+                  esJugador1 ? this.nuevaY1 : this.nuevaY2));
+              }
             actualizarHUD();
         }
     }
