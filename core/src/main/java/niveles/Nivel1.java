@@ -1,10 +1,12 @@
 package niveles;
 
 import enemigos.EnemigoTirador;
+import enemigos.TipoEnemigo;
 import enemigos.EnemigoBase;
 import enemigos.EnemigoPerseguidor;
 import enemigos.EnemigoPesado;
 import personajes.Personaje;
+import personajes.TipoAtaque;
 
 public class Nivel1 extends NivelBase {
 
@@ -25,24 +27,24 @@ public class Nivel1 extends NivelBase {
         this.enemigos.clear(); 
 
         Object[][] enemigosDatos = {
-            {"enemigo1", "rango", 600f, 928f},
-            {"enemigo2", "rango", 800f, 928f},
-            {"enemigo3", "perseguidor", 2000f, 928f},
-            {"enemigo4", "pesado", 700f, 928f}
+            {"enemigo1", TipoEnemigo.TIRADOR, 600f, 928f},
+            {"enemigo2", TipoEnemigo.TIRADOR, 800f, 928f},
+            {"enemigo3", TipoEnemigo.PERSEGUIDOR, 2000f, 928f},
+            {"enemigo4", TipoEnemigo.PESADO, 700f, 928f}
         };
 
         for (Object[] datos : enemigosDatos) {
             String id = (String) datos[0];
-            String tipo = (String) datos[1];
+            TipoEnemigo tipo = (TipoEnemigo) datos[1];
             float x = (float) datos[2];
             float y = (float) datos[3];
-
+            
             if (!super.enemigosMuertos.contains(id)) {
                 EnemigoBase enemigo = null;
 
-                if (tipo.equals("perseguidor")) {
+                if (tipo == TipoEnemigo.PERSEGUIDOR) {
                     enemigo = new EnemigoPerseguidor(id, x, y);
-                } else if(tipo.equals("rango")) {
+                } else if(tipo == TipoEnemigo.TIRADOR) {
                     enemigo = new EnemigoTirador(id, x, y);
                 } else {
                 	enemigo = new EnemigoPesado(id, x, y);

@@ -61,7 +61,7 @@ public abstract class Personaje extends Actor {
     protected final float COOLDOWNDISPARO = 1.0f;
     
     
-    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida, TipoAtaque tipoAtaque) {//-> pasale el stage aca
+    public Personaje(String nombre, int velocidad, String nombreAtaque, int vida, TipoAtaque tipoAtaque) {
         this.nombre = nombre;
         this.velocidad = velocidad;
         this.nombreAtaque = nombreAtaque;
@@ -185,7 +185,7 @@ public abstract class Personaje extends Actor {
 
 
     public void atacar(float delta) {
-        if (this.tipoAtaque.getTipo().equals("Melee")) {
+        if (this.tipoAtaque == TipoAtaque.MELEE) {
             if (this.estaAtacando) {
                 this.tiempoAtaque += delta;
                 if (this.tiempoAtaque >= this.animAtaqueDerecha.getAnimationDuration()) {
@@ -218,7 +218,7 @@ public abstract class Personaje extends Actor {
             this.estaAtacando = true;
             this.tiempoAtaque = 0f;
 
-            if (this.tipoAtaque.getTipo().equals("Distancia")) {
+            if (this.tipoAtaque == TipoAtaque.DISTANCIA) {
             	this.tiempoAtaque += 0.5;
                 String ruta = mirandoDerecha
                     ? "imagenes/personajes/enemigo/ataque/Bala_Derecha.png" 

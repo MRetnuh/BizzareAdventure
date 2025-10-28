@@ -15,7 +15,7 @@ public class EnemigoPerseguidor extends EnemigoBase {
 	
 
     public EnemigoPerseguidor(String nombre, float x, float y) {
-        super(nombre, 400, "EspadaCorte", 1, TipoAtaque.MELEE);
+        super(nombre, 400, "EspadaCorte", 1, TipoEnemigo.PERSEGUIDOR);
         setPosition(x, y);
         super.puntoInicialX = x;
     }

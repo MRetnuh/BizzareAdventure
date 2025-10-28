@@ -16,7 +16,7 @@ import personajes.TipoAtaque;
 public class EnemigoTirador extends EnemigoBase {
 
     public EnemigoTirador(String nombre, float x, float y) {
-        super(nombre, 100, "Disparo", 1, TipoAtaque.DISTANCIA);
+        super(nombre, 100, "Disparo", 1, TipoEnemigo.TIRADOR);
         setPosition(x, y);
         super.puntoInicialX = x;
     }

@@ -16,8 +16,8 @@ public abstract class EnemigoBase extends Personaje{
 	  	protected final float TIEMPOPARAOLVIDAR = 1.0f; 
 	  	protected final float TOLERANCIAVERTICAL = 100f; 
 	    
-	public EnemigoBase(String nombre, int velocidad, String nombreAtaque, int vida, TipoAtaque tipoAtaque) {
-		super(nombre, velocidad, nombreAtaque, vida, tipoAtaque);
+	public EnemigoBase(String nombre, int velocidad, String nombreAtaque, int vida, TipoEnemigo tipo) {
+		super(nombre, velocidad, nombreAtaque, vida, null);
 		
 	}
 	

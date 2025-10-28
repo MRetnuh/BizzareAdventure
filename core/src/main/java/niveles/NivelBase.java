@@ -35,7 +35,7 @@ public abstract class NivelBase {
     private final int ID_TILE_TRANSPARENTE = 0;
     private Set<String> cajasDestruidas = new HashSet<>();
    
-    protected static Set<String> enemigosMuertos = new HashSet<>(); 
+    protected Set<String> enemigosMuertos = new HashSet<>(); 
     protected List<EnemigoBase> enemigos = new ArrayList<>();
     protected float inicioX1, inicioY1;
     protected float inicioX2, inicioY2;

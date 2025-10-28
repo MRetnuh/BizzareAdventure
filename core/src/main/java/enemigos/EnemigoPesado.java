@@ -17,7 +17,7 @@ import proyectiles.Proyectil;
 public class EnemigoPesado extends EnemigoBase{
 
 	public EnemigoPesado(String nombre, float x, float y) {
-		super(nombre, 50, "Disparo", 5, TipoAtaque.DISTANCIA);
+		super(nombre, 50, "Disparo", 5, TipoEnemigo.PESADO);
 		setPosition(x, y);
 		super.puntoInicialX = x;
 	}

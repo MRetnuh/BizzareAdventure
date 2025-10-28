@@ -29,6 +29,7 @@ import niveles.NivelBase;
 import pantallas.NivelSuperado;
 import pantallas.Opciones;
 import personajes.Personaje;
+import personajes.TipoAtaque;
 import proyectiles.Proyectil;
 
 public class Partida implements Screen {
@@ -36,8 +37,8 @@ public class Partida implements Screen {
     private Musica musicaPartida;
     private Stage stage;
     private Stage stageHUD;
-    private final Jugador jugador1 = new Jugador();
-    private final Jugador jugador2 = new Jugador();
+    private final int JUGADOR1 = 0, JUGADOR2 = 1;
+    private final Jugador[] JUGADORES = new Jugador[2];
     private final float MAX_DISTANCIA_X = Gdx.graphics.getWidth() * 0.95f;
     private final float MAX_DISTANCIA_Y = Gdx.graphics.getHeight() * 0.95f;
     private Skin skin;
@@ -82,16 +83,16 @@ public class Partida implements Screen {
 
         this.nivelActual.restaurarEstadoCajas();
         this.nivelActual.crearEnemigos();
-
+  
         if (this.personaje1 != null) {
         	this.personaje1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
-        	 this.jugador1.generarPersonajeAleatorio();
-        	 this.personaje1 = this.jugador1.getPersonajeElegido();
+        	 this.JUGADORES[this.JUGADOR1].generarPersonajeAleatorio();
+        	 this.personaje1 =  this.JUGADORES[this.JUGADOR1].getPersonajeElegido();
         }
         if (this.personaje2 != null) {
         	this.personaje2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
-        	this.jugador2.generarPersonajeAleatorio();
-       	 	this.personaje2 = this.jugador2.getPersonajeElegido();
+        	this.JUGADORES[this.JUGADOR2].generarPersonajeAleatorio();
+       	 	this.personaje2 = this.JUGADORES[this.JUGADOR2].getPersonajeElegido();
         }
 
         this.stage.clear();
@@ -107,15 +108,16 @@ public class Partida implements Screen {
 
     @Override
     public void show() {
+    	inicializarJugadores();
         if (!this.nivelIniciado) {
-            if (!this.jugador1.getPartidaEmpezada()) this.jugador1.generarPersonajeAleatorio();
-            if (!this.jugador2.getPartidaEmpezada()) this.jugador2.generarPersonajeAleatorio();
+            if (!this.JUGADORES[this.JUGADOR1].getPartidaEmpezada()) this.JUGADORES[this.JUGADOR1].generarPersonajeAleatorio();
+            if (!this.JUGADORES[this.JUGADOR2].getPartidaEmpezada()) this.JUGADORES[this.JUGADOR2].generarPersonajeAleatorio();
 
             this.inputController = new InputController();
             this.nivelIniciado = true;
 
-            this.personaje1 = this.jugador1.getPersonajeElegido();
-            this.personaje2 = this.jugador2.getPersonajeElegido();
+            this.personaje1 = this.JUGADORES[this.JUGADOR1].getPersonajeElegido();
+            this.personaje2 = this.JUGADORES[this.JUGADOR2].getPersonajeElegido();
 
             inicializarNivel();
         }
@@ -129,8 +131,8 @@ public class Partida implements Screen {
 
         actualizarInputs(delta);
 
-        actualizarPersonaje(this.jugador1, this.personaje1, delta, true);
-        actualizarPersonaje(this.jugador2, this.personaje2, delta, false);
+        actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.personaje1, delta, true);
+        actualizarPersonaje(this.JUGADORES[this.JUGADOR2], this.personaje2, delta, false);
         System.out.println(personaje1.getX());
         System.out.println(personaje1.getY());
         System.out.println(personaje2.getX());
@@ -188,7 +190,6 @@ public class Partida implements Screen {
             if (this.personaje1 != null) this.personaje1.detenerMovimiento();
             if (this.personaje2 != null) this.personaje2.detenerMovimiento();
 
-            // 🔹 Asegurar que los inputs se reasignen al controlador actual
             Gdx.input.setInputProcessor(this.inputController);
         }
     }
@@ -240,7 +241,7 @@ public class Partida implements Screen {
             Iterator<EnemigoBase> iter = this.nivelActual.getEnemigos().iterator();
             while(iter.hasNext()) {
                 EnemigoBase e = iter.next();
-                if(personaje.getTipoAtaque().getTipo().equals("Melee") && personaje.getEstaAtacando()) {
+                if(personaje.getTipoAtaque() == TipoAtaque.MELEE && personaje.getEstaAtacando()) {
                     if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                         e.reducirVida();
                         if (e.getVida() <= 0) {
@@ -250,7 +251,7 @@ public class Partida implements Screen {
 
                     }
                 }
-                 if (personaje.getTipoAtaque().getTipo().equals("Distancia")) {
+                 if (personaje.getTipoAtaque() == TipoAtaque.DISTANCIA) {
                     Iterator<Proyectil> it = personaje.getBalas().iterator(); 
                     while (it.hasNext()) {
                         Proyectil b = it.next();
@@ -321,7 +322,7 @@ public class Partida implements Screen {
         personaje.atacar(delta);
 
         for (EnemigoBase e : this.nivelActual.getEnemigos()) {
-        	if(e.getTipoAtaque().getTipo().equals("Melee") && e.getHitbox().overlaps(personaje.getHitbox())) {
+        	if(e.getTipoAtaque() == TipoAtaque.MELEE && e.getHitbox().overlaps(personaje.getHitbox())) {
         		personaje.reducirVida();
         	}
         	
@@ -329,7 +330,7 @@ public class Partida implements Screen {
             while (it.hasNext()) {
                 Proyectil b = it.next();
                 if (b.getHitbox().overlaps(personaje.getHitbox())) {
-                		if(personaje.getEstaAtacando() && personaje.getTipoAtaque().getTipo().equals("Melee")) {
+                		if(personaje.getEstaAtacando() && personaje.getTipoAtaque() == TipoAtaque.MELEE) {
                 			EfectoSonido.reproducir("Parry", this.musicaPartida.getVolumen());
                 			b.desactivar();
                 		}
@@ -441,6 +442,13 @@ public class Partida implements Screen {
         this.stageHUD.dispose();
         if (this.skin != null) this.skin.dispose();
     }
+    
+    private void inicializarJugadores() {
+    	for (int i = 0; i < JUGADORES.length; i++) {
+            JUGADORES[i] = new Jugador(); 
+        }
+    }
+
 
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
