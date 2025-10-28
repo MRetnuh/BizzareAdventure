@@ -1,27 +1,18 @@
 package juego;
 
 import java.util.Iterator;
-
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
 import audios.EfectoSonido;
 import audios.Musica;
-import enemigos.EnemigoTirador;
 import enemigos.TipoEnemigo;
 import enemigos.EnemigoBase;
-import estilos.EstiloTexto;
 import input.InputController;
 import jugadores.Jugador;
 import mecanicas.GestorCamara;
@@ -52,8 +43,6 @@ public class Partida implements Screen {
     private NivelBase[] niveles = {new Nivel1(), new Nivel2()};
     private NivelBase nivelActual;
     private int indiceNivelActual = 0;
-    private Label nombrePersonaje1Label, vidaPersonaje1Label;
-    private Label nombrePersonaje2Label, vidaPersonaje2Label;
     private final Game JUEGO;
     private boolean gameOver1 = false;
     private boolean gameOver2 = false;
@@ -71,13 +60,6 @@ public class Partida implements Screen {
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
         this.nivelActual = this.niveles[this.indiceNivelActual];
         inicializarJugadores();
-    }
-
-    private boolean detectarColisionNivel(Rectangle hitbox) {
-        if (this.nivelActual != null) {
-            return this.nivelActual.detectarColision(hitbox);
-        }
-        return false;
     }
 
     private void inicializarNivel() {
@@ -274,7 +256,7 @@ public class Partida implements Screen {
         }
 
 
-        boolean estaSobreElSuelo = detectarColisionNivel(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
+        boolean estaSobreElSuelo = this.nivelActual.detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
         personaje.guardarPosicionAnterior();
         personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa());
 
@@ -412,8 +394,7 @@ public class Partida implements Screen {
             JUGADORES[i] = new Jugador(); 
         }
     }
-
-
+    
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
     @Override public void resume() {}
