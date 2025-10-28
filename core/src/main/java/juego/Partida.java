@@ -25,6 +25,7 @@ import estilos.EstiloTexto;
 import input.InputController;
 import jugadores.Jugador;
 import mecanicas.GestorCamara;
+import mecanicas.GestorHUD;
 import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
@@ -39,6 +40,7 @@ public class Partida implements Screen {
     private Musica musicaPartida;
     private Stage stage;
     private Stage stageHUD;
+    private GestorHUD gestorHUD;
     private final int JUGADOR1 = 0, JUGADOR2 = 1;
     private final Jugador[] JUGADORES = new Jugador[2];
     private final float MAX_DISTANCIA_X = Gdx.graphics.getWidth() * 0.95f;
@@ -115,8 +117,10 @@ public class Partida implements Screen {
 
             inicializarNivel();
         }
-
-        inicializarHUD();
+        this.gestorHUD = new GestorHUD(this.stageHUD, 
+        	    this.JUGADORES[this.JUGADOR1], 
+        	    this.JUGADORES[this.JUGADOR2]);
+        
         Gdx.input.setInputProcessor(this.inputController);
     }
 
@@ -126,13 +130,19 @@ public class Partida implements Screen {
         actualizarInputs(delta);
 
         actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), delta, true);
+        
         actualizarPersonaje(this.JUGADORES[this.JUGADOR2], this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), delta, false);
+        
         GestorCamara.actualizar(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), 
         this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
+        
+        
         System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX());
         System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
         System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX());
         System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
+        
+        
         if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
             this.indiceNivelActual++;
             NivelSuperado nivelSuperado = new NivelSuperado(this.nivelActual.getNombreNivel(),this.JUEGO,
@@ -142,7 +152,7 @@ public class Partida implements Screen {
             }
         }
 
-        actualizarHUD();
+        this.gestorHUD.actualizar();
         this.nivelActual.limpiarEnemigosMuertos();
 
         this.nivelActual.getMapRenderer().setView(this.camara);
@@ -181,7 +191,6 @@ public class Partida implements Screen {
             this.nivelActual = this.niveles[this.indiceNivelActual];
             inicializarNivel();
 
-            // 🔹 Detener movimientos residuales
             if (this.inputController != null) this.inputController.resetearInputs();
             if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido() != null) this.JUGADORES[this.JUGADOR1].getPersonajeElegido().detenerMovimiento();
             if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido() != null) this.JUGADORES[this.JUGADOR2].getPersonajeElegido().detenerMovimiento();
@@ -340,36 +349,6 @@ public class Partida implements Screen {
 
         detectarYEliminarTile(personaje, jugador, esJugador1);
     }
-    
-    private void inicializarHUD() {
-        this.skin = new Skin(Gdx.files.internal("uiskin.json"));
-        this.nombrePersonaje1Label = new Label("Nombre: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        this.vidaPersonaje1Label = new Label("Vida: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida(), EstiloTexto.ponerEstiloLabel(40, Color.RED));
-        this.nombrePersonaje2Label = new Label("Nombre: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getNombre(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-        this.vidaPersonaje2Label = new Label("Vida: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida(), EstiloTexto.ponerEstiloLabel(40, Color.BLUE));
-
-        Table table1 = new Table(); Table table2 = new Table();
-        table1.left().top(); table2.right().top();
-        table1.add(this.nombrePersonaje1Label).size(350, 50).padBottom(5).row();
-        table1.add(this.vidaPersonaje1Label).size(350, 50);
-        table2.add(this.nombrePersonaje2Label).size(350, 50).padBottom(5).row();
-        table2.add(this.vidaPersonaje2Label).size(350, 50);
-
-        Container<Table> cont1 = new Container<>(table1);
-        Container<Table> cont2 = new Container<>(table2);
-        cont1.setSize(400, 130); cont2.setSize(400, 130);
-        cont1.setBackground(skin.getDrawable("default-round")); cont2.setBackground(skin.getDrawable("default-round"));
-        cont1.setPosition(0, Gdx.graphics.getHeight() - cont1.getHeight());
-        cont2.setPosition(Gdx.graphics.getWidth() - cont2.getWidth(), Gdx.graphics.getHeight() - cont2.getHeight());
-        this.stageHUD.addActor(cont1); this.stageHUD.addActor(cont2);
-    }
-
-    private void actualizarHUD() {
-        this.nombrePersonaje1Label.setText("Nombre: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getNombre());
-        this.vidaPersonaje1Label.setText("Vida: " + this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida());
-        this.nombrePersonaje2Label.setText("Nombre: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getNombre());
-        this.vidaPersonaje2Label.setText("Vida: " + this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida());
-    }
 
     private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
         if (!personaje.getEstaAtacando()) {
@@ -412,7 +391,7 @@ public class Partida implements Screen {
                   this.stage.addActor(jugador.cambiarPersonaje(esJugador1 ? this.nuevaX1 : this.nuevaX2,
                   esJugador1 ? this.nuevaY1 : this.nuevaY2));
               }
-            actualizarHUD();
+            this.gestorHUD.actualizar();
         }
     }
     public void abrirOpciones() {
@@ -422,9 +401,9 @@ public class Partida implements Screen {
     @Override
     public void dispose() {
         for (NivelBase nivel : this.niveles) nivel.dispose();
+        if (this.gestorHUD != null) this.gestorHUD.dispose();
         this.batch.dispose();
         this.stage.dispose();
-        this.stageHUD.dispose();
         if (this.skin != null) this.skin.dispose();
     }
     
