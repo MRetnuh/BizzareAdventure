@@ -16,8 +16,11 @@ public abstract class EnemigoBase extends Personaje{
 	  	protected final float TIEMPOPARAOLVIDAR = 1.0f; 
 	  	protected final float TOLERANCIAVERTICAL = 100f; 
 	    
+	  	private TipoEnemigo tipoEnemigo;
+	  	
 	public EnemigoBase(String nombre, int velocidad, String nombreAtaque, int vida, TipoEnemigo tipo) {
 		super(nombre, velocidad, nombreAtaque, vida, null);
+		this.tipoEnemigo = tipo;
 		
 	}
 	
@@ -73,6 +76,10 @@ public abstract class EnemigoBase extends Personaje{
 	        if (super.getX() > this.puntoInicialX + this.rangoMovimiento) this.moviendoDerecha = false;
 	        if (super.getX() < this.puntoInicialX - this.rangoMovimiento) this.moviendoDerecha = true;
 	    }
+	
+	public TipoEnemigo getTipoEnemigo() {
+		return this.tipoEnemigo;
+	}
 }
 
 

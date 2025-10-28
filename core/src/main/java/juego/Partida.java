@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import audios.EfectoSonido;
 import audios.Musica;
 import enemigos.EnemigoTirador;
+import enemigos.TipoEnemigo;
 import enemigos.EnemigoBase;
 import estilos.EstiloTexto;
 import input.InputController;
@@ -315,7 +316,7 @@ public class Partida implements Screen {
         personaje.atacar(delta);
 
         for (EnemigoBase e : this.nivelActual.getEnemigos()) {
-        	if(e.getTipoAtaque() == TipoAtaque.MELEE && e.getHitbox().overlaps(personaje.getHitbox())) {
+        	if(e.getTipoEnemigo() == TipoEnemigo.PERSEGUIDOR && e.getHitbox().overlaps(personaje.getHitbox())) {
         		personaje.reducirVida();
         	}
         	
