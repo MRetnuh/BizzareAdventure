@@ -171,19 +171,6 @@ public abstract class Personaje extends Actor {
         }
     }
 
-
-
-
-    public void actualizarGravedad(float delta, boolean estaEnElSuelo, int mapHeight) {
-        if (!estaEnElSuelo) {
-            this.velocidadCaida += this.GRAVEDAD * delta;
-            super.setY(getY() + this.velocidadCaida * delta); 
-        } else {
-            this.velocidadCaida = 0;
-        }
-    }
-
-
     public void atacar(float delta) {
         if (this.tipoAtaque == TipoAtaque.MELEE) {
             if (this.estaAtacando) {
@@ -267,6 +254,9 @@ public abstract class Personaje extends Actor {
     
     public void reducirVida() {
         this.vida--;
+        if(this.vida <= 0) {
+        	this.vida = 0;
+        }
     }
    
     public void aumentarVida() {

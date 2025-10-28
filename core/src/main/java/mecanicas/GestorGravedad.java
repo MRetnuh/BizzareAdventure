@@ -22,7 +22,6 @@ public class GestorGravedad {
             personaje.setVelocidadCaida(0);
         }
 
-        // Si cae fuera del mapa
         if (personaje.getY() < -190) {
             personaje.reducirVida();
         }

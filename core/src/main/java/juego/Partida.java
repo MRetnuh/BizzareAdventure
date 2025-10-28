@@ -16,6 +16,7 @@ import enemigos.EnemigoBase;
 import input.InputController;
 import jugadores.Jugador;
 import mecanicas.GestorCamara;
+import mecanicas.GestorGravedad;
 import mecanicas.GestorHUD;
 import niveles.Nivel1;
 import niveles.Nivel2;
@@ -256,10 +257,8 @@ public class Partida implements Screen {
         }
 
 
-        boolean estaSobreElSuelo = this.nivelActual.detectarColision(new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16));
-        personaje.guardarPosicionAnterior();
-        personaje.actualizarGravedad(delta, estaSobreElSuelo, this.nivelActual.getAlturaMapa());
-
+        GestorGravedad.aplicarGravedad(personaje, delta, nivelActual);
+        
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
 
