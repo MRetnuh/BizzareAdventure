@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import audios.EfectoSonido;
@@ -18,6 +17,7 @@ import jugadores.Jugador;
 import mecanicas.GestorCamara;
 import mecanicas.GestorGravedad;
 import mecanicas.GestorHUD;
+import mecanicas.GestorMovimiento;
 import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
@@ -47,8 +47,6 @@ public class Partida implements Screen {
     private final Game JUEGO;
     private boolean gameOver1 = false;
     private boolean gameOver2 = false;
-    private float nuevaX1, nuevaY1;
-    private float nuevaX2, nuevaY2;
     private boolean nivelIniciado  = false;
     
     public Partida(Game juego, Musica musica) {
@@ -126,7 +124,10 @@ public class Partida implements Screen {
         System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
         
         
-        if (this.nivelActual.comprobarVictoria(this.nuevaX1, this.nuevaY1, this.nuevaX2, this.nuevaY2)) {
+        if (this.nivelActual.comprobarVictoria(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX(),
+                this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY(),
+                this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX(),
+                this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY())) {
             this.indiceNivelActual++;
             NivelSuperado nivelSuperado = new NivelSuperado(this.nivelActual.getNombreNivel(),this.JUEGO,
             this.niveles[this.indiceNivelActual].getNombreNivel(),this);
@@ -259,51 +260,8 @@ public class Partida implements Screen {
 
         GestorGravedad.aplicarGravedad(personaje, delta, nivelActual);
         
-        float nuevaX = personaje.getNuevaX(delta);
-        float nuevaY = personaje.getNuevaY(delta);
-
-        Personaje otroPersonaje = esJugador1 ? this.JUGADORES[this.JUGADOR2].getPersonajeElegido() : this.JUGADORES[this.JUGADOR1].getPersonajeElegido();
-        if (otroPersonaje != null && otroPersonaje.getVida() > 0) {
-            float centroPersonajeX = nuevaX + personaje.getWidth() / 2f;
-            float centroOtroX = otroPersonaje.getX() + otroPersonaje.getWidth() / 2f;
-            float distanciaX = Math.abs(centroPersonajeX - centroOtroX);
-
-            float centroPersonajeY = nuevaY + personaje.getHeight() / 2f;
-            float centroOtroY = otroPersonaje.getY() + otroPersonaje.getHeight() / 2f;
-            float distanciaY = Math.abs(centroPersonajeY - centroOtroY);
-
-            if (distanciaX > this.MAX_DISTANCIA_X) nuevaX = personaje.getX();
-            if (distanciaY > this.MAX_DISTANCIA_Y) nuevaY = personaje.getY();
-        }
-
-        if (esJugador1) {
-            this.nuevaX1 = nuevaX;
-            this.nuevaY1 = nuevaY;
-        } else {
-            this.nuevaX2 = nuevaX;
-            this.nuevaY2 = nuevaY;
-        }
-
-        if (nuevaY < -190) personaje.reducirVida();
-
-        Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());
-        hitboxTentativaX.setPosition(nuevaX, personaje.getY());
-        boolean colisionX =  this.nivelActual.detectarColision(hitboxTentativaX);
-
-        Rectangle hitboxTentativaY = new Rectangle(personaje.getHitbox());
-        hitboxTentativaY.setPosition(personaje.getX(), nuevaY);
-        boolean colisionY = this.nivelActual.detectarColision(hitboxTentativaY);
-
-        if (colisionY) {
-            personaje.setVelocidadCaida(0);
-            personaje.setY(personaje.getPrevY());
-        }
-
-        if (!colisionX || !colisionY) {
-            float finalX = !colisionX ? nuevaX : personaje.getX();
-            float finalY = !colisionY ? nuevaY : personaje.getY();
-            personaje.aplicarMovimiento(finalX, finalY, delta, this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
-        }
+        GestorMovimiento.aplicarMovimiento(personaje, delta, nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2, 
+	    esJugador1, this.MAX_DISTANCIA_X, this.MAX_DISTANCIA_Y);
 
         personaje.atacar(delta);
 
@@ -369,8 +327,11 @@ public class Partida implements Screen {
                 this.gameOver2 = false;
             } else {
                   this.stage.getActors().removeValue(jugador.getPersonajeElegido(), true);
-                  this.stage.addActor(jugador.cambiarPersonaje(esJugador1 ? this.nuevaX1 : this.nuevaX2,
-                  esJugador1 ? this.nuevaY1 : this.nuevaY2));
+                  this.stage.addActor(jugador.cambiarPersonaje(esJugador1 ? 
+                  this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX() : 
+                  this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX(),
+                  esJugador1 ? this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY() : 
+                  this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY()));
               }
             this.gestorHUD.actualizar();
         }
