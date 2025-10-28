@@ -257,9 +257,14 @@ public abstract class Personaje extends Actor {
         this.prevY = super.getY();
     }
 
-    public void frenarCaida() {
-        this.velocidadCaida = 0;
-    }
+    public float getVelocidadCaida() { 
+    	return velocidadCaida; 
+    	}
+    
+    public void setVelocidadCaida(float v) { 
+    	this.velocidadCaida = v; 
+    	}
+    
     public void reducirVida() {
         this.vida--;
     }

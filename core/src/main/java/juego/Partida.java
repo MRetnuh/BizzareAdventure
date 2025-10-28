@@ -296,7 +296,7 @@ public class Partida implements Screen {
         boolean colisionY = this.nivelActual.detectarColision(hitboxTentativaY);
 
         if (colisionY) {
-            personaje.frenarCaida();
+            personaje.setVelocidadCaida(0);
             personaje.setY(personaje.getPrevY());
         }
 
