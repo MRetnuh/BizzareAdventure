@@ -43,7 +43,7 @@ public class Partida implements Screen {
     private boolean gameOver1 = false;
     private boolean gameOver2 = false;
     private boolean nivelIniciado  = false;
-    
+
     public Partida(Game juego, Musica musica) {
         this.JUEGO = juego;
         this.musicaPartida = musica;
@@ -61,7 +61,7 @@ public class Partida implements Screen {
 
         this.nivelActual.restaurarEstadoCajas();
         this.nivelActual.crearEnemigos();
-  
+
         if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido() != null) {
         	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
         	this.JUGADORES[this.JUGADOR1].generarPersonajeAleatorio();
@@ -92,10 +92,10 @@ public class Partida implements Screen {
 
             inicializarNivel();
         }
-        this.gestorHUD = new GestorHUD(this.stageHUD, 
-        	    this.JUGADORES[this.JUGADOR1], 
+        this.gestorHUD = new GestorHUD(this.stageHUD,
+        	    this.JUGADORES[this.JUGADOR1],
         	    this.JUGADORES[this.JUGADOR2]);
-        
+
         Gdx.input.setInputProcessor(this.inputController);
     }
 
@@ -107,19 +107,19 @@ public class Partida implements Screen {
         this.musicaPartida, this.nivelActual, delta, this.JUEGO, this);
 
         actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), delta, true);
-        
+
         actualizarPersonaje(this.JUGADORES[this.JUGADOR2], this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), delta, false);
-        
-        GestorCamara.actualizar(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), 
+
+        GestorCamara.actualizar(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(),
         this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
-        
-        
+
+
         System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX());
         System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
         System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX());
         System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
-        
-        
+
+
         if (this.nivelActual.comprobarVictoria(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX(),
                 this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY(),
                 this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX(),
@@ -153,7 +153,7 @@ public class Partida implements Screen {
                             this.stage.addActor(b);
                         }
                     }
-                    enemigo.actualizarIA(delta, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), 
+                    enemigo.actualizarIA(delta, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(),
                     this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.musicaPartida.getVolumen(), this.nivelActual);
                 }
             }
@@ -164,8 +164,8 @@ public class Partida implements Screen {
         this.stageHUD.act(delta);
         this.stageHUD.draw();
     }
-    
-    
+
+
     public void inicializarSiguienteNivel() {
         if (this.indiceNivelActual < this.niveles.length) {
             this.nivelActual = this.niveles[this.indiceNivelActual];
@@ -184,61 +184,14 @@ public class Partida implements Screen {
         if (gestorDerrota.partidaTerminada()) return;
 
         GestorCombate.procesarCombate(personaje, nivelActual, musicaPartida, delta);
-            
+
         GestorGravedad.aplicarGravedad(personaje, delta, nivelActual);
-        
-        GestorMovimiento.aplicarMovimiento(personaje, delta, nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2, 
+
+        GestorMovimiento.aplicarMovimiento(personaje, delta, nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2,
 	    esJugador1);
 
-        detectarYEliminarTile(personaje, jugador, esJugador1);
-    }
-
-    private void detectarYEliminarTile(Personaje personaje, Jugador jugador, boolean esJugador1) {
-        if (!personaje.getEstaAtacando()) {
-            return;
-        }
-        Rectangle hitboxOriginal = personaje.getHitbox(); 
-        boolean cajaRota;
-        
-        if(personaje.getEstaSaltando()) {
-        	 Rectangle hitboxAumentada = new Rectangle(
-        	            hitboxOriginal.x, 
-        	            hitboxOriginal.y - (hitboxOriginal.height - 12.0f), 
-        	            hitboxOriginal.width, 
-        	            20.0f);
-        	 cajaRota = this.nivelActual.destruirCajaEnHitbox(hitboxAumentada);
-        }
-        
-        final float ALTURA_REDUCIDA = 10.0f;
-        Rectangle hitboxReducida = new Rectangle(
-            hitboxOriginal.x, 
-            hitboxOriginal.y + (hitboxOriginal.height - ALTURA_REDUCIDA), 
-            hitboxOriginal.width, 
-            ALTURA_REDUCIDA
-        );
-        
-        cajaRota = this.nivelActual.destruirCajaEnHitbox(hitboxReducida);
-        
-
-        if (cajaRota) {
-            if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida() <= 0 && this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida() > 0) {
-            	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setPosicion(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX(), this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
-            	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().aumentarVida();
-                this.gameOver1 = false;
-            } else if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida() <= 0 && this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida() > 0) {
-            	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setPosicion(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX(), this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
-            	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().aumentarVida();
-                this.gameOver2 = false;
-            } else {
-                  this.stage.getActors().removeValue(jugador.getPersonajeElegido(), true);
-                  this.stage.addActor(jugador.cambiarPersonaje(esJugador1 ? 
-                  this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX() : 
-                  this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX(),
-                  esJugador1 ? this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY() : 
-                  this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY()));
-              }
-            this.gestorHUD.actualizar();
-        }
+        GestorInteracciones.procesarGolpeCaja(personaje, jugador, esJugador1,
+        this.nivelActual, this.stage, this.gestorHUD, this.JUGADORES, new boolean[]{gameOver1, gameOver2});
     }
 
     @Override
@@ -249,13 +202,13 @@ public class Partida implements Screen {
         this.stage.dispose();
         if (this.skin != null) this.skin.dispose();
     }
-    
+
     private void inicializarJugadores() {
     	for (int i = 0; i < this.JUGADORES.length; i++) {
-            this.JUGADORES[i] = new Jugador(); 
+            this.JUGADORES[i] = new Jugador();
         }
     }
-    
+
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
     @Override public void resume() {}
