@@ -1,5 +1,6 @@
 package mecanicas;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 
 import jugadores.Jugador;
@@ -8,10 +9,13 @@ import personajes.Personaje;
 
 public class GestorMovimiento {
 
+
     public static void aplicarMovimiento(Personaje personaje, float delta, NivelBase nivel, 
                                          Jugador[] jugadores, int jugador1Index, int jugador2Index, 
-                                         boolean esJugador1, float MAX_DISTANCIA_X, float MAX_DISTANCIA_Y) {
-        
+                                         boolean esJugador1) {
+        float max_Distancia_X = Gdx.graphics.getWidth() * 0.95f;
+        float max_Distancia_Y = Gdx.graphics.getHeight() * 0.95f;
+
         float nuevaX = personaje.getNuevaX(delta);
         float nuevaY = personaje.getNuevaY(delta);
 
@@ -28,8 +32,8 @@ public class GestorMovimiento {
             float centroOtroY = otroPersonaje.getY() + otroPersonaje.getHeight() / 2f;
             float distanciaY = Math.abs(centroPersonajeY - centroOtroY);
 
-            if (distanciaX > MAX_DISTANCIA_X) nuevaX = personaje.getX();
-            if (distanciaY > MAX_DISTANCIA_Y) nuevaY = personaje.getY();
+            if (distanciaX > max_Distancia_X) nuevaX = personaje.getX();
+            if (distanciaY > max_Distancia_Y) nuevaY = personaje.getY();
         }
 
         Rectangle hitboxTentativaX = new Rectangle(personaje.getHitbox());

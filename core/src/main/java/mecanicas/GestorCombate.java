@@ -15,7 +15,7 @@ import audios.Musica; // si necesitas volumen
 public class GestorCombate {
 
     // Procesa daño entre personaje <-> enemigos. No cambia flags de partida.
-    public static void procesarCombate(Personaje personaje, NivelBase nivel, Musica musicaPartida) {
+    public static void procesarCombate(Personaje personaje, NivelBase nivel, Musica musicaPartida, float delta) {
         Iterator<EnemigoBase> iter = nivel.getEnemigos().iterator();
         while (iter.hasNext()) {
             EnemigoBase e = iter.next();
@@ -67,5 +67,6 @@ public class GestorCombate {
                 }
             }
         }
+        personaje.atacar(delta);
     }
 }

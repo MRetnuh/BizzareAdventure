@@ -10,7 +10,7 @@ fondo.tsx
 fondo1.tsx
 fuentes/fuentePixel.ttf
 imagenes/fondos/GameOver.png
-imagenes/fondos/portada.png
+imagenes/fondos/Portada.jpg
 imagenes/personajes/akame/akame_derecha_(detenida).png
 imagenes/personajes/akame/akame_derecha_moviendose_1.png
 imagenes/personajes/akame/akame_derecha_moviendose_2.png
@@ -83,10 +83,10 @@ imagenes/personajes/leone/leone_izquierda_moviendose_3.png
 imagenes/personajes/leone/leone_izquierda_moviendose_4.png
 libgdx.png
 mapacorregido.tmx
-musica/Balatro.mp3
-musica/derrota.mp3
-musica/primeraisla.mp3
+musica/Derrota.mp3
+musica/Menu.mp3
+musica/PrimerNivel.mp3
+sonidos/Disparo.mp3
 sonidos/EspadaCorte.mp3
-sonidos/disparo.mp3
-sonidos/parry.mp3
+sonidos/Parry.mp3
 terreno.tsx

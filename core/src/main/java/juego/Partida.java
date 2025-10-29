@@ -14,11 +14,7 @@ import enemigos.TipoEnemigo;
 import enemigos.EnemigoBase;
 import input.InputController;
 import jugadores.Jugador;
-import mecanicas.GestorCamara;
-import mecanicas.GestorCombate;
-import mecanicas.GestorGravedad;
-import mecanicas.GestorHUD;
-import mecanicas.GestorMovimiento;
+import mecanicas.*;
 import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
@@ -29,7 +25,7 @@ import personajes.TipoAtaque;
 import proyectiles.Proyectil;
 
 public class Partida implements Screen {
-
+    private GestorDerrota gestorDerrota = new GestorDerrota();
     private Musica musicaPartida;
     private Stage stage;
     private Stage stageHUD;
@@ -82,8 +78,7 @@ public class Partida implements Screen {
             this.stage.addActor(enemigo);
         }
 
-        this.gameOver1 = false;
-        this.gameOver2 = false;
+        this.gestorDerrota.resetear();
     }
 
     @Override
@@ -214,32 +209,15 @@ public class Partida implements Screen {
     }
 
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
-        if (personaje.getVida() <= 0) {
-            if ((esJugador1 && !this.gameOver1) || (!esJugador1 && !this.gameOver2)) {
-                if (esJugador1) this.gameOver1 = true;
-                else this.gameOver2 = true;
-                if (this.gameOver1 && this.gameOver2) {
-                    this.musicaPartida.cambiarMusica("Derrota");
-                    personaje.morir(this.stageHUD);
-                }
-            }
-            return;
-        }
+        gestorDerrota.manejarMuerteJugador(personaje, esJugador1, musicaPartida, stageHUD);
+        if (gestorDerrota.partidaTerminada()) return;
 
-        
-        GestorCombate.procesarCombate(personaje, nivelActual, musicaPartida);
-
-        float max_Distancia_X = Gdx.graphics.getWidth() * 0.95f;
-        float max_Distancia_Y = Gdx.graphics.getHeight() * 0.95f; 
+        GestorCombate.procesarCombate(personaje, nivelActual, musicaPartida, delta);
             
         GestorGravedad.aplicarGravedad(personaje, delta, nivelActual);
         
         GestorMovimiento.aplicarMovimiento(personaje, delta, nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2, 
-	    esJugador1, max_Distancia_X, max_Distancia_Y);
-
-        personaje.atacar(delta);
-
-       
+	    esJugador1);
 
         detectarYEliminarTile(personaje, jugador, esJugador1);
     }
