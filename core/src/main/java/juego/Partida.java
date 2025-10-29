@@ -1,16 +1,12 @@
 package juego;
 
-import java.util.Iterator;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import audios.EfectoSonido;
 import audios.Musica;
-import enemigos.TipoEnemigo;
 import enemigos.EnemigoBase;
 import input.InputController;
 import jugadores.Jugador;
@@ -19,9 +15,7 @@ import niveles.Nivel1;
 import niveles.Nivel2;
 import niveles.NivelBase;
 import pantallas.NivelSuperado;
-import pantallas.Opciones;
 import personajes.Personaje;
-import personajes.TipoAtaque;
 import proyectiles.Proyectil;
 
 public class Partida implements Screen {
