@@ -21,9 +21,7 @@ public class GestorNiveles {
         this.niveles = niveles;
         this.nivelActual = nivelActual;
     }
-
-    
-    
+ 
     public void inicializarNivel(Jugador[] jugadores, int jugador1, int jugador2,
                                  Stage stage, GestorDerrota gestorDerrota) {
 

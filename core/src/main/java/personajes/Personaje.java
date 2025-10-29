@@ -2,12 +2,10 @@ package personajes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-// import com.badlogic.gdx.graphics.OrthographicCamera; // Ya no se necesita aquí
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,9 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Timer;
-
 import audios.EfectoSonido;
-import juego.Partida;
 import niveles.NivelBase;
 import proyectiles.Proyectil;
 
@@ -32,11 +28,9 @@ public abstract class Personaje extends Actor {
     private Texture texturaDerrota;
     private Image imagenDerrota;
     private Stage stage;
-    private int habilidadEspecial = 1;
     private boolean estaAtacando = false;
     private boolean estaSaltando = false;
     private boolean moviendoIzquierda = false;
-    private final float GRAVEDAD = -500;
     private float prevX, prevY;
     private float estadoTiempo = 0f;
     private float velocidadCaida = 0;
@@ -80,7 +74,7 @@ public abstract class Personaje extends Actor {
         super.setY(y);
     }
 
-    public void morir(Stage stage) {//-> Aca no le pases el stage
+    public void morir(Stage stage) {
         this.stage = stage;
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
