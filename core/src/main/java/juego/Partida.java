@@ -15,6 +15,7 @@ import enemigos.EnemigoBase;
 import input.InputController;
 import jugadores.Jugador;
 import mecanicas.GestorCamara;
+import mecanicas.GestorCombate;
 import mecanicas.GestorGravedad;
 import mecanicas.GestorHUD;
 import mecanicas.GestorMovimiento;
@@ -35,8 +36,6 @@ public class Partida implements Screen {
     private GestorHUD gestorHUD;
     private final int JUGADOR1 = 0, JUGADOR2 = 1;
     private final Jugador[] JUGADORES = new Jugador[2];
-    private final float MAX_DISTANCIA_X = Gdx.graphics.getWidth() * 0.95f;
-    private final float MAX_DISTANCIA_Y = Gdx.graphics.getHeight() * 0.95f;
     private Skin skin;
     private OrthographicCamera camara;
     private SpriteBatch batch;
@@ -227,64 +226,20 @@ public class Partida implements Screen {
             return;
         }
 
-            Iterator<EnemigoBase> iter = this.nivelActual.getEnemigos().iterator();
-            while(iter.hasNext()) {
-                EnemigoBase e = iter.next();
-                if(personaje.getTipoAtaque() == TipoAtaque.MELEE && personaje.getEstaAtacando()) {
-                    if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
-                        e.reducirVida();
-                        if (e.getVida() <= 0) {
-                            this.nivelActual.agregarEnemigosMuertos(e);
-                            e.remove();
-                        }
+        
+        GestorCombate.procesarCombate(personaje, nivelActual, musicaPartida);
 
-                    }
-                }
-                 if (personaje.getTipoAtaque() == TipoAtaque.DISTANCIA) {
-                    Iterator<Proyectil> it = personaje.getBalas().iterator(); 
-                    while (it.hasNext()) {
-                        Proyectil b = it.next();
-                        if (b.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
-                            e.reducirVida();
-                            b.desactivar(); 
-                            if (e.getVida() <= 0) {
-                            	this.nivelActual.agregarEnemigosMuertos(e);
-                                e.remove();
-                            }
-                        }
-                    }
-                }
-
-        }
-
-
+        float max_Distancia_X = Gdx.graphics.getWidth() * 0.95f;
+        float max_Distancia_Y = Gdx.graphics.getHeight() * 0.95f; 
+            
         GestorGravedad.aplicarGravedad(personaje, delta, nivelActual);
         
         GestorMovimiento.aplicarMovimiento(personaje, delta, nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2, 
-	    esJugador1, this.MAX_DISTANCIA_X, this.MAX_DISTANCIA_Y);
+	    esJugador1, max_Distancia_X, max_Distancia_Y);
 
         personaje.atacar(delta);
 
-        for (EnemigoBase e : this.nivelActual.getEnemigos()) {
-        	if(e.getTipoEnemigo() == TipoEnemigo.PERSEGUIDOR && e.getHitbox().overlaps(personaje.getHitbox())) {
-        		personaje.reducirVida();
-        	}
-        	
-            Iterator<Proyectil> it = e.getBalas().iterator();
-            while (it.hasNext()) {
-                Proyectil b = it.next();
-                if (b.getHitbox().overlaps(personaje.getHitbox())) {
-                		if(personaje.getEstaAtacando() && personaje.getTipoAtaque() == TipoAtaque.MELEE) {
-                			EfectoSonido.reproducir("Parry", this.musicaPartida.getVolumen());
-                			b.desactivar();
-                		}
-                		else {
-                    personaje.reducirVida();
-                    b.desactivar();
-                		}
-                }
-            }
-        }
+       
 
         detectarYEliminarTile(personaje, jugador, esJugador1);
     }
@@ -350,8 +305,8 @@ public class Partida implements Screen {
     }
     
     private void inicializarJugadores() {
-    	for (int i = 0; i < JUGADORES.length; i++) {
-            JUGADORES[i] = new Jugador(); 
+    	for (int i = 0; i < this.JUGADORES.length; i++) {
+            this.JUGADORES[i] = new Jugador(); 
         }
     }
     
