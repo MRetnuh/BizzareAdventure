@@ -102,7 +102,9 @@ public class Partida implements Screen {
     @Override
     public void render(float delta) {
 
-        actualizarInputs(delta);
+        GestorInputs.procesarInputs(this.JUGADORES[this.JUGADOR1].getPersonajeElegido(),
+        this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.inputController,
+        this.musicaPartida, this.nivelActual, delta, this.JUEGO, this);
 
         actualizarPersonaje(this.JUGADORES[this.JUGADOR1], this.JUGADORES[this.JUGADOR1].getPersonajeElegido(), delta, true);
         
@@ -177,37 +179,6 @@ public class Partida implements Screen {
         }
     }
 
-
-    private void actualizarInputs(float delta) {
-        if (this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getVida() > 0) {
-        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setMoviendoDerecha(this.inputController.getDerecha1());
-        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setMoviendoIzquierda(this.inputController.getIzquierda1());
-        	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().setEstaSaltando(this.inputController.getSaltar1());
-            if (this.inputController.getAtacar1()) {
-            	this.JUGADORES[this.JUGADOR1].getPersonajeElegido().iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
-                this.inputController.setAtacarFalso1();
-            }
-            if (this.inputController.getOpciones1()) {
-                abrirOpciones();
-                this.inputController.setOpcionesFalso1();
-            }
-        }
-
-        if (this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getVida() > 0) {
-        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setMoviendoDerecha(this.inputController.getDerecha2());
-        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setMoviendoIzquierda(this.inputController.getIzquierda2());
-        	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().setEstaSaltando(this.inputController.getSaltar2());
-            if (this.inputController.getAtacar2()) {
-            	this.JUGADORES[this.JUGADOR2].getPersonajeElegido().iniciarAtaque(this.musicaPartida.getVolumen(), delta, this.nivelActual);
-                this.inputController.setAtacarFalso2();
-            }
-            if (this.inputController.getOpciones2()) {
-                abrirOpciones();
-                this.inputController.setOpcionesFalso2();
-            }
-        }
-    }
-
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
         gestorDerrota.manejarMuerteJugador(personaje, esJugador1, musicaPartida, stageHUD);
         if (gestorDerrota.partidaTerminada()) return;
@@ -268,9 +239,6 @@ public class Partida implements Screen {
               }
             this.gestorHUD.actualizar();
         }
-    }
-    public void abrirOpciones() {
-        this.JUEGO.setScreen(new Opciones(this.JUEGO, this, this.musicaPartida));
     }
 
     @Override
