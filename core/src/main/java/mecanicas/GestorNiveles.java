@@ -6,90 +6,85 @@ import audios.Musica;
 import enemigos.EnemigoBase;
 import juego.Partida;
 import jugadores.Jugador;
-import niveles.Nivel1;
-import niveles.Nivel2;
+import mecanicas.GestorDerrota;
 import niveles.NivelBase;
 import pantallas.NivelSuperado;
-import personajes.Personaje;
-
 public class GestorNiveles {
 
-    private NivelBase[] niveles = {new Nivel1(), new Nivel2()};
+    private final Game JUEGO;
+    private final NivelBase[] niveles;
+    private NivelBase nivelActual;
     private int indiceNivelActual = 0;
-    private NivelBase nivelActual = this.niveles[this.indiceNivelActual];
-    private GestorDerrota gestorDerrota;
-    private final Game juego;
 
-    public GestorNiveles(Game juego, GestorDerrota gestorDerrota) {
-        this.juego = juego;
-        this.gestorDerrota = gestorDerrota;
+    public GestorNiveles(Game juego, NivelBase[] niveles, NivelBase nivelActual) {
+        this.JUEGO = juego;
+        this.niveles = niveles;
+        this.nivelActual = nivelActual;
     }
 
-    public void inicializarNivel(Stage stage, Jugador[] jugadores) {
-        if (this.nivelActual == null) return;
+    
+    
+    public void inicializarNivel(Jugador[] jugadores, int jugador1, int jugador2,
+                                 Stage stage, GestorDerrota gestorDerrota) {
 
-        this.nivelActual.restaurarEstadoCajas();
+    	this.nivelActual.restaurarEstadoCajas();
         this.nivelActual.crearEnemigos();
+
+        if (jugadores[jugador1].getPersonajeElegido() != null) {
+            jugadores[jugador1].getPersonajeElegido()
+                    .setPosicion(nivelActual.getInicioX1(), nivelActual.getInicioY1());
+            jugadores[jugador1].generarPersonajeAleatorio();
+        }
+        if (jugadores[jugador2].getPersonajeElegido() != null) {
+            jugadores[jugador2].getPersonajeElegido()
+                    .setPosicion(nivelActual.getInicioX2(), nivelActual.getInicioY2());
+            jugadores[jugador2].generarPersonajeAleatorio();
+        }
 
         stage.clear();
 
-        // Inicializar jugadores: primero generar si no tienen personaje
-        for (Jugador j : jugadores) {
-            if (j.getPersonajeElegido() == null) {
-                j.generarPersonajeAleatorio();
-            }
-        }
+        if (jugadores[jugador1].getPersonajeElegido() != null)
+            stage.addActor(jugadores[jugador1].getPersonajeElegido());
 
-        // Setear posiciones y agregar al stage
-        if (jugadores[0].getPersonajeElegido() != null) {
-            Personaje p1 = jugadores[0].getPersonajeElegido();
-            p1.setPosicion(this.nivelActual.getInicioX1(), this.nivelActual.getInicioY1());
-            stage.addActor(p1);
-        }
+        if (jugadores[jugador2].getPersonajeElegido() != null)
+            stage.addActor(jugadores[jugador2].getPersonajeElegido());
 
-        if (jugadores[1].getPersonajeElegido() != null) {
-            Personaje p2 = jugadores[1].getPersonajeElegido();
-            p2.setPosicion(this.nivelActual.getInicioX2(), this.nivelActual.getInicioY2());
-            stage.addActor(p2);
-        }
-
-        // Agregar enemigos al stage
-        for (EnemigoBase enemigo : this.nivelActual.getEnemigos()) {
+        for (EnemigoBase enemigo : nivelActual.getEnemigos()) {
             stage.addActor(enemigo);
         }
 
-        // Resetear gestor de derrota
-        this.gestorDerrota.resetear();
+        gestorDerrota.resetear();
     }
 
-    public void comprobarVictoria(Jugador[] jugadores, Partida partida) {
-        Personaje p1 = jugadores[0].getPersonajeElegido();
-        Personaje p2 = jugadores[1].getPersonajeElegido();
-        if (p1 == null || p2 == null) return;
+    public void comprobarVictoriaYAvanzar(Jugador[] jugadores, Partida partida) {
 
-        if (this.nivelActual.comprobarVictoria(p1.getX(), p1.getY(), p2.getX(), p2.getY())) {
-            this.indiceNivelActual++;
-            if (this.indiceNivelActual < this.niveles.length) {
+        boolean victoria = nivelActual.comprobarVictoria(
+            jugadores[0].getPersonajeElegido().getX(),
+            jugadores[0].getPersonajeElegido().getY(),
+            jugadores[1].getPersonajeElegido().getX(),
+            jugadores[1].getPersonajeElegido().getY()
+        );
+
+        if (victoria) {
+        	 indiceNivelActual++;
                 NivelSuperado nivelSuperado = new NivelSuperado(
                         this.nivelActual.getNombreNivel(),
-                        this.juego,
-                        this.niveles[this.indiceNivelActual].getNombreNivel(),
+                        this.JUEGO,
+                        niveles[this.indiceNivelActual].getNombreNivel(),
                         partida
                 );
-                this.juego.setScreen(nivelSuperado);
+                JUEGO.setScreen(nivelSuperado);
             }
         }
+    
+    public void inicializarSiguienteNivel(Jugador[] jugadores, int jugador1, int jugador2,
+                                          Stage stage, GestorDerrota gestorDerrota) {
+    		this.nivelActual = this.niveles[this.indiceNivelActual];
+            inicializarNivel(jugadores, jugador1, jugador2, stage, gestorDerrota);
     }
-
-    public void inicializarSiguienteNivel(Stage stage, Jugador[] jugadores) {
-        if (this.indiceNivelActual >= this.niveles.length) return;
-
-        this.nivelActual = this.niveles[this.indiceNivelActual];
-        inicializarNivel(stage, jugadores);
-
-        // Reiniciar movimiento para que los personajes puedan moverse
-        for (Jugador j : jugadores) {
-            if (j.getPersonajeElegido() != null) j.getPersonajeElegido().detenerMovimiento();
-        }
+    
+    public NivelBase getNivelActual() {
+        return this.nivelActual;
     }
+    
 }

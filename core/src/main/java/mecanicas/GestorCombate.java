@@ -14,13 +14,11 @@ import audios.Musica; // si necesitas volumen
 
 public class GestorCombate {
 
-    // Procesa daño entre personaje <-> enemigos. No cambia flags de partida.
     public static void procesarCombate(Personaje personaje, NivelBase nivel, Musica musicaPartida, float delta) {
         Iterator<EnemigoBase> iter = nivel.getEnemigos().iterator();
         while (iter.hasNext()) {
             EnemigoBase e = iter.next();
 
-            // MELEE del personaje sobre enemigo
             if (personaje.getTipoAtaque() == TipoAtaque.MELEE && personaje.getEstaAtacando()) {
                 if (personaje.getHitbox().overlaps(e.getHitbox()) && e.getVida() > 0) {
                     e.reducirVida();
@@ -31,7 +29,6 @@ public class GestorCombate {
                 }
             }
 
-            // DISTANCIA del personaje (balas del propio personaje)
             if (personaje.getTipoAtaque() == TipoAtaque.DISTANCIA) {
                 Iterator<Proyectil> it = personaje.getBalas().iterator();
                 while (it.hasNext()) {
@@ -47,12 +44,10 @@ public class GestorCombate {
                 }
             }
 
-            // daño por contacto de enemigo perseguidor
             if (e.getTipoEnemigo() == TipoEnemigo.PERSEGUIDOR && e.getHitbox().overlaps(personaje.getHitbox())) {
                 personaje.reducirVida();
             }
 
-            // proyectiles enemigos sobre personaje
             Iterator<Proyectil> it2 = e.getBalas().iterator();
             while (it2.hasNext()) {
                 Proyectil b = it2.next();
