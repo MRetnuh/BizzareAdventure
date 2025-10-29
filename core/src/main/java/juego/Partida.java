@@ -16,7 +16,6 @@ import niveles.Nivel2;
 import niveles.NivelBase;
 import pantallas.NivelSuperado;
 import personajes.Personaje;
-import proyectiles.Proyectil;
 
 public class Partida implements Screen {
     private GestorDerrota gestorDerrota = new GestorDerrota();
@@ -34,8 +33,6 @@ public class Partida implements Screen {
     private NivelBase nivelActual;
     private int indiceNivelActual = 0;
     private final Game JUEGO;
-    private boolean gameOver1 = false;
-    private boolean gameOver2 = false;
     private boolean nivelIniciado  = false;
 
     public Partida(Game juego, Musica musica) {
@@ -139,19 +136,7 @@ public class Partida implements Screen {
 
         this.batch.setProjectionMatrix(this.camara.combined);
 
-        if (!this.gameOver1 || !this.gameOver2) {
-            for (EnemigoBase enemigo : this.nivelActual.getEnemigos()) {
-                if (enemigo.getVida() > 0) {
-                    for (Proyectil b : enemigo.getBalas()) {
-                        if (!this.stage.getActors().contains(b, true)) {
-                            this.stage.addActor(b);
-                        }
-                    }
-                    enemigo.actualizarIA(delta, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(),
-                    this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.musicaPartida.getVolumen(), this.nivelActual);
-                }
-            }
-        }
+        GestorEnemigos.actualizar(delta, nivelActual, JUGADORES, stage, musicaPartida);
 
         this.stage.act(delta);
         this.stage.draw();
@@ -185,7 +170,7 @@ public class Partida implements Screen {
 	    esJugador1);
 
         GestorInteracciones.procesarGolpeCaja(personaje, jugador, esJugador1,
-        this.nivelActual, this.stage, this.gestorHUD, this.JUGADORES, new boolean[]{gameOver1, gameOver2});
+        this.nivelActual, this.stage, this.gestorHUD, this.JUGADORES);
     }
 
     @Override

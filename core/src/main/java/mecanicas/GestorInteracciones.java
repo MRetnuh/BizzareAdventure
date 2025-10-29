@@ -9,7 +9,7 @@ import personajes.Personaje;
 public class GestorInteracciones {
 
     public static void procesarGolpeCaja(Personaje personaje, Jugador jugador, boolean esJugador1, NivelBase nivel,
-    Stage stage, GestorHUD gestorHUD, Jugador[] jugadores, boolean[] gameOver) {
+    Stage stage, GestorHUD gestorHUD, Jugador[] jugadores) {
 
         if (!personaje.getEstaAtacando()) return;
 
@@ -44,14 +44,12 @@ public class GestorInteracciones {
                     jugadores[1].getPersonajeElegido().getY()
             );
             jugadores[0].getPersonajeElegido().aumentarVida();
-            gameOver[0] = false;
         } else if (jugadores[1].getPersonajeElegido().getVida() <= 0 && jugadores[0].getPersonajeElegido().getVida() > 0) {
             jugadores[1].getPersonajeElegido().setPosicion(
                     jugadores[0].getPersonajeElegido().getX(),
                     jugadores[0].getPersonajeElegido().getY()
             );
             jugadores[1].getPersonajeElegido().aumentarVida();
-            gameOver[1] = false;
         } else {
             // Cambiar personaje
             stage.getActors().removeValue(jugador.getPersonajeElegido(), true);
