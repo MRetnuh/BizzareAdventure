@@ -29,10 +29,10 @@ public class Partida implements Screen {
     private InputController inputController;
     private NivelBase[] niveles = {new Nivel1(), new Nivel2()};
     private NivelBase nivelActual;
-    private int indiceNivelActual = 0;
     private final Game JUEGO;
     private boolean nivelIniciado  = false;
     private GestorNiveles gestorNiveles;
+    
     public Partida(Game juego, Musica musica) {
         this.JUEGO = juego;
         this.musicaPartida = musica;
@@ -41,8 +41,8 @@ public class Partida implements Screen {
         this.batch = new SpriteBatch();
         this.stage = new Stage(new ScreenViewport(), this.batch);
         this.stageHUD = new Stage(new ScreenViewport(), this.batch);
-        this.nivelActual = this.niveles[this.indiceNivelActual];
-        this.gestorNiveles = new GestorNiveles(juego, niveles, this.nivelActual);
+        this.nivelActual = this.niveles[0];
+        this.gestorNiveles = new GestorNiveles(juego, this.niveles, this.nivelActual);
         inicializarJugadores();
     }
 
@@ -55,7 +55,7 @@ public class Partida implements Screen {
             this.inputController = new InputController();
             this.nivelIniciado = true;
 
-            gestorNiveles.inicializarNivel(JUGADORES, JUGADOR1, JUGADOR2, stage, gestorDerrota);
+            this.gestorNiveles.inicializarNivel(this.JUGADORES, this.JUGADOR1, this.JUGADOR2, this.stage, this.gestorDerrota);
         }
         this.gestorHUD = new GestorHUD(this.stageHUD,
         	    this.JUGADORES[this.JUGADOR1],
@@ -107,7 +107,7 @@ public class Partida implements Screen {
     }
     
     public void inicializarSiguienteNivel() {
-        gestorNiveles.inicializarSiguienteNivel(JUGADORES, JUGADOR1, JUGADOR2, stage, gestorDerrota);
+        this.gestorNiveles.inicializarSiguienteNivel(this.JUGADORES, this.JUGADOR1, this.JUGADOR2, this.stage, this.gestorDerrota);
         if (this.inputController != null) {
             this.inputController.resetearInputs(); 
         }
@@ -115,14 +115,14 @@ public class Partida implements Screen {
     }
 
     private void actualizarPersonaje(Jugador jugador, Personaje personaje, float delta, boolean esJugador1) {
-        gestorDerrota.manejarMuerteJugador(personaje, esJugador1, musicaPartida, stageHUD);
-        if (gestorDerrota.partidaTerminada()) return;
+        this.gestorDerrota.manejarMuerteJugador(personaje, esJugador1, this.musicaPartida, this.stageHUD);
+        if (this.gestorDerrota.partidaTerminada()) return;
 
-        GestorCombate.procesarCombate(personaje, nivelActual, musicaPartida, delta);
+        GestorCombate.procesarCombate(personaje, this.nivelActual, this.musicaPartida, delta);
 
-        GestorGravedad.aplicarGravedad(personaje, delta, nivelActual);
+        GestorGravedad.aplicarGravedad(personaje, delta, this.nivelActual);
 
-        GestorMovimiento.aplicarMovimiento(personaje, delta, nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2,
+        GestorMovimiento.aplicarMovimiento(personaje, delta, this.nivelActual, this.JUGADORES, this.JUGADOR1, this.JUGADOR2,
 	    esJugador1);
 
         GestorInteracciones.procesarGolpeCaja(personaje, jugador, esJugador1,
