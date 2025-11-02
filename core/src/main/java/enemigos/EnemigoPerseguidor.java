@@ -15,7 +15,7 @@ public class EnemigoPerseguidor extends EnemigoBase {
 	
 
     public EnemigoPerseguidor(String nombre, float x, float y) {
-        super(nombre, 400, "EspadaCorte", 1, TipoEnemigo.PERSEGUIDOR);
+        super(nombre, 100, "EspadaCorte", 1, TipoEnemigo.PERSEGUIDOR);
         setPosition(x, y);
         super.puntoInicialX = x;
     }
@@ -44,15 +44,20 @@ public class EnemigoPerseguidor extends EnemigoBase {
     @Override
     public void actualizarIA(float delta, Personaje jugador1, Personaje jugador2, float volumen, NivelBase nivel){
         seleccionarObjetivo(jugador1, jugador2);
-        if (super.objetivoActual == null) super.patrullar(delta, nivel);
+        if (super.objetivoActual == null) {
+        	super.patrullar(delta, nivel);
+        	super.velocidad = 100;
+        }
         else {
+    	super.velocidad = 400;
         perseguir(delta, nivel);
         }
     }
 
     private void perseguir(float delta, NivelBase nivel) {
-        if (super.objetivoActual == null) return;
-
+        if (super.objetivoActual == null) {
+        	return;
+        } 
         float direccion = super.objetivoActual.getX() > getX() ? 1 : -1;
         float nuevaX = getX() + direccion * super.velocidad * delta;
 

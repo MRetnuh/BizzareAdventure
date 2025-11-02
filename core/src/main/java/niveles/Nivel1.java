@@ -29,8 +29,8 @@ public class Nivel1 extends NivelBase {
         Object[][] enemigosDatos = {
             {"enemigo1", TipoEnemigo.TIRADOR, 600f, 928f},
             {"enemigo2", TipoEnemigo.TIRADOR, 800f, 928f},
-            {"enemigo3", TipoEnemigo.PERSEGUIDOR, 2000f, 928f},
-            {"enemigo4", TipoEnemigo.PESADO, 700f, 928f}
+            {"enemigo3", TipoEnemigo.PERSEGUIDOR, 2730f, 735f},
+            {"enemigo4", TipoEnemigo.PESADO, 2736f, 735f}
         };
 
         for (Object[] datos : enemigosDatos) {

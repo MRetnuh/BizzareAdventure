@@ -39,6 +39,7 @@ public abstract class Personaje extends Actor {
 	private boolean disparoRealizado = false;
     private NivelBase nivel;
     
+    protected TextureRegion frameMuerte;
     protected String nombreAtaque;
 	protected TextureRegion frame;
 	protected Animation<TextureRegion> animDerecha;
@@ -121,6 +122,11 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+    	 if (this.vida <= 0) {
+    	        batch.draw(frameMuerte, getX(), getY());
+    	        return;
+    	    }
+    	
         if (this.estaAtacando) {
             frame = this.mirandoDerecha
                     ? this.animAtaqueDerecha.getKeyFrame(this.tiempoAtaque, false)
@@ -143,6 +149,8 @@ public abstract class Personaje extends Actor {
 
     @Override
     public void act(float delta) {
+    	if (this.vida <= 0) return; 
+    	
         super.act(delta);
 
         Iterator<Proyectil> it = balas.iterator();
@@ -250,6 +258,7 @@ public abstract class Personaje extends Actor {
         this.vida--;
         if(this.vida <= 0) {
         	this.vida = 0;
+        	detenerMovimiento();
         }
     }
    

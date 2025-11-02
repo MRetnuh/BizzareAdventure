@@ -13,6 +13,11 @@ public class GestorMovimiento {
     public static void aplicarMovimiento(Personaje personaje, float delta, NivelBase nivel, 
                                          Jugador[] jugadores, int jugador1Index, int jugador2Index, 
                                          boolean esJugador1) {
+    	
+    	if(personaje.getVida() <= 0) {
+    		return;
+    	}
+    	
         float max_Distancia_X = Gdx.graphics.getWidth() * 0.95f;
         float max_Distancia_Y = Gdx.graphics.getHeight() * 0.95f;
 

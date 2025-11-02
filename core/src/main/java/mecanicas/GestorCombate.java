@@ -1,4 +1,3 @@
-// mecanicas/GestorCombate.java
 package mecanicas;
 
 import java.util.Iterator;
@@ -15,6 +14,11 @@ import audios.Musica; // si necesitas volumen
 public class GestorCombate {
 
     public static void procesarCombate(Personaje personaje, NivelBase nivel, Musica musicaPartida, float delta) {
+    	
+    	if(personaje.getVida() <= 0) {
+    		return;
+    	}
+    	
         Iterator<EnemigoBase> iter = nivel.getEnemigos().iterator();
         while (iter.hasNext()) {
             EnemigoBase e = iter.next();
@@ -43,7 +47,7 @@ public class GestorCombate {
                     }
                 }
             }
-
+           if(e.getVida() > 0) {
             if (e.getTipoEnemigo() == TipoEnemigo.PERSEGUIDOR && e.getHitbox().overlaps(personaje.getHitbox())) {
                 personaje.reducirVida();
             }
@@ -60,6 +64,7 @@ public class GestorCombate {
                         b.desactivar();
                     }
                 }
+            }
             }
         }
         personaje.atacar(delta);

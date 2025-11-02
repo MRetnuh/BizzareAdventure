@@ -9,6 +9,11 @@ public class GestorGravedad {
     private static final float GRAVEDAD = -500;
 
     public static void aplicarGravedad(Personaje personaje, float delta, NivelBase nivel) {
+
+    	if(personaje.getVida() <= 0) {
+    		return;
+    	}
+    		
         boolean estaSobreElSuelo = nivel.detectarColision(
             new Rectangle(personaje.getX(), personaje.getY() - 1, 16, 16)
         );

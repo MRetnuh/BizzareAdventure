@@ -14,7 +14,8 @@ public enum FabricaDePersonajes {
             "imagenes/personajes/akame/ataque/akame_derecha_atacando_",
             "imagenes/personajes/akame/ataque/akame_izquierda_atacando_",
             "imagenes/personajes/akame/akame_derecha_(detenida).png",
-            "imagenes/personajes/akame/akame_izquierda_(detenida).png", 4, 6
+            "imagenes/personajes/akame/akame_izquierda_(detenida).png", 4, 6,
+            "imagenes/personajes/akame/akame_izquierda_(detenida).png"
     ),
     LEONE("Leone", 230, "EspadaCorte", 1, TipoAtaque.DISTANCIA,
             "imagenes/personajes/leone/leone_derecha_moviendose_",
@@ -22,7 +23,8 @@ public enum FabricaDePersonajes {
             "imagenes/personajes/akame/ataque/akame_derecha_atacando_",
             "imagenes/personajes/akame/ataque/akame_izquierda_atacando_",
             "imagenes/personajes/leone/leone_derecha_(detenida).png",
-            "imagenes/personajes/leone/leone_izquierda_(detenida).png", 4, 6
+            "imagenes/personajes/leone/leone_izquierda_(detenida).png", 4, 6,
+            "imagenes/personajes/leone/leone_izquierda_(detenida).png"
     );
 
     private final String nombre;
@@ -33,12 +35,14 @@ public enum FabricaDePersonajes {
     private final String rutaAtaqueDerecha, rutaAtaqueIzquierda;
     private final String rutaQuietoDerecha, rutaQuietoIzquierda;
     private final TipoAtaque tipoAtaque;
+    private final String rutaMuerte;
     private int cantSpriteMovimiento;
     private int cantSpriteAtaque;
     FabricaDePersonajes(String nombre, int velocidad, String nombreAtaque, int vida,TipoAtaque tipoAtaque,
                         String rutaMovDerecha, String rutaMovIzquierda,
                         String rutaAtaqueDerecha, String rutaAtaqueIzquierda,
-                        String rutaQuietoDerecha, String rutaQuietoIzquierda, int cantSpriteMovimiento, int cantSpriteAtaque) {
+                        String rutaQuietoDerecha, String rutaQuietoIzquierda, int cantSpriteMovimiento, int cantSpriteAtaque, 
+                        String rutaMuerte) {
         this.nombre = nombre;
         this.velocidad = velocidad;
         this.nombreAtaque = nombreAtaque;
@@ -52,6 +56,7 @@ public enum FabricaDePersonajes {
         this.tipoAtaque = tipoAtaque;
         this.cantSpriteAtaque = cantSpriteAtaque;
         this.cantSpriteMovimiento = cantSpriteMovimiento;
+        this.rutaMuerte = rutaMuerte;
     }
 
     public Personaje crear() {
@@ -84,6 +89,7 @@ public enum FabricaDePersonajes {
 
                 super.quietaDerecha = new TextureRegion(new Texture(Gdx.files.internal(rutaQuietoDerecha)));
                 super.quietaIzquierda = new TextureRegion(new Texture(Gdx.files.internal(rutaQuietoIzquierda)));
+                super.frameMuerte = new TextureRegion(new Texture(Gdx.files.internal(rutaMuerte)));
             }
         };
         return pj;
