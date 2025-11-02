@@ -78,12 +78,6 @@ public class Partida implements Screen {
         GestorCamara.actualizar(this.camara, this.JUGADORES[this.JUGADOR1].getPersonajeElegido(),
         this.JUGADORES[this.JUGADOR2].getPersonajeElegido(), this.nivelActual.getAnchoMapa(), this.nivelActual.getAlturaMapa());
 
-
-        System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getX());
-        System.out.println(this.JUGADORES[this.JUGADOR1].getPersonajeElegido().getY());
-        System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getX());
-        System.out.println(this.JUGADORES[this.JUGADOR2].getPersonajeElegido().getY());
-
         this.gestorNiveles.comprobarVictoriaYAvanzar(JUGADORES, this);
         this.nivelActual = this.gestorNiveles.getNivelActual();
         this.gestorHUD.actualizar();

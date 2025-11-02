@@ -27,6 +27,10 @@ public class GestorInputs {
                 inputController.setOpcionesFalso1();
             }
         }
+        else {
+            inputController.setAtacarFalso1();
+            inputController.setOpcionesFalso1();
+        }
 
         if (personaje2.getVida() > 0) {
             personaje2.setMoviendoDerecha(inputController.getDerecha2());
@@ -41,6 +45,10 @@ public class GestorInputs {
                 juego.setScreen(new Opciones(juego, partidaActual, musicaPartida));
                 inputController.setOpcionesFalso2();
             }
+        }
+        else {
+            inputController.setAtacarFalso2();
+            inputController.setOpcionesFalso2();
         }
     }
 }
